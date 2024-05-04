@@ -1,0 +1,17 @@
+{
+  "name": "pawledger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "dotenv": "^16.4.5",
+    "ethereum-waffle": "^4.0.10",
+    "hardhat": "^2.22.3"
+  }
+}
