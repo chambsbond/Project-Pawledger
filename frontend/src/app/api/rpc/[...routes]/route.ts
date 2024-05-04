@@ -4,8 +4,10 @@ export async function POST(
   req: Request,
   { params }: { params: { routes: string[] } }
 ) {
+  // const apiUrl = "https://arb-sepolia.g.alchemy.com/v2/ktAimmXFK-XpEJSjR5wvccGBvFT-RQsU";
   const apiUrl = "https://api.g.alchemy.com";
   const apiKey = process.env.ALCHEMY_API_KEY;
+  console.log(apiKey);
 
   if (apiKey == null) {
     return NextResponse.json(
@@ -25,6 +27,7 @@ export async function POST(
     body: JSON.stringify(body),
   });
 
+  console.log(res);
   if (!res.ok) {
     return NextResponse.json(await res.json().catch((e) => ({})), {
       status: res.status,

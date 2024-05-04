@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   });
 
   if (!res.ok) {
-    return NextResponse.json(await res.json().catch((e) => ({})), {
+      return NextResponse.json(await res.json().catch((e) => ({})), {
       status: res.status,
     });
   }
