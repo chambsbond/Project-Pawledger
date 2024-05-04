@@ -6,6 +6,7 @@
   "scripts": {
     "local": "npx hardhat node",
     "compile": "npx hardhat compile",
+    "deploy": "npx hardhat ignition deploy ./ignition/modules/Pet.ts --network localhost",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

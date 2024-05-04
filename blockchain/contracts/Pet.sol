@@ -6,12 +6,12 @@ import {ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/
 import {MintClaimModel} from "../models/MintClaimModel.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-contract Animal is ERC721 {
+contract Pet is ERC721 {
     event ClaimMade(address orgAffiliation, address claimee, address prospectOwner);    
     uint256 private _nextTokenId;
     address immutable private  _orgRegistryAddress;
 
-    constructor(address orgRegistryAddress) ERC721("Animal", "PET")
+    constructor(address orgRegistryAddress) ERC721("Pet", "PET")
     {
         _orgRegistryAddress = orgRegistryAddress;
     }
