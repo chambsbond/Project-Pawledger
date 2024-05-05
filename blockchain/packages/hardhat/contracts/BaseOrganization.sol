@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import "./IOrganization.sol";
-import "../model/Employee.sol";
+import "../models/Employee.sol";
 
 abstract contract BaseOrganization is IOrganization {
     address private _owner;
