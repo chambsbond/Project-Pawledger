@@ -19,7 +19,7 @@ abstract contract BaseOrganization is IOrganization {
         _employees[employee.walletAddress] = employee;
     }
 
-    function removeEmployee(address employee) external override {
-        delete _employees[employee];
+    function removeEmployee(address employeeAddress) external override {
+        delete _employees[employeeAddress];
     }
 }

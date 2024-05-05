@@ -7,7 +7,7 @@ import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Recei
 interface IOrganization is IERC721Receiver {
     function addEmployee(Employee memory employee) external;
 
-    function removeEmployee(address employee) external;
+    function removeEmployee(address employeeAddress) external;
 
     //TODO - Add transfer method to return pets to their rightful owners after given scenario.
 }
