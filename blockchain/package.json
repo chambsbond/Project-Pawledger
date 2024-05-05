@@ -1,41 +1,47 @@
 {
   "name": "pawledger",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/hardhat",
+      "packages/nextjs"
+    ]
+  },
   "scripts": {
-    "local": "npx hardhat node",
-    "compile": "npx hardhat compile",
-    "deploy": "npx hardhat ignition deploy ./ignition/modules/Pet.ts --network localhost",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "local": "yarn workspace @pawledger/hardhat node",
+    "account": "yarn workspace @pawledger/hardhat account",
+    "chain": "yarn workspace @pawledger/hardhat chain",
+    "fork": "yarn workspace @pawledger/hardhat fork",
+    "deploy": "yarn workspace @pawledger/hardhat deploy",
+    "verify": "yarn workspace @pawledger/hardhat verify",
+    "hardhat-verify": "yarn workspace @pawledger/hardhat hardhat-verify",
+    "generate": "yarn workspace @pawledger/hardhat generate",
+    "flatten": "yarn workspace @pawledger/hardhat flatten",
+    "hardhat:lint": "yarn workspace @pawledger/hardhat lint",
+    "hardhat:lint-staged": "yarn workspace @pawledger/hardhat lint-staged",
+    "hardhat:format": "yarn workspace @pawledger/hardhat format",
+    "hardhat:test": "yarn workspace @pawledger/hardhat test",
+    "test": "yarn hardhat:test",
+    "format": "yarn next:format && yarn hardhat:format",
+    "start": "yarn workspace @pawledger/nextjs dev",
+    "next:lint": "yarn workspace @pawledger/nextjs lint",
+    "next:format": "yarn workspace @pawledger/nextjs format",
+    "next:check-types": "yarn workspace @pawledger/nextjs check-types",
+    "next:build": "yarn workspace @pawledger/nextjs build",
+    "next:serve": "yarn workspace @pawledger/nextjs serve",
+    "precommit": "lint-staged",
+    "vercel": "yarn workspace @pawledger/nextjs vercel",
+    "vercel:yolo": "yarn workspace @pawledger/nextjs vercel:yolo"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@chainlink/contracts": "^1.1.0",
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "@nomiclabs/hardhat-waffle": "^2.0.6",
-    "@openzeppelin/contracts": "^5.0.2",
-    "dotenv": "^16.4.5"
-  },
+  "packageManager": "yarn@3.2.3",
   "devDependencies": {
-    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
-    "@nomicfoundation/hardhat-ethers": "^3.0.0",
-    "@nomicfoundation/hardhat-ignition": "^0.15.2",
-    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.0",
-    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
-    "@nomicfoundation/hardhat-verify": "^2.0.0",
-    "@nomicfoundation/ignition-core": "^0.15.2",
-    "@typechain/ethers-v6": "^0.5.0",
-    "@typechain/hardhat": "^9.0.0",
-    "@types/chai": "^4.2.0",
-    "@types/mocha": ">=9.1.0",
-    "ethers": "^6.4.0",
-    "hardhat": "^2.22.3",
-    "hardhat-gas-reporter": "^1.0.8",
-    "solidity-coverage": "^0.8.1",
-    "ts-node": "^10.9.2",
-    "typechain": "^8.3.0",
-    "typescript": "^5.4.5"
+    "lint-staged": "^13.0.3"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "dependencies": {
+    "hardhat": "^2.22.3"
   }
 }
