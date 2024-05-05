@@ -7,4 +7,6 @@ interface IOrganization {
     function addEmployee(Employee memory employee) external;
 
     function removeEmployee(address employee) external;
+
+    //TODO - Add transfer method to return pets to their rightful owners after given scenario.
 }
