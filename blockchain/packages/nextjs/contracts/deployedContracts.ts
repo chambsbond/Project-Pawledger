@@ -6,7 +6,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
-    OrgRegistry: {
+    OrganizationRegistry: {
       address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       abi: [
         {
@@ -30,7 +30,7 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          name: "OrgRegistered",
+          name: "OrganizationRegistered",
           type: "event",
         },
         {
@@ -49,7 +49,7 @@ const deployedContracts = {
               type: "bool",
             },
           ],
-          name: "OrgValiditySet",
+          name: "OrganizationValiditySet",
           type: "event",
         },
         {
@@ -60,7 +60,7 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          name: "canModifyPet",
+          name: "isValidated",
           outputs: [
             {
               internalType: "bool",
@@ -79,7 +79,7 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          name: "registerOrg",
+          name: "registerOrganization",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -97,7 +97,7 @@ const deployedContracts = {
               type: "bool",
             },
           ],
-          name: "setOrgValidity",
+          name: "setOrganizationValidity",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -111,7 +111,7 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "contract OrgRegistry",
+              internalType: "contract OrganizationRegistry",
               name: "orgRegistry",
               type: "address",
             },

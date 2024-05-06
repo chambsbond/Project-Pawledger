@@ -2,10 +2,9 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import { ERC721Enumerable } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { OrgAffilliation } from "../models/OrgAffilliation.sol";
-import { OrgRegistry } from "./OrgRegistry.sol";
+import { OrganizationRegistry } from "./OrganizationRegistry.sol";
 import { IOrganization } from "./IOrganization.sol";
 
 contract Pet is ERC721 {
@@ -20,11 +19,11 @@ contract Pet is ERC721 {
 		address claimee
 	);
 	uint256 private _nextTokenId;
-	OrgRegistry private immutable _orgRegistry;
+	OrganizationRegistry private immutable _orgRegistry;
 
 	mapping(uint256 => OrgAffilliation) _foundClaimMap;
 
-	constructor(OrgRegistry orgRegistry) ERC721("Pet", "PET") {
+	constructor(OrganizationRegistry orgRegistry) ERC721("Pet", "PET") {
 		_orgRegistry = orgRegistry;
 	}
 
@@ -82,7 +81,7 @@ contract Pet is ERC721 {
 
 	modifier onlyValidOrg() {
 		require(
-			_orgRegistry.canModifyPet(IOrganization(msg.sender)),
+			_orgRegistry.isValidated(IOrganization(msg.sender)),
 			"Only a registered user of a validated organization can use this function"
 		);
 		_;

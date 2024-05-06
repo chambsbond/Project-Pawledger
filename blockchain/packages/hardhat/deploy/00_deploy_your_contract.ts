@@ -24,7 +24,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
 
   console.log(deployer)
-  await deploy("OrgRegistry", {
+  await deploy("OrganizationRegistry", {
     from: deployer,
     // Contract constructor arguments
     args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
@@ -34,7 +34,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
-  const orgRegistry = await hre.ethers.getContract<Contract>("OrgRegistry", deployer);
+  const orgRegistry = await hre.ethers.getContract<Contract>("OrganizationRegistry", deployer);
 
   await deploy("Pet", {
     from: deployer,
@@ -55,4 +55,4 @@ export default deployYourContract;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deployYourContract.tags = ["OrgRegistry"];
+deployYourContract.tags = ["OrgRegistry", "PET"];
