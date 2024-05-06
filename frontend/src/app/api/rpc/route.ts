@@ -1,9 +1,9 @@
-import { arbitrumSepolia } from "@alchemy/aa-core";
 import { NextResponse } from "next/server";
+import { polygonAmoy } from "@alchemy/aa-core";
 
 export async function POST(req: Request) {
   // if you want to handle other or multiple chains, you can change this line
-  const rpcUrl = arbitrumSepolia.rpcUrls.alchemy.http[0];
+  const rpcUrl = polygonAmoy.rpcUrls.alchemy.http[0];
   const apiKey = process.env.ALCHEMY_API_KEY;
 
   if (apiKey == null) {

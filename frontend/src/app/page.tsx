@@ -22,7 +22,7 @@ export default function Home() {
           ></div>
         </div>
       ) : // the account might be reconnecting, in which case the account is null, but we have the address
-      user != null && account != null && !address ? (
+      user != null && account != null && address ? (
         <ProfileCard />
       ) : (
         <LogInCard />
