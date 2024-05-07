@@ -5,7 +5,7 @@ import "../enums/OrganizationType.sol";
 import "./organizationImpl/AnimalShelter.sol";
 import "../models/Employee.sol";
 
-contract MyTokenFactory {
+contract OrganizationFactory {
 	address[] public _deployedOrganizations;
 
 	function createOrganization(
