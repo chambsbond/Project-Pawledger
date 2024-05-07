@@ -2,6 +2,7 @@
   "name": "@pawledger/hardhat",
   "version": "0.0.1",
   "scripts": {
+    "local": "yarn hardhat node --network hardhat",
     "account": "hardhat run scripts/listAccount.ts",
     "chain": "hardhat node --network hardhat --no-deploy",
     "compile": "hardhat compile",

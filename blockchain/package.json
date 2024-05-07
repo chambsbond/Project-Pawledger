@@ -9,7 +9,7 @@
     ]
   },
   "scripts": {
-    "local": "yarn workspace @pawledger/hardhat node",
+    "local": "yarn workspace @pawledger/hardhat local",
     "account": "yarn workspace @pawledger/hardhat account",
     "chain": "yarn workspace @pawledger/hardhat chain",
     "fork": "yarn workspace @pawledger/hardhat fork",

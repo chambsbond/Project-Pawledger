@@ -6,9 +6,103 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
-    OrgRegistry: {
+    OrganizationRegistry: {
       address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      abi: [],
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "admin",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "contract IOrganization",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "OrganizationRegistered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "contract IOrganization",
+              name: "",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          name: "OrganizationValiditySet",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "contract IOrganization",
+              name: "org",
+              type: "address",
+            },
+          ],
+          name: "isValidated",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "contract IOrganization",
+              name: "org",
+              type: "address",
+            },
+          ],
+          name: "registerOrganization",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "contract IOrganization",
+              name: "org",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "orgValidity",
+              type: "bool",
+            },
+          ],
+          name: "setOrganizationValidity",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
       inheritedFunctions: {},
     },
     Pet: {
@@ -17,8 +111,8 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "orgRegistryAddress",
+              internalType: "contract OrganizationRegistry",
+              name: "orgRegistry",
               type: "address",
             },
           ],
