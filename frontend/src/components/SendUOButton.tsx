@@ -4,7 +4,7 @@ import {
 } from "@alchemy/aa-alchemy/react";
 import { useState } from "react";
 import { Address } from "viem";
-import { arbitrumSepolia } from "viem/chains";
+import { polygonAmoy } from "viem/chains";
 
 export const SendUOButton = () => {
   const [vitalik] = useState<Address>(
@@ -59,7 +59,7 @@ export const SendUOButton = () => {
         </button>
       ) : (
         <a
-          href={`${arbitrumSepolia.blockExplorers.default.url}/tx/${sendUserOperationResult.hash}`}
+          href={`${polygonAmoy.blockExplorers.default.url}/tx/${sendUserOperationResult.hash}`}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full transform rounded-lg bg-[#363FF9] p-3 text-center font-semibold text-[#FBFDFF] transition duration-500 ease-in-out hover:scale-105 dark:disabled:bg-[#4252C5]"
