@@ -13,7 +13,7 @@
     "@alchemy/aa-alchemy": "^3.12.0",
     "@alchemy/aa-core": "^3.12.0",
     "@tanstack/react-query": "5.28.9",
-    "viem": "2.8.6"
+    "viem": "2.8.6",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.11",
