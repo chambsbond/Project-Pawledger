@@ -36,10 +36,11 @@ contract Pet is ERC721 {
 	}
 
 	function mint(
-		OrgAffilliation memory orgAff,
+		IOrganization org,
+        address claimee,
 		address prospectOwner
 	) public onlyValidOrg returns (uint256) {
-		emit MintClaimMade(orgAff.org, orgAff.claimee, prospectOwner);
+		emit MintClaimMade(org, claimee, prospectOwner);
 		uint256 tokenId = _nextTokenId++;
 
 		//TODO validate prospect owner can recieve prior to this call
@@ -50,14 +51,15 @@ contract Pet is ERC721 {
 
 	function foundPetClaim(
 		uint256 tokenId,
-		OrgAffilliation memory orgAff
+		IOrganization org,
+        address claimee
 	) public onlyValidOrg {
-		emit FoundClaimMade(tokenId, orgAff.org, orgAff.claimee);
+		emit FoundClaimMade(tokenId, org, claimee);
 
 		_foundClaimMap[tokenId] = orgAff;
 	}
 
-	//may want to enable anyone from the same org to be able to withdraw a claim
+	//TODO may want to enable anyone from the same org to be able to withdraw a claim
 	function withdrawClaim(
 		uint256 tokenId,
 		address claimee
