@@ -1,11 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "../models/Employee.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 interface IOrganization is IERC721Receiver {
-	function addEmployee(Employee memory employee) external;
+	function addEmployee(address employee) external;
 
     function removeEmployee(address employeeAddress) external;
 

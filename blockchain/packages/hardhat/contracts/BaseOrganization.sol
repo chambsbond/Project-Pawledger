@@ -2,30 +2,43 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "./IOrganization.sol";
-import "../models/Employee.sol";
 
 abstract contract BaseOrganization is IOrganization {
+	string public _name;
 	address private _owner;
-	mapping(address => Employee) private _employees;
+	address public immutable _pet;
+	mapping(address => bool) private _employees;
 
-	constructor(address owner, Employee[] memory employees) {
+	constructor(address pet, address owner, string memory name) {
 		_owner = owner;
-		for (uint i = 0; i < employees.length; i++) {
-			_employees[employees[i].walletAddress] = employees[i];
-		}
+		_employees[owner] = true;
+		_pet = pet;
+		_name = name;
 	}
 
-	function addEmployee(Employee memory employee) external override {
-		_employees[employee.walletAddress] = employee;
+	function addEmployee(address employee) onlyOwner() public {
+		_employees[employee] = true;
 	}
 
-	function removeEmployee(address employeeAddress) external override {
+	function removeEmployee(address employeeAddress) onlyOwner() public {
 		delete _employees[employeeAddress];
 	}
 
 	function isEmployee(
 		address employeeAddress
-	) external view override returns (bool) {
-		return _employees[employeeAddress].walletAddress != address(0x0);
+	) public view returns (bool) {
+		return _employees[employeeAddress];
+	}
+
+	modifier onlyEmployee() {
+		require(_employees[msg.sender],
+			"Must be an employee to use this function");
+		_;
+	}
+
+	modifier onlyOwner() {
+		require(msg.sender == _owner,
+			"Must be the owner of this organization to use this function");
+		_;
 	}
 }

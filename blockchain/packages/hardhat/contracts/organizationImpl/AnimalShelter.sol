@@ -1,17 +1,23 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
+// import "../BaseOrganization.sol";
 import "../BaseOrganization.sol";
+import "../Pet.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "../../models/OrgAffilliation.sol";
+import "../IOrganization.sol";
 
 contract AnimalShelter is BaseOrganization {
-	string public _name;
-
 	constructor(
-		string memory name,
+		Pet pet,
 		address owner,
-		Employee[] memory employees
-	) BaseOrganization(owner, employees) {
-		_name = name;
+		string memory name
+	) BaseOrganization(address(pet), owner, name) {
+	}
+
+	function registerAnimal(address prospectiveOwner) public onlyEmployee() returns(uint256) {
+		return Pet(_pet).mint(OrgAffilliation({org: address(this), claimee: msg.sender}), prospectiveOwner);
 	}
 
 	function onERC721Received(
@@ -19,7 +25,7 @@ contract AnimalShelter is BaseOrganization {
 		address from,
 		uint256 tokenId,
 		bytes calldata data
-	) external returns (bytes4) {
+	) public returns (bytes4) {
 		return IERC721Receiver.onERC721Received.selector;
 	}
 }

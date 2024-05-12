@@ -1,6 +1,7 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
+import { ethers } from "hardhat";
 
 /**
  * Deploys a contract named "YourContract" using the deployer account and
@@ -20,21 +21,33 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     You can run the `yarn account` command to check your balance in every network.
   */
   const { deployer } = await hre.getNamedAccounts();
-  const { deploy } = hre.deployments;
+  const { deploy, execute } = hre.deployments;
 
 
   console.log(deployer)
-  await deploy("OrganizationRegistry", {
+  
+  const admin = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+
+  await deploy("OrganizationFactory", {
     from: deployer,
-    // Contract constructor arguments
-    args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
+    args: [admin],
     log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
-    autoMine: true,
+    autoMine: true
   });
 
+  const orgFactory = await hre.ethers.getContract<Contract>("OrganizationFactory", deployer);
+  
+  await deploy("OrganizationRegistry", {
+    from: deployer,
+    args: [admin, orgFactory.target],
+    log: true,
+    autoMine: true
+  })
+  
   const orgRegistry = await hre.ethers.getContract<Contract>("OrganizationRegistry", deployer);
+  
+  await execute("OrganizationFactory",{from: admin},"setRegistry", orgRegistry.target)
+
 
   await deploy("Pet", {
     from: deployer,
@@ -45,10 +58,6 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
   });
-
-  
-  //const orgRegistry = await hre.ethers.getContract<Contract>("OrgRegistry", deployer);
-  // console.log("👋 Initial greeting:", await pet.greeting());
 };
 
 export default deployYourContract;
