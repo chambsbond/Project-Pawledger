@@ -5,9 +5,10 @@ import { ProfileCard } from "@/components/ProfileCard";
 import { useAccount, useUser } from "@alchemy/aa-alchemy/react";
 import styles from "./page.module.css"
 import Stack from '@mui/material/Stack';
-import Header from "@/components/Header"
+import Header from "@/components/HomePage/Header"
 import Head from "next/head";
 import { Box, Card, CircularProgress, Container, CssBaseline } from "@mui/material";
+import { HomePage } from "@/components/HomePage/HomePage";
 
 export default function Home() {
   const { account, address, isLoadingAccount } = useAccount({
@@ -22,13 +23,14 @@ export default function Home() {
 
         <Box height="100vh" display="flex" flexDirection="column">
           {/*the account might be reconnecting, in which case the account is null, but we have the address */}
+          {/*
           {user != null && account != null && address ? (
-            <Stack direction="column" display="flex">
-              <Header />
-            </Stack>
+            <HomePage/>
           ) : (
             <LogInCard />
           )}
+          */}
+          <HomePage/>
         </Box>
       </Container>
     </>

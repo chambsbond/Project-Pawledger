@@ -1,0 +1,21 @@
+@import '../../styles/colors.module';
+
+.container {
+  min-height: 97vh;
+  background-color: $warm-white;
+}
+
+.tile {
+  width: 100%;
+  height: 100%;
+  padding: 10%;
+  margin: 10%;
+  background-color: $warm-white;
+  border-color: #000000;
+  align-items: right;
+}
+
+.tile_text {
+  text-align: center;
+  font-size:3rem;
+}
