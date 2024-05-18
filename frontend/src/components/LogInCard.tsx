@@ -1,18 +1,25 @@
 "use client";
 
-import { useAccount, useAuthenticate } from "@alchemy/aa-alchemy/react";
+import { useAccount, useAuthenticate, useUser } from "@alchemy/aa-alchemy/react";
 import { Box, Button, Card, CircularProgress, Paper, Stack, TextField, Typography } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from 'next/image';
+import { useRouter } from "next/navigation";
 
 export const LogInCard = () => {
   const [email, setEmail] = useState<string>("");
-
   const { authenticate, isPending: isAuthenticatingUser } = useAuthenticate();
-  const { isLoadingAccount } = useAccount({
+  const { account, address, isLoadingAccount } = useAccount({
     type: "MultiOwnerModularAccount",
-    skipCreate: true,
   });
+  const user = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user != null && account != null && address) {
+      router.push('/dashboard')
+    }
+  }, [account, user, address])
 
   return (
     <Box display="flex" height="100vh" flexDirection="column" justifyContent="center" alignItems="center" >
@@ -27,7 +34,7 @@ export const LogInCard = () => {
                   height={100}
                   width={125}
                 />
-                <Typography fontSize={30} variant="h1" sx={{fontWeight:"bold"}}>Welcome To Pawledger!</Typography>
+                <Typography fontSize={30} variant="h1" sx={{ fontWeight: "bold" }}>Welcome To Pawledger!</Typography>
               </Stack>
               {isAuthenticatingUser || isLoadingAccount ?
                 <Stack direction="column" alignItems="center" spacing={3}>
