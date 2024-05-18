@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PawledgerAPI.Entities
 {
@@ -6,5 +7,6 @@ namespace PawledgerAPI.Entities
     {
         [Key]
         public string TokenId { get; set; }
+        public DateTime CreatedTs { get; set; }
     }
 }

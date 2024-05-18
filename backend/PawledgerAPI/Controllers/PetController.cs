@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PawledgerAPI.Models;
 using PawledgerAPI.Services;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PawledgerAPI.Controllers
 {
-    public class PetController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PetController : ControllerBase
     {
         private readonly ILogger<PetController> _logger;
         private readonly BlockChainService _blockChainService;
@@ -22,7 +19,8 @@ namespace PawledgerAPI.Controllers
 
         }
 
-        public Task Index()
+        [HttpGet("eventLogs")]
+        public Task GetEventLogs()
         {
             return _blockChainService.getEventLogs();
         }

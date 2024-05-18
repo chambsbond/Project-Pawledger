@@ -48,3 +48,7 @@ C:\repos\Project-Pawledger\backend\PawledgerAPI\obj\Debug\net5.0\PawledgerAPI.dl
 C:\repos\Project-Pawledger\backend\PawledgerAPI\obj\Debug\net5.0\ref\PawledgerAPI.dll
 C:\repos\Project-Pawledger\backend\PawledgerAPI\obj\Debug\net5.0\PawledgerAPI.pdb
 C:\repos\Project-Pawledger\backend\PawledgerAPI\obj\Debug\net5.0\PawledgerAPI.genruntimeconfig.cache
+C:\repos\Project-Pawledger\backend\PawledgerAPI\bin\Debug\net5.0\Humanizer.dll
+C:\repos\Project-Pawledger\backend\PawledgerAPI\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\repos\Project-Pawledger\backend\PawledgerAPI\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+C:\repos\Project-Pawledger\backend\PawledgerAPI\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll

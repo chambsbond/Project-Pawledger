@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using System;
 
 namespace PawledgerAPI.Migrations
 {
@@ -13,10 +14,10 @@ namespace PawledgerAPI.Migrations
                 columns: table => new
                 {
                     tokenId = table.Column<string>(type: "text", nullable: false),
-                    medicalHistoryId = table.Column<int>(type: "integer", nullable: false)
+                    medicalHistoryId = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityAlwaysColumn),
-                    eventType = table.Column<string>(type: "text"),
-                    eventValue = table.Column<string>(type: "text")
+                    responseBytes = table.Column<string>(type: "text"),
+                    created_ts = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValue: DateTime.Now)
                 },
                 constraints: table =>
                 {
@@ -32,6 +33,13 @@ namespace PawledgerAPI.Migrations
                 principalColumn: "tokenId",
                 onDelete: ReferentialAction.Restrict);
 
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "MEDICAL_HISTORY",
+                schema: "pawschema");
         }
     }
 }

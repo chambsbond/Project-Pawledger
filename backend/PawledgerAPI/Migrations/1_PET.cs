@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using System;
 
 namespace PawledgerAPI.Migrations
 {
@@ -15,7 +16,8 @@ namespace PawledgerAPI.Migrations
                 schema: "pawschema",
                 columns: table => new
                 {
-                    tokenId = table.Column<string>(type: "text", nullable: false)
+                    tokenId = table.Column<string>(type: "text", nullable: false),
+                    created_ts = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValue: DateTime.Now)
                 },
                 constraints: table =>
                 {

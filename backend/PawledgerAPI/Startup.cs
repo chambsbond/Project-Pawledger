@@ -21,7 +21,7 @@ namespace PawledgerAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("StockContext")));
+            options.UseNpgsql(Configuration.GetConnectionString("PawLedgerDb")));
             services.AddControllers();
         }
 
@@ -47,9 +47,7 @@ namespace PawledgerAPI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
     }
