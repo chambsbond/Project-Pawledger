@@ -1,33 +1,35 @@
 "use client"
 
-import IFeature from "@/pages/Features/IFeature"
+import IFeature from "@/app/dashboard/IFeature"
 import { Card, CardActionArea, Stack, Typography } from "@mui/material"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-export const HomeTile = ({ feature }: { feature: IFeature }) => {
+export const HomeTile = ({ feature }: { feature: IFeature | undefined }) => {
     const router = useRouter();
 
     return (
         <Card>
-            <CardActionArea onClick={() => router.push(`/dashboard/${feature.name}`)}>
+            <CardActionArea onClick={() => router.push(`/dashboard/${feature?.name}`)}>
                 <Stack
                     minHeight="40vh"
                     direction="column"
                     display="flex"
                     justifyContent="center"
-                    alignItems="center">
+                    alignItems="center"
+                    spacing={1}>
                     <Typography gutterBottom variant="h3" component="div">
-                        {feature.displayName}
+                        {feature?.displayName}
                     </Typography>
                     <Typography variant="subtitle1" color="text.secondary">
-                        {feature.description}
+                        {feature?.description}
                     </Typography>
-                    <Image
-                        src={feature.image}
-                        alt="tile alt"
-                        width={150}
-                        height={150} />
+                    {feature?.image &&
+                        <Image
+                            src={feature.image}
+                            alt="tile alt"
+                            width={150}
+                            height={150} />}
                 </Stack>
             </CardActionArea>
         </Card>

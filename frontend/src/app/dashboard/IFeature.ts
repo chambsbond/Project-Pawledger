@@ -1,5 +1,5 @@
 export default interface IFeature {
-    scope : string,
+    scope : string[],
     displayName : string,
     name : string,
     description : string,

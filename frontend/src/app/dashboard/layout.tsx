@@ -1,7 +1,7 @@
 "use client"
 import Header from "@/components/Header";
 import { ArrowBack } from "@mui/icons-material";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -13,11 +13,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Stack direction="column" display="flex">
                 <Header></Header>
                 {pathName !== "/dashboard" &&
-                    <Button
-                        startIcon={<ArrowBack />}
-                        onClick={() => router.back()}>
-                        Back
-                    </Button>}
+                    <Box padding={3} style={{fontSize: '2rem'}} >
+                        <Button                            
+                            style={{fontSize: 'inherit'}}
+                            onClick={() => router.back()}>
+                            <ArrowBack fontSize="inherit" />
+                            <Typography 
+                                padding={1}
+                                variant="button"
+                                display="block"
+                                fontSize="inherit">
+                                    Back
+                            </Typography>
+                        </Button>
+                    </Box>}
                 {children}
             </Stack>
         </Box>
