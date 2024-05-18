@@ -20,11 +20,7 @@ contract OrganizationRegistry {
     function getOrganizationFactory() public view returns (OrganizationFactory) {
         return _factory;
     }
-
-    function getOrgValidity(IOrganization org) public view returns(bool) {
-        return _orgs[org];
-    }
-
+    
 	//Keep the type IOrg for validation of type
 	function registerOrganization(IOrganization org) factoryOnly() public {
         emit OrganizationRegistered(org);

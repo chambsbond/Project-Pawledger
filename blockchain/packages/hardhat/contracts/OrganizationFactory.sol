@@ -25,6 +25,10 @@ contract OrganizationFactory {
 		_pet = pet;
 	}
 
+	function getPet() public view returns(address) {
+		return address(_pet);
+	}
+
 	function getRegistry() public view returns(address){
 		return address(_registry);
 	}
@@ -42,8 +46,9 @@ contract OrganizationFactory {
 			AnimalShelter org = new AnimalShelter(_pet, owner, name);
 			_registry.registerOrganization(org);
 			_deployedOrganizations.push(address(org));
+			return address(org);
 		}
-		return address(0);
+		revert("Org type not found");
 	}
 
 	modifier adminOnly() {

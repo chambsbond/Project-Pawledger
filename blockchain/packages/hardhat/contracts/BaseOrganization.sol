@@ -16,29 +16,35 @@ abstract contract BaseOrganization is IOrganization {
 		_name = name;
 	}
 
-	function addEmployee(address employee) onlyOwner() public {
+	function addEmployee(address employee) public onlyOwner {
 		_employees[employee] = true;
 	}
 
-	function removeEmployee(address employeeAddress) onlyOwner() public {
+	function removeEmployee(address employeeAddress) public onlyOwner {
 		delete _employees[employeeAddress];
 	}
 
-	function isEmployee(
-		address employeeAddress
-	) public view returns (bool) {
+	function isOwner(address ownerAddress) public view returns (bool) {
+		return _owner == ownerAddress;
+	}
+
+	function isEmployee(address employeeAddress) public view returns (bool) {
 		return _employees[employeeAddress];
 	}
 
 	modifier onlyEmployee() {
-		require(_employees[msg.sender],
-			"Must be an employee to use this function");
+		require(
+			_employees[msg.sender],
+			"Must be an employee to use this function"
+		);
 		_;
 	}
 
 	modifier onlyOwner() {
-		require(msg.sender == _owner,
-			"Must be the owner of this organization to use this function");
+		require(
+			msg.sender == _owner,
+			"Must be the owner of this organization to use this function"
+		);
 		_;
 	}
 }

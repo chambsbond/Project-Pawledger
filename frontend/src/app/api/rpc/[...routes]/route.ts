@@ -7,7 +7,7 @@ export async function POST(
   // const apiUrl = "https://arb-sepolia.g.alchemy.com/v2/ktAimmXFK-XpEJSjR5wvccGBvFT-RQsU";
   const apiUrl = "https://api.g.alchemy.com";
   const apiKey = process.env.ALCHEMY_API_KEY;
-  console.log(apiKey);
+
 
   if (apiKey == null) {
     return NextResponse.json(

@@ -8,7 +8,7 @@ import * as React from 'react';
 import { Avatar, Tooltip } from '@mui/material';
 
 
-export default function Header() {
+export default function Header({orgName} : {orgName : string | undefined}) {
     return (
         <AppBar position="static">
             <Toolbar>
@@ -32,7 +32,7 @@ export default function Header() {
                     component="div"
                     sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                 >
-                    Pawledger
+                   {orgName ? orgName : "Pawledger"}
                 </Typography>
 
                 <Tooltip title="Open settings">
