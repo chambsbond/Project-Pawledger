@@ -26,11 +26,11 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   console.log(deployer)
   
-  const admin = "0xecc54d3239eC5bEe2b3d029157daF7fD3262A486"
+  const admin = "0xa19ee4fee8132E0038CA343D2e41C54EA58c4510"
 
   await deploy("OrganizationFactory", {
     from: deployer,
-    args: [admin],
+    args: [],
     log: true,
     autoMine: true
   });
@@ -46,7 +46,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   
   const orgRegistry = await hre.ethers.getContract<Contract>("OrganizationRegistry", deployer);
   
-  await execute("OrganizationFactory",{from: admin},"setRegistry", orgRegistry.target);
+  await execute("OrganizationFactory",{from: deployer},"setRegistry", orgRegistry.target);
 
   await deploy("Pet", {
     from: deployer,
@@ -60,7 +60,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   const pet = await hre.ethers.getContract<Contract>("Pet", deployer);
 
-  await execute("OrganizationFactory",{from: admin},"setPet", pet.target);
+  await execute("OrganizationFactory",{from: deployer},"setPet", pet.target);
 };
 
 
