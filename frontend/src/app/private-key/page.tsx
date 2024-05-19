@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useSigner } from "@alchemy/aa-alchemy/react";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useSigner, } from "@alchemy/aa-alchemy/react";
+import { useState } from "react";
+import { ethers } from "ethers";
 
 const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
 const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
@@ -22,48 +22,37 @@ iframe {
 `;
 
 export default function SignupLoginComponent() {
-  const [email, setEmail] = useState<string>("");
+  const [mnemonic, setMnemonic] = useState<string>("");
   const signer = useSigner();
 
-  // we are using react-query to handle loading states more easily, but feel free to use w/e state management library you prefer
-  const { mutate: loginOrSignup, isLoading } = useMutation({
-    mutationFn: (email: string) =>
-      signer.authenticate({ type: "email", email }),
-  });
-
-  async function dumpWallet() {
+  function dumpWallet() {
     signer.exportWallet({
       iframeContainerId: TurnkeyExportWalletContainerId,
       iframeElementId: TurnkeyExportWalletElementId,
-    })
+    });
   }
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("bundle")) {
-      // this will complete email auth
-      signer
-        .authenticate({ type: "email", bundle: urlParams.get("bundle")! })
-        // redirect the user or do w/e you want once the user is authenticated
-        .then(() => (window.location.href = "/"));
+  async function handleDecrypt() {
+    const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
 
-    }
-  }, [signer]);
+    console.log("PRIVATE: " + hdNode.privateKey);
+    console.log("PUBLIC: " + hdNode.publicKey);
+    console.log("ADDRESS: " + (await hdNode.getAddress()).toString());
+  }
 
   // The below view allows you to collect the email from the user
   return (
     <>
-      {!isLoading && (
-        <div>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button onClick={() => loginOrSignup(email)}>Submit</button>
-          <button onClick={() => dumpWallet()}>Print Stuff</button>
-        </div>
-      )}
+      <div>
+        <button onClick={() => dumpWallet()}>View Seed Phrase</button>
+        <p>Copy seed phrase here please we wont do anything bad pinky promise :)</p>
+        <input
+          type="text"
+          value={mnemonic}
+          onChange={(e) => setMnemonic(e.target.value)}
+        />
+        <button onClick={() => handleDecrypt()}>Decrypt Message</button>
+      </div>
       <div
         className="w-full"
         style={{ display: "block" }}
@@ -73,4 +62,4 @@ export default function SignupLoginComponent() {
       </div>
     </>
   );
-};
+}
