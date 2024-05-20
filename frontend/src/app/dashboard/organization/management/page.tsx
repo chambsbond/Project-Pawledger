@@ -1,18 +1,20 @@
 "use client"
-import { Org } from "@/store/slices/OrgSlice";
+import { fetchOrgInfo, isOrgRegistryAdmin, Org, setOrg } from "@/store/slices/OrgSlice";
 import { RootState } from "@/store/store";
-import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
-import { Button, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
+import { Button, CircularProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Address, encodeFunctionData } from "viem";
 import OrgRegistryAmoy from "../../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/OrganizationRegistry.json";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 export default function OrgManagementPage() {
     const router = useRouter();
-    const user = useUser();
-    const orgs = useSelector<RootState>(state => state.orgContract.orgs) as Org[];
+    const dispatch = useAppDispatch();
+    const orgs = useAppSelector((state: RootState) => state.orgContract.orgs) as Org[];
+    const [updatedOrgIndex, setUpdatedOrgIndex] = useState<number | undefined>();
 
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
@@ -32,13 +34,12 @@ export default function OrgManagementPage() {
     } = useSendUserOperation({ client, waitForTxn: true });
 
     const validateOrg = async (orgIndex: number) => {
-        console.log(orgs[orgIndex].address);
         const callData = encodeFunctionData({
             abi: OrgRegistryAmoy.abi,
             functionName: "setOrganizationValidity",
             args: [orgs[orgIndex].address, true]
         });
-    
+        setUpdatedOrgIndex(orgIndex);
         await sendUserOperation({
             uo: {
                 target: OrgRegistryAmoy.address as Address,
@@ -47,19 +48,25 @@ export default function OrgManagementPage() {
         })
     }
 
+    useEffect(() => {
+        const fetchUpdate = async () => {
+            if (client?.account.address) {
+                await dispatch(fetchOrgInfo(client?.account.address))
+            }
+        }
 
-    useEffect(() =>{
-
-    }, [orgs, sendUserOperationResult])
+        if (sendUserOperationResult)
+            fetchUpdate();
+    }, [sendUserOperationResult])
 
     return (
         <Stack direction="column" padding={5} spacing={2}>
-            <Button 
+            <Button
                 variant="contained"
-                sx={{width: "25%"}}
+                sx={{ width: "25%" }}
                 onClick={() => router.push("/dashboard/organization/new")}>
-                    Add Organization
-                </Button>
+                Add Organization
+            </Button>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -76,8 +83,19 @@ export default function OrgManagementPage() {
                                 key={index}>
                                 <TableCell>{org?.address}</TableCell>
                                 <TableCell>{org.name}</TableCell>
-                                <TableCell>{String(org.validated)}</TableCell>
-                                <TableCell><Button variant="contained" onClick={(event) => validateOrg(index)}>Validate</Button></TableCell>
+                                <TableCell>{isSendingUserOperation && index == updatedOrgIndex
+                                    ? <CircularProgress></CircularProgress> : String(org.validated)}
+                                </TableCell>
+                                <TableCell>
+                                    {!org.validated &&
+                                        <Button
+                                            variant="contained"
+                                            onClick={async () => { await validateOrg(index) }}
+                                            disabled={isSendingUserOperation}>
+                                            Validate
+                                        </Button>
+                                    }
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

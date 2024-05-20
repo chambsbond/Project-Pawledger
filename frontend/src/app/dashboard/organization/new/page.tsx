@@ -4,7 +4,7 @@ import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Se
 
 import OrgFactoryContractAmoy from "../../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/OrganizationFactory.json";
 //import OrgFactoryContractLocal from "../../../../../../blockchain/packages/hardhat/deployments/localhost/OrganizationFactory.json";
-import { Address, decodeFunctionData, decodeFunctionResult, encodeFunctionData } from "viem";
+import { Address, encodeFunctionData } from "viem";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addOrg, fetchOrgInfo } from "@/store/slices/OrgSlice";
@@ -39,7 +39,7 @@ export default function CreateOrg() {
         const callData = encodeFunctionData({
             abi: OrgFactoryContractAmoy.abi,
             functionName: "createOrganization",
-            args: [orgType, orgName, user?.address]
+            args: [orgType, orgName, client?.account.address]
         });
 
         await sendUserOperation({
@@ -52,9 +52,11 @@ export default function CreateOrg() {
 
     useEffect(() => {
         console.log("success", sendUserOperationResult);
-        if (sendUserOperationResult) {
-            dispatch(fetchOrgInfo(user));
-            router.back();
+        if (client?.account.address) {
+            if (sendUserOperationResult) {
+                dispatch(fetchOrgInfo(client?.account.address));
+                router.back();
+            }
         }
     }, [sendUserOperationResult])
 

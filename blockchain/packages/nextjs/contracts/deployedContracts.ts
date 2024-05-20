@@ -881,7 +881,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0xe3eD35F079bfC17B4D2486CCcf3ca571ac1E5f5c",
+      address: "0x50c318E485d475d2fc5B29D41ae91793b6C2Fe2B",
       abi: [
         {
           inputs: [
@@ -1017,7 +1017,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0xf03b4d9FbfDa3d9EaD7887a7772eC2B69AD2Cc66",
+      address: "0x780c0A4A87310A757F0E1cD334Efd55f9e7A6a58",
       abi: [
         {
           inputs: [

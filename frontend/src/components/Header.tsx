@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Avatar, MenuItem, Select, Stack, Tooltip } from '@mui/material';
-import { memberShipSelector, setOrg } from '@/store/slices/OrgSlice';
+import { memberShipSelector, setSelectedOrgIndex } from '@/store/slices/OrgSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -47,7 +47,7 @@ export default function Header() {
                         {orgs != undefined && orgs?.length > 1 &&
                             <Select
                                 defaultValue={0}
-                                onChange={(event) => dispatch(setOrg(event.target.value as number))}
+                                onChange={(event) => dispatch(setSelectedOrgIndex(event.target.value as number))}
                                 sx={{ color: "white", borderColor: "white" }}
                             >
                                 {orgs.map((org, index) =>

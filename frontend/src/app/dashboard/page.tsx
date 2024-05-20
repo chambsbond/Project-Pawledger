@@ -13,7 +13,6 @@ export default function DashboardPage() {
     const [scopes, setScopes] = useState<string[]>([]);
 
     useEffect(() => {
-        console.log(orgSelected);
         // debugger;
         if (orgs.length > 0) {
             if (orgs[orgSelected].type === OrgType.Registry) {

@@ -26,7 +26,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   console.log(deployer)
   
-  const admin = "0xa19ee4fee8132E0038CA343D2e41C54EA58c4510"
+  const admin = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3"
 
   await deploy("OrganizationFactory", {
     from: deployer,

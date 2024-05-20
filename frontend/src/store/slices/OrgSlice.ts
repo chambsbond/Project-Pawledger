@@ -7,6 +7,7 @@ import OrgRegistryAmoy from "../../../../blockchain/packages/hardhat/deployments
 import { ethers } from 'ethers';
 import { UseUserResult } from '@alchemy/aa-alchemy/react';
 import { RootState } from '../store';
+import { Address } from 'viem';
 
 export type Roles = "Member" | "Owner" | "Unaffiliated";
 
@@ -39,7 +40,7 @@ const initialState: OrgState = {
 
 export const fetchOrgInfo = createAsyncThunk(
     'orgs/membership',
-    async (user: UseUserResult) => {
+    async (client: Address) => {
         const orgFactoryAddress = OrgFactoryContractAmoy?.address;
         const orgRegistryAddress = OrgRegistryAmoy?.address;
         const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
@@ -60,23 +61,24 @@ export const fetchOrgInfo = createAsyncThunk(
         for (var org of orgContracts) {
             const orgContract = new ethers.Contract(org, OrgContractCompile.abi, provider);
             let role: Roles = "Unaffiliated";
-            const isValidOrg = await registryContract.isValidated(org);
-            console.log('res', isValidOrg)
-            const isOwner = await orgContract.isOwner(user?.address);
-            const isMember = await orgContract.isEmployee(user?.address);
-            const name = await orgContract._name();
+            const isValidOrgPromise = registryContract.isValidated(org);
+            const isOwnerPromise = orgContract.isOwner(client);
+            const isMemberPromise = orgContract.isEmployee(client);
+            const namePromise = orgContract._name();
 
-            if(isOwner)
+            await Promise.all([isValidOrgPromise, isOwnerPromise, isMemberPromise, namePromise]);
+
+            if(await isOwnerPromise)
                 role = "Owner"
-            else if(isMember)
+            else if(await isMemberPromise)
                 role = "Member"
 
             orgMembership.push({
-                name: name,
+                name: await namePromise,
                 role: role,
                 type: OrgType.AnimalShelter,
                 address: org,
-                validated: isValidOrg
+                validated: await isValidOrgPromise
             });
         }
         return orgMembership;
@@ -85,13 +87,13 @@ export const fetchOrgInfo = createAsyncThunk(
 
 export const isOrgRegistryAdmin = createAsyncThunk(
     'orgs/registry/isAdmin',
-    async (user: UseUserResult) => {
+    async (client: Address) => {
         const orgRegistryAddress = OrgRegistryAmoy?.address;
         const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
         const registryContract = new ethers.Contract(orgRegistryAddress,
             OrgRegistryAmoy.abi, provider);
 
-        return await registryContract.isAdmin(user?.address);
+        return await registryContract.isAdmin(client);
     }
 )
 
@@ -109,8 +111,11 @@ export const orgContractSlice = createSlice({
     name: 'orgContract',
     initialState,
     reducers: {
-        setOrg: (state, action) => {
+        setSelectedOrgIndex: (state, action) => {
             state.selectedOrg = action.payload;
+        },
+        setOrg: (state, action) => {
+            state.orgs[action.payload.index] = action.payload.org;
         },
         addOrg: (state, action) => {
             state.orgs.push(action.payload);
@@ -122,7 +127,6 @@ export const orgContractSlice = createSlice({
                 if(!state.orgs.some(orgInc => orgInc.address == org.address))
                     state.orgs.push(org);
             });
-            console.log(state.orgs)
         });
         builder.addCase(isOrgRegistryAdmin.fulfilled, (state, action) => {
             if (action.payload == true && !state.orgs.some(orgInc => orgInc.address == OrgRegistryAmoy?.address)) {
@@ -138,7 +142,7 @@ export const orgContractSlice = createSlice({
     }
 })
 
-export const { setOrg, addOrg } = orgContractSlice.actions;
+export const { setOrg, addOrg, setSelectedOrgIndex } = orgContractSlice.actions;
 
 const selectedOrg = (state : RootState) => (state.orgContract.selectedOrg)
 

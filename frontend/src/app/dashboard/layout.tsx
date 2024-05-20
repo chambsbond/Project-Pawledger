@@ -4,7 +4,7 @@ import { ArrowBack } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from "react";
-import { useUser } from "@alchemy/aa-alchemy/react";
+import { useSmartAccountClient } from "@alchemy/aa-alchemy/react";
 import { fetchOrgInfo, isOrgRegistryAdmin } from "@/store/slices/OrgSlice";
 import { useAppDispatch } from "@/store/hooks";
 
@@ -12,14 +12,25 @@ import { useAppDispatch } from "@/store/hooks";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathName = usePathname();
     const router = useRouter();
-    const user = useUser();
     const dispatch = useAppDispatch();
 
+    const { client } = useSmartAccountClient({
+        type: "MultiOwnerModularAccount",
+        gasManagerConfig: {
+            policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
+        },
+        opts: {
+            txMaxRetries: 20,
+        },
+    });
+
     useEffect(() => {
-        dispatch(fetchOrgInfo(user));
-        dispatch(isOrgRegistryAdmin(user));
-    }, [dispatch])
-    
+        if (client?.account?.address) {
+            dispatch(fetchOrgInfo(client?.account?.address));
+            dispatch(isOrgRegistryAdmin(client?.account?.address));
+        }
+    }, [client, dispatch])
+
     return (
         <Box height="100vh" display="flex" flexDirection="column">
             <Stack direction="column" display="flex">
