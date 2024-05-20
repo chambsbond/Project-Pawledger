@@ -7,11 +7,12 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Avatar, MenuItem, Select, Stack, Tooltip } from '@mui/material';
 import { memberShipSelector, setOrg } from '@/store/slices/OrgSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 export default function Header() {
     const orgs = useSelector(memberShipSelector);
+    const dispatch = useDispatch();
 
     return (
         <AppBar position="static">
@@ -46,7 +47,7 @@ export default function Header() {
                         {orgs != undefined && orgs?.length > 1 &&
                             <Select
                                 defaultValue={0}
-                                onChange={(index) => setOrg(index)}
+                                onChange={(event) => dispatch(setOrg(event.target.value as number))}
                                 sx={{ color: "white", borderColor: "white" }}
                             >
                                 {orgs.map((org, index) =>

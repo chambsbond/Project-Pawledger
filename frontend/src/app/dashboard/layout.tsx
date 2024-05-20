@@ -5,7 +5,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from "react";
 import { useUser } from "@alchemy/aa-alchemy/react";
-import { fetchOrgInfo, fetchIsOrgRegistryAdmin } from "@/store/slices/OrgSlice";
+import { fetchOrgInfo, isOrgRegistryAdmin } from "@/store/slices/OrgSlice";
 import { useAppDispatch } from "@/store/hooks";
 
 
@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     useEffect(() => {
         dispatch(fetchOrgInfo(user));
-        dispatch(fetchIsOrgRegistryAdmin(user));
+        dispatch(isOrgRegistryAdmin(user));
     }, [dispatch])
     
     return (
