@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cd ../blockchain/packages/hardhat/ && yarn compile && cd ../../../frontend && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,11 +16,13 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.17",
     "@mui/material": "^5.15.17",
+    "@reduxjs/toolkit": "^2.2.5",
     "@tanstack/react-query": "5.28.9",
     "ethers": "^6.12.1",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-redux": "^9.1.2",
     "viem": "2.8.6"
   },
   "devDependencies": {

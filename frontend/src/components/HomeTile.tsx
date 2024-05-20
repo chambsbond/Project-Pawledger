@@ -1,5 +1,4 @@
 "use client"
-
 import IFeature from "@/app/dashboard/IFeature"
 import { Card, CardActionArea, Stack, Typography } from "@mui/material"
 import Image from "next/image"

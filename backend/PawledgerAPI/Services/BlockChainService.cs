@@ -14,7 +14,7 @@ namespace PawledgerAPI.Services
     //Log Processing https://nethereum.readthedocs.io/en/latest/nethereum-log-processing-detail/
     public class BlockChainService
     {
-        private string petContractAddress;
+        private string petContractAddress = "?";
         private BigInteger contractEndBlock = 10;
         private readonly BigInteger contractStartBlock = 0;
         private PetRepository _petRepository;
