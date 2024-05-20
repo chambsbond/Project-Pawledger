@@ -10,18 +10,18 @@ import "./Pet.sol";
 contract OrganizationFactory {	
 	OrganizationRegistry private _registry;
 	Pet private _pet;
-	address private immutable _admin;
+	address private immutable _deployer;
 	address[] private _deployedOrganizations;
 
-	constructor(address admin) {
-		_admin = admin;
+	constructor() {
+		_deployer = msg.sender;
 	}
 
-	function setRegistry(OrganizationRegistry registry) public adminOnly() {
+	function setRegistry(OrganizationRegistry registry) public deployerOnly() {
 		_registry = registry;
 	}
 
-	function setPet(Pet pet) public adminOnly() {
+	function setPet(Pet pet) public deployerOnly() {
 		_pet = pet;
 	}
 
@@ -51,8 +51,8 @@ contract OrganizationFactory {
 		revert("Org type not found");
 	}
 
-	modifier adminOnly() {
-		require(msg.sender == _admin,
+	modifier deployerOnly() {
+		require(msg.sender == _deployer,
 			"This method can only be called by the admin"
 		);
 		_;

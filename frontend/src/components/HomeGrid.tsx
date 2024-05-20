@@ -11,22 +11,29 @@ const features: IFeature[] = [
     {
         displayName: "Register",
         name: "register",
-        description: "Click here to register an animal",
+        description: "Register an animal",
         scope: ["Animal.Write"],
         image: "/managerDog.png"
     },
     {
         displayName: "Lookup",
         name: "lookup",
-        description: "Click here to peep at animals details",
+        description: "Peep at animals details",
         scope: ["Animal.Read"],
         image: "/catSleuth.png"
     },
     {
         displayName: "Charting",
         name: "charting",
-        description: "Click here to create a health record for an animal",
+        description: "Create a health record for an animal",
         scope: ["Animal.Read", "Animal.Write", "Chart.Write"],
+        image: "/drshib.png"
+    },
+    {
+        displayName: "Org Management",
+        name: "organization/management",
+        description: "Manage registered organizations",
+        scope: ["Org.Validity.Write"],
         image: "/drshib.png"
     },
 

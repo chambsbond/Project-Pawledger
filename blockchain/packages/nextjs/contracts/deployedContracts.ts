@@ -776,16 +776,10 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x2Cc3384218eD03324524efD78d9578e961e26c39",
+      address: "0x18A8a0D696CceB8d47A4De96576c7cFAA2234d5d",
       abi: [
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "admin",
-              type: "address",
-            },
-          ],
+          inputs: [],
           stateMutability: "nonpayable",
           type: "constructor",
         },
@@ -887,7 +881,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0x10DC4606e6608EA404926d7D85fD82Da80812A56",
+      address: "0xe3eD35F079bfC17B4D2486CCcf3ca571ac1E5f5c",
       abi: [
         {
           inputs: [
@@ -953,6 +947,25 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "address",
+              name: "addr",
+              type: "address",
+            },
+          ],
+          name: "isAdmin",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "contract IOrganization",
               name: "org",
               type: "address",
@@ -1004,7 +1017,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0x3968773e3F71a407126f9BeA9C08C3cB55176a46",
+      address: "0xf03b4d9FbfDa3d9EaD7887a7772eC2B69AD2Cc66",
       abi: [
         {
           inputs: [

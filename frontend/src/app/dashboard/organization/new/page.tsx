@@ -7,6 +7,8 @@ import OrgFactoryContractAmoy from "../../../../../../blockchain/packages/hardha
 import { Address, decodeFunctionData, decodeFunctionResult, encodeFunctionData } from "viem";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { addOrg, fetchOrgInfo } from "@/store/slices/OrgSlice";
+import { useAppDispatch } from "@/store/hooks";
 
 export default function CreateOrg() {
     const orgFactoryAddress = OrgFactoryContractAmoy?.address;
@@ -14,6 +16,7 @@ export default function CreateOrg() {
     const router = useRouter();
     const [orgType, setOrgType] = useState<number>(0);
     const [orgName, setOrgName] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
 
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
@@ -50,7 +53,8 @@ export default function CreateOrg() {
     useEffect(() => {
         console.log("success", sendUserOperationResult);
         if (sendUserOperationResult) {
-            router.push("/dashboard");
+            dispatch(fetchOrgInfo(user));
+            router.back();
         }
     }, [sendUserOperationResult])
 

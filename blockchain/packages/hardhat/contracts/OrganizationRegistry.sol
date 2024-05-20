@@ -17,6 +17,10 @@ contract OrganizationRegistry {
         _factory = factory;
     }
 
+    function isAdmin(address addr) public view returns (bool) {
+        return _admin == addr;
+    }
+
     function getOrganizationFactory() public view returns (OrganizationFactory) {
         return _factory;
     }
