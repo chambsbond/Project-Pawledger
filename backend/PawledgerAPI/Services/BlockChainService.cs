@@ -15,8 +15,8 @@ namespace PawledgerAPI.Services
     public class BlockChainService
     {
         private string petContractAddress;
-        private BigInteger contractEndBlock;
-        private readonly BigInteger contractStartBlock;
+        private BigInteger contractEndBlock = 10;
+        private readonly BigInteger contractStartBlock = 0;
         private PetRepository _petRepository;
 
         public BlockChainService(PetRepository petRepository)
