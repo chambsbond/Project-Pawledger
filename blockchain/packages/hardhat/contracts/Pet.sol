@@ -88,11 +88,6 @@ contract Pet is ERC721 {
 		delete _foundClaimMap[tokenId];
 	}
 
-	
-	function receivePayload public returns(string memory) {
-		return payload;
-	}
-
 	modifier onlyValidOrg() {
 		require(
 			_orgRegistry.isValidated(IOrganization(msg.sender)),
