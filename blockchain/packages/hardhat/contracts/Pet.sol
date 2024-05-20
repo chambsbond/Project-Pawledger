@@ -18,6 +18,9 @@ contract Pet is ERC721 {
 		address orgAffiliation,
 		address claimee
 	);
+	event ReceivePayload(
+		string payload
+	);
 	uint256 private _nextTokenId;
 	OrganizationRegistry private immutable _orgRegistry;
 
@@ -57,6 +60,12 @@ contract Pet is ERC721 {
 		_foundClaimMap[tokenId] = orgAff;
 	}
 
+	function receivePayload(
+		string memory payload
+	) public onlyValidOrg {
+		emit ReceivePayload(payload);
+	}
+
 	//may want to enable anyone from the same org to be able to withdraw a claim
 	function withdrawClaim(
 		uint256 tokenId,
@@ -77,6 +86,11 @@ contract Pet is ERC721 {
 		);
 
 		delete _foundClaimMap[tokenId];
+	}
+
+	
+	function receivePayload public returns(string memory) {
+		return payload;
 	}
 
 	modifier onlyValidOrg() {

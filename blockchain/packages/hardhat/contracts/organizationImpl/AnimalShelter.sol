@@ -20,12 +20,9 @@ contract AnimalShelter is BaseOrganization {
 		return Pet(_pet).mint(OrgAffilliation({org: address(this), claimee: msg.sender}), prospectiveOwner);
 	}
 
-	// new function
-	// passes a paylaod to that pet contract
-	// call pet contract which needs a new method to event the payload sent to it
-	// :)
-
-	// alex will listen to that yay!
+	function sendPetInfo(string memory payload) public onlyEmployee() onlyOwner() {
+		Pet(_pet).receivePayload(payload);
+	}
 
 	function onERC721Received(
 		address operator,
