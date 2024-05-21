@@ -10,13 +10,7 @@ const deployedContracts = {
       address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       abi: [
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "admin",
-              type: "address",
-            },
-          ],
+          inputs: [],
           stateMutability: "nonpayable",
           type: "constructor",
         },
@@ -169,25 +163,6 @@ const deployedContracts = {
           type: "event",
         },
         {
-          inputs: [
-            {
-              internalType: "contract IOrganization",
-              name: "org",
-              type: "address",
-            },
-          ],
-          name: "getOrgValidity",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "getOrganizationFactory",
           outputs: [
@@ -195,6 +170,25 @@ const deployedContracts = {
               internalType: "contract OrganizationFactory",
               name: "",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "addr",
+              type: "address",
+            },
+          ],
+          name: "isAdmin",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
             },
           ],
           stateMutability: "view",
@@ -776,7 +770,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x18A8a0D696CceB8d47A4De96576c7cFAA2234d5d",
+      address: "0x43B4071b02C75a9E141a47Af1feC29c4379a3962",
       abi: [
         {
           inputs: [],
@@ -881,7 +875,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0x50c318E485d475d2fc5B29D41ae91793b6C2Fe2B",
+      address: "0xfb6ECc3D2e5DB5f98DeaeE7c9a8d357D7951A0cB",
       abi: [
         {
           inputs: [
@@ -1017,7 +1011,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0x780c0A4A87310A757F0E1cD334Efd55f9e7A6a58",
+      address: "0x24dfD5e00508c58bAE0aD5f50B8d3920892ba7e9",
       abi: [
         {
           inputs: [

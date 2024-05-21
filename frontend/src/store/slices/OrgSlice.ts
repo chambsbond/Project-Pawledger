@@ -97,15 +97,6 @@ export const isOrgRegistryAdmin = createAsyncThunk(
     }
 )
 
-// export const setOrgValidity = createAsyncThunk(
-//     'orgs/registry/setValidate',
-//     async (orgAddress: Address, validity :boolean) => {
-
-
-//         return ;
-//     }
-// )
-
 
 export const orgContractSlice = createSlice({
     name: 'orgContract',
@@ -144,9 +135,11 @@ export const orgContractSlice = createSlice({
 
 export const { setOrg, addOrg, setSelectedOrgIndex } = orgContractSlice.actions;
 
-const selectedOrg = (state : RootState) => (state.orgContract.selectedOrg)
+const selectedOrgIndex = (state : RootState) => (state.orgContract.selectedOrg)
+const selectedOrg = (state : RootState) => (state.orgContract.orgs[state.orgContract.selectedOrg]);
 
 export const memberShipSelector = createSelector((state : RootState) => state.orgContract.orgs, (orgs) => orgs.filter(org => org.role == "Member" || org.role == "Owner"));
-export const orgSelectedSelector = createSelector(selectedOrg, (org : number) => org);
+export const orgSelectedIndexSelector = createSelector(selectedOrgIndex, (org : number) => { return org });
+export const orgSelectedSelector = createSelector(selectedOrg, (org: Org) => { return org });
 
 export default orgContractSlice.reducer;

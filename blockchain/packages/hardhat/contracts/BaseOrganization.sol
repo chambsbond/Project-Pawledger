@@ -34,8 +34,8 @@ abstract contract BaseOrganization is IOrganization {
 
 	modifier onlyEmployee() {
 		require(
-			_employees[msg.sender],
-			"Must be an employee to use this function"
+			_employees[msg.sender] || msg.sender == _owner,
+			"Must be an employee or owner to use this function"
 		);
 		_;
 	}
