@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hIve0ZHA/97MaTB9rRnqhbHeIbfxwu9u8XykXbrYDf0dJJsaUNScswcD1YRRynTZ43k5qfpxFlHgbiCFP4eKFg==",
+  "dgSpecHash": "3aGTk/LGFyOwhDQ5DJ2V4H2PsLQ7g/ZoZOM8uJE9DX5vHru/B0kSPscrDVc8R+nfW+XzCNwY4AQoliKmqqP9eQ==",
   "success": true,
   "projectFilePath": "C:\\repos\\Project-Pawledger\\backend\\PawledgerAPI\\PawledgerAPI.csproj",
   "expectedPackageFiles": [
@@ -42,11 +42,9 @@
     "C:\\Users\\Alex\\.nuget\\packages\\npgsql\\5.0.0\\npgsql.5.0.0.nupkg.sha512",
     "C:\\Users\\Alex\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\5.0.0\\npgsql.entityframeworkcore.postgresql.5.0.0.nupkg.sha512",
     "C:\\Users\\Alex\\.nuget\\packages\\portable.bouncycastle\\1.8.2\\portable.bouncycastle.1.8.2.nupkg.sha512",
-    "C:\\Users\\Alex\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\Alex\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",
     "C:\\Users\\Alex\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512",
     "C:\\Users\\Alex\\.nuget\\packages\\system.diagnostics.diagnosticsource\\5.0.1\\system.diagnostics.diagnosticsource.5.0.1.nupkg.sha512",
-    "C:\\Users\\Alex\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\Alex\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.6.0\\system.runtime.compilerservices.unsafe.4.6.0.nupkg.sha512"
   ],
   "logs": []
