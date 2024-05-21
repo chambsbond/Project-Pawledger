@@ -21,6 +21,9 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
+import { AlchemySigner, createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
+import { LocalAccountSigner, polygonAmoy, sepolia } from "@alchemy/aa-core";
+import { encodeFunctionData } from "viem";
 
 const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
 const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
@@ -39,7 +42,7 @@ iframe {
 }
 `;
 
-export default function MedicalHistory() {
+export default async function MedicalHistory() {
   const [isVaccinated, setIsVaccinated] = useState(true);
   const [dateVaccinated, setDateVaccinated] = useState(dayjs());
   const [userText, setUserText] = useState("");
@@ -49,6 +52,7 @@ export default function MedicalHistory() {
   const [privateKey, setPrivateKey] = useState("");
   const [mnemonic, setMnemonic] = useState<string>("");
   const signer = useSigner();
+  const chain = polygonAmoy;
 
   // Fires on page load and gets
   useEffect(() => {
@@ -66,6 +70,7 @@ export default function MedicalHistory() {
     };
     setEncryptedMedicalData(await encryptMedicalData(medicalDataPlainText));
     setMedicalData((await encryptMedicalData(medicalDataPlainText)).ciphertext);
+    await transmitMedicalData(encryptedMedicalData);
   }
 
   async function encryptMedicalData(plainTextData) {
@@ -74,6 +79,38 @@ export default function MedicalHistory() {
       JSON.stringify(plainTextData)
     );
     return encrypt;
+  }
+
+  async function transmitMedicalData(encryptedData) {
+    const smartAccountClient = await createModularAccountAlchemyClient({
+      apiKey: process.env.ALCHEMY_API_KEY,
+      chain,
+      // you can swap this out for any SmartAccountSigner
+      signer: signer as AlchemySigner,
+     });
+     const AlchemyTokenAbi = [
+       {
+         inputs: [{ internalType: "address", name: "recipient", type: "address" }],
+         name: "encryptedMedicalData",
+         outputs: [],
+         stateMutability: "nonpayable",
+         type: "function",
+       },
+     ];
+     const uoCallData = encodeFunctionData({
+       abi: AlchemyTokenAbi,
+       functionName: "transmitMedicalData",
+       args: [smartAccountClient.getAddress()],
+     });
+    const uo = await smartAccountClient.sendUserOperation({
+      uo: {
+        target: smartAccountClient.getAddress(),
+        data: uoCallData,
+      },
+    });
+    const txHash = await smartAccountClient.waitForUserOperationTransaction(uo);
+
+    console.log(txHash);
   }
 
   async function saveKeys() {
