@@ -8,15 +8,14 @@ using Nethereum.Contracts;
 using System.Numerics;
 using System.Threading;
 using PawledgerAPI.Repositories;
+using Nethereum.RPC.Eth.DTOs;
 
 namespace PawledgerAPI.Services
 {
     //Log Processing https://nethereum.readthedocs.io/en/latest/nethereum-log-processing-detail/
     public class BlockChainService
     {
-        private string petContractAddress = "?";
-        private BigInteger contractEndBlock = 10;
-        private readonly BigInteger contractStartBlock = 0;
+        private string petContractAddress = "0x24dfD5e00508c58bAE0aD5f50B8d3920892ba7e9";
         private PetRepository _petRepository;
 
         public BlockChainService(PetRepository petRepository)
@@ -24,40 +23,40 @@ namespace PawledgerAPI.Services
             _petRepository = petRepository;
         }
 
-        [Event("Transfer")]
-        public class TransferEvent : IEventDTO
+        [Event("MintClaimMade")]
+        public class MintEvent : IEventDTO
         {
-            [Parameter("address", "_from", 1, true)]
-            public string From { get; set; }
+            [Parameter("address", "orgAffiliation", 1)]
+            public string OrgAffiliation { get; set; }
 
-            [Parameter("address", "_to", 2, true)]
-            public string To { get; set; }
+            [Parameter("address", "claimee", 2)]
+            public string Claimee { get; set; }
 
-            [Parameter("uint256", "_value", 3, false)]
-            public BigInteger Value { get; set; }
+            [Parameter("address", "prospectOwner", 3)]
+            public string ProspectOwner { get; set; }
         }
 
         public async Task getEventLogs()
         {
-            var transferEventLogs = new List<EventLog<TransferEvent>>();
+            var transferEventLogs = new List<EventLog<MintEvent>>();
 
-            var web3 = new Web3("https://eth-sepolia.g.alchemy.com/v2/_wCLKJ0Mv3uInMjGnJYz9RWD-6GRqWCH");
+            var web3 = new Web3("https://polygon-amoy.g.alchemy.com/v2/vUzR4uiV0ccwFLOEliOjn8FtV_Mnzqc1");
 
-            Task StoreLogAsync(EventLog<TransferEvent> eventLog)
+            Task StoreLogAsync(EventLog<MintEvent> eventLog)
             {
                 transferEventLogs.Add(eventLog);
-                _petRepository.AddPet(eventLog.Log.Data);
+                //_petRepository.AddPet(eventLog.Event);
                 return Task.CompletedTask;
             }
 
-            var processor = web3.Processing.Logs.CreateProcessorForContract<TransferEvent>(petContractAddress, StoreLogAsync);
+            var processor = web3.Processing.Logs.CreateProcessorForContract<MintEvent>(petContractAddress, StoreLogAsync);
 
             var cancellationToken = new CancellationToken();
 
             await processor.ExecuteAsync(
-                toBlockNumber: contractEndBlock,
+                toBlockNumber: 7298279,
                 cancellationToken: cancellationToken,
-                startAtBlockNumberIfNotProcessed: contractStartBlock);
+                startAtBlockNumberIfNotProcessed: 7298269);
 
         }
     }
