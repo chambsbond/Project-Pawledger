@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PawledgerAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+044be0b509a079ef0925a6048adda70c7e21aff7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ff6804ec40f49099f3125bc107f5ae87255567d")]
 [assembly: System.Reflection.AssemblyProductAttribute("PawledgerAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PawledgerAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

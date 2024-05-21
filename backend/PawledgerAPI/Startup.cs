@@ -5,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PawledgerAPI.Context;
+using PawledgerAPI.Repositories;
+using PawledgerAPI.Services;
+using PawledgerAPI.Worker;
 
 namespace PawledgerAPI
 {
@@ -23,6 +26,9 @@ namespace PawledgerAPI
             services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("PawLedgerDb")));
             services.AddControllers();
+            services.AddScoped<PetRepository>();
+            services.AddScoped<BlockChainService>();
+            services.AddHostedService<BlockChainWorker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
