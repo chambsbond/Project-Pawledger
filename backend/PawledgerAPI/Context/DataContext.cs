@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using PawledgerAPI.Entities;
 
-
 namespace PawledgerAPI.Context
 {
     public class DataContext : DbContext

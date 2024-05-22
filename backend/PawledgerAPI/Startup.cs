@@ -24,7 +24,7 @@ namespace PawledgerAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("PawLedgerDb")));
+                options.UseNpgsql(Configuration.GetConnectionString("PawLedgerDb")));
             services.AddControllers();
             services.AddScoped<PetRepository>();
             services.AddScoped<BlockChainService>();
@@ -32,8 +32,10 @@ namespace PawledgerAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
         {
+            dataContext.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -55,6 +57,6 @@ namespace PawledgerAPI
             {
                 endpoints.MapControllers();
             });
-        }
+        }        
     }
 }
