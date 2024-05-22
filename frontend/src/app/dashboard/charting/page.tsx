@@ -23,10 +23,16 @@ import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import { AlchemySigner, createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
 import { LocalAccountSigner, polygonAmoy, sepolia } from "@alchemy/aa-core";
-import { encodeFunctionData } from "viem";
+import { Address, encodeFunctionData } from "viem";
+import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
+import { useSelector } from "react-redux"
+import { memberShipSelector, orgSelectedIndexSelector, orgSelectedSelector } from "@/store/slices/OrgSlice"
+import OrgContractCompile from "../../../../../blockchain/packages/hardhat/artifacts/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
+import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
 
 const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
 const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
+const registreeOptions = ["Your Organization", "A different user", "No one"]
 
 // This allows us to style the embedded iframe
 const iframeCss = `
@@ -52,7 +58,26 @@ export default async function MedicalHistory() {
   const [privateKey, setPrivateKey] = useState("");
   const [mnemonic, setMnemonic] = useState<string>("");
   const signer = useSigner();
-  const chain = polygonAmoy;
+  const orgs = useSelector(memberShipSelector);
+  const orgIndex = useSelector(orgSelectedIndexSelector);
+  const [registree, setRegistree] = useState<string>(registreeOptions[0]);
+
+  const { client } = useSmartAccountClient({
+    type: "MultiOwnerModularAccount",
+    gasManagerConfig: {
+        policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
+    },
+    opts: {
+        txMaxRetries: 20,
+    },
+  });
+
+  const {
+    sendUserOperation,
+    sendUserOperationResult,
+    isSendingUserOperation,
+    error: isSendUserOperationError,
+  } = useSendUserOperation({ client, waitForTxn: true });
 
   // Fires on page load and gets
   useEffect(() => {
@@ -73,7 +98,7 @@ export default async function MedicalHistory() {
     await transmitMedicalData(encryptedMedicalData);
   }
 
-  async function encryptMedicalData(plainTextData) {
+  async function encryptMedicalData(plainTextData: any) {
     const encrypt = await EthCrypto.encryptWithPublicKey(
       EthCrypto.publicKey.decompress(publicKey.substring(2)),
       JSON.stringify(plainTextData)
@@ -81,36 +106,34 @@ export default async function MedicalHistory() {
     return encrypt;
   }
 
-  async function transmitMedicalData(encryptedData) {
-    const smartAccountClient = await createModularAccountAlchemyClient({
-      apiKey: process.env.ALCHEMY_API_KEY,
-      chain,
-      // you can swap this out for any SmartAccountSigner
-      signer: signer as AlchemySigner,
-     });
-     const AlchemyTokenAbi = [
-       {
-         inputs: [{ internalType: "address", name: "recipient", type: "address" }],
-         name: "encryptedMedicalData",
-         outputs: [],
-         stateMutability: "nonpayable",
-         type: "function",
-       },
-     ];
-     const uoCallData = encodeFunctionData({
-       abi: AlchemyTokenAbi,
-       functionName: "transmitMedicalData",
-       args: [smartAccountClient.getAddress()],
-     });
-    const uo = await smartAccountClient.sendUserOperation({
-      uo: {
-        target: smartAccountClient.getAddress(),
-        data: uoCallData,
-      },
-    });
-    const txHash = await smartAccountClient.waitForUserOperationTransaction(uo);
+  async function transmitMedicalData(encryptedData: string) {
+    let registreeAddress: string;
 
-    console.log(txHash);
+    //YourOrganization
+    if (registree === registreeOptions[0]) {
+        registreeAddress = orgs[orgIndex].address
+    }
+    //TODO : implement
+    else if (registree === registreeOptions[1]) {
+        registreeAddress = "0x0"
+    }
+    //No one
+    else {
+        registreeAddress = PetAmoy.address
+    }
+
+    const callData = encodeFunctionData({
+      abi: OrgContractCompile.abi,
+      functionName: "sendMedicalInfo",
+      args: [registreeAddress, encryptedData]
+    });
+
+    await sendUserOperation({
+      uo: {
+          target: orgs[orgIndex].address as Address,
+          data: callData
+      }
+    })
   }
 
   async function saveKeys() {
