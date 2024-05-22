@@ -24,7 +24,7 @@ namespace PawledgerAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("PawLedgerDb")));
+                options.UseNpgsql(Configuration.GetConnectionString("PawLedgerDb")));
             services.AddControllers();
             services.AddScoped<PetRepository>();
             services.AddScoped<BlockChainService>();
@@ -47,6 +47,8 @@ namespace PawledgerAPI
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.EnsureMigrationOfContext<DataContext>();
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -55,6 +57,15 @@ namespace PawledgerAPI
             {
                 endpoints.MapControllers();
             });
+        }        
+    }
+
+    public static class EnsureMigration
+    {
+        public static void EnsureMigrationOfContext<T>(this IApplicationBuilder app) where T:DbContext
+        {
+            var context = app.ApplicationServices.GetService<T>();
+            context.Database.Migrate();
         }
     }
 }
