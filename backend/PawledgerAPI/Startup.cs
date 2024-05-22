@@ -32,8 +32,10 @@ namespace PawledgerAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
         {
+            dataContext.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,8 +49,6 @@ namespace PawledgerAPI
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.EnsureMigrationOfContext<DataContext>();
-
             app.UseRouting();
 
             app.UseAuthorization();
@@ -58,14 +58,5 @@ namespace PawledgerAPI
                 endpoints.MapControllers();
             });
         }        
-    }
-
-    public static class EnsureMigration
-    {
-        public static void EnsureMigrationOfContext<T>(this IApplicationBuilder app) where T:DbContext
-        {
-            var context = app.ApplicationServices.GetService<T>();
-            context.Database.Migrate();
-        }
     }
 }
