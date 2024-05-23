@@ -17,8 +17,9 @@ namespace PawledgerAPI.Services
             _petRepository = petRepository;
         }
 
-        public async Task getEventLogs()
+        public void GetMedicalRecordByUser()
         {
+            //TODO implement this
         }
     }
 }

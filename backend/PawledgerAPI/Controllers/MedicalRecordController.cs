@@ -18,10 +18,6 @@ namespace PawledgerAPI.Controllers
             _blockChainService = blockChainService;
         }
 
-        [HttpPost("medicalRecords")]
-        public Task CreateMedicalRecord()
-        {
-            return _blockChainService.getEventLogs();
-        }
+        // TODO : call mecialRecordService to get medical records
     }
 }
