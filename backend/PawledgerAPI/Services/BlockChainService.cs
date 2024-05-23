@@ -5,6 +5,7 @@ using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Contracts;
 using PawledgerAPI.Repositories;
 using Nethereum.BlockchainProcessing.ProgressRepositories;
+using System.Threading;
 
 namespace PawledgerAPI.Services
 {
@@ -33,7 +34,7 @@ namespace PawledgerAPI.Services
       public string ProspectOwner { get; set; }
     }
 
-    public List<EventLog<MintEvent>> GetEventLogs()
+    public async Task<List<EventLog<MintEvent>>> GetEventLogs()
     {
       var transferEventLogs = new List<EventLog<MintEvent>>();
       var blockProgressRepository = new InMemoryBlockchainProgressRepository();
@@ -43,12 +44,11 @@ namespace PawledgerAPI.Services
         blockProgressRepository: blockProgressRepository);
 
       // OLD CODE THAT JUST PARSED ONE BLOCK
-      /* var cancellationToken = new CancellationToken();
+      var cancellationToken = new CancellationToken();
 
       await processor.ExecuteAsync(
-          toBlockNumber: 7298279,
-          cancellationToken: cancellationToken,
-          startAtBlockNumberIfNotProcessed: 7298269); */
+          cancellationToken: cancellationToken);
+
       return transferEventLogs;
     }
 
