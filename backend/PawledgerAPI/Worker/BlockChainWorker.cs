@@ -19,14 +19,19 @@ namespace PawledgerAPI.Worker
       _serviceProvider = serviceProvider;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
       using var scope = _serviceProvider.CreateScope();
       var blockChainService = scope.ServiceProvider.GetRequiredService<BlockChainService>();
-      blockChainService.GetEventLogs();
+      await blockChainService.GetEventLogs();
 
       // Ensure the thread does not stop lisening.
-      while (true) { }
+      // FIXME change this to true to run. We did not want the app service busy waiting so we stopped in like this.
+      while (false)
+      {
+        // 16.67 minute delay, not scientific just a long wait.
+        await Task.Delay(1000000);
+      }
     }
   }
 }

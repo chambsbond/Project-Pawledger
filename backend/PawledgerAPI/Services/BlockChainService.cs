@@ -6,6 +6,7 @@ using Nethereum.Contracts;
 using PawledgerAPI.Repositories;
 using Nethereum.BlockchainProcessing.ProgressRepositories;
 using System.Threading;
+using System;
 
 namespace PawledgerAPI.Services
 {
@@ -43,21 +44,22 @@ namespace PawledgerAPI.Services
         action: log => StoreLogAsync(transferEventLogs, log),
         blockProgressRepository: blockProgressRepository);
 
-      // OLD CODE THAT JUST PARSED ONE BLOCK
       var cancellationToken = new CancellationToken();
 
+      // FIXME Consider storing that start block in db on cancelation to start back up in case app is restarted.
       await processor.ExecuteAsync(
-          cancellationToken: cancellationToken);
+          cancellationToken: cancellationToken,
+          startAtBlockNumberIfNotProcessed: 7298259);
 
       return await Task.FromResult(transferEventLogs);
     }
 
-    private static Task StoreLogAsync(List<EventLog<MintEvent>> list, EventLog<MintEvent> eventLog)
+    private Task StoreLogAsync(List<EventLog<MintEvent>> list, EventLog<MintEvent> eventLog)
     {
 
       list.Add(eventLog);
-      //FIXME add this back after testing
-      //_petRepository.AddPet(eventLog.Event);
+      // FIXME the claimee is not the token id but need to check why its not in the mint event.
+      _petRepository.AddPet(eventLog.Event.Claimee + Guid.NewGuid().ToString());
       return Task.CompletedTask;
     }
   }

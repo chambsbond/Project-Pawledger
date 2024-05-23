@@ -21,6 +21,4 @@ namespace PawledgerAPI.Repositories
       _context.SaveChanges();
     }
   }
-
-
 }
