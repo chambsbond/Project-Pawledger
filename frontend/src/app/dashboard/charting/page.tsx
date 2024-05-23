@@ -1,38 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import styles from "./page.module.css";
-import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Button, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import EthCrypto, { Encrypted } from "eth-crypto";
 import { ethers } from "ethers";
 import { useSigner } from "@alchemy/aa-alchemy/react";
-import { useMutation } from "@tanstack/react-query";
-import { TroubleshootOutlined } from "@mui/icons-material";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
-import { AlchemySigner, createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
-import { LocalAccountSigner, polygonAmoy, sepolia } from "@alchemy/aa-core";
 import { Address, encodeFunctionData } from "viem";
-import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
-import { useSelector } from "react-redux"
-import { memberShipSelector, orgSelectedIndexSelector, orgSelectedSelector } from "@/store/slices/OrgSlice"
+import {
+  useSendUserOperation,
+  useSmartAccountClient,
+} from "@alchemy/aa-alchemy/react";
+import { useSelector } from "react-redux";
+import {
+  memberShipSelector,
+  orgSelectedIndexSelector,
+} from "@/store/slices/OrgSlice";
 import OrgContractCompile from "../../../../../blockchain/packages/hardhat/artifacts/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
 import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
 
 const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
 const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
-const registreeOptions = ["Your Organization", "A different user", "No one"]
+const registreeOptions = ["Your Organization", "A different user", "No one"];
 
 // This allows us to style the embedded iframe
 const iframeCss = `
@@ -65,10 +64,10 @@ export default async function MedicalHistory() {
   const { client } = useSmartAccountClient({
     type: "MultiOwnerModularAccount",
     gasManagerConfig: {
-        policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
+      policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
     },
     opts: {
-        txMaxRetries: 20,
+      txMaxRetries: 20,
     },
   });
 
@@ -79,7 +78,7 @@ export default async function MedicalHistory() {
     error: isSendUserOperationError,
   } = useSendUserOperation({ client, waitForTxn: true });
 
-  // Fires on page load and gets
+  // Fires on page load.
   useEffect(() => {
     signer.exportWallet({
       iframeContainerId: TurnkeyExportWalletContainerId,
@@ -109,31 +108,31 @@ export default async function MedicalHistory() {
   async function transmitMedicalData(encryptedData: string) {
     let registreeAddress: string;
 
-    //YourOrganization
+    // YourOrganization
     if (registree === registreeOptions[0]) {
-        registreeAddress = orgs[orgIndex].address
+      registreeAddress = orgs[orgIndex].address;
     }
-    //TODO : implement
+    // TODO : implement
     else if (registree === registreeOptions[1]) {
-        registreeAddress = "0x0"
+      registreeAddress = "0x0";
     }
-    //No one
+    // No one
     else {
-        registreeAddress = PetAmoy.address
+      registreeAddress = PetAmoy.address;
     }
 
     const callData = encodeFunctionData({
       abi: OrgContractCompile.abi,
       functionName: "sendMedicalInfo",
-      args: [registreeAddress, encryptedData]
+      args: [registreeAddress, encryptedData],
     });
 
     await sendUserOperation({
       uo: {
-          target: orgs[orgIndex].address as Address,
-          data: callData
-      }
-    })
+        target: orgs[orgIndex].address as Address,
+        data: callData,
+      },
+    });
   }
 
   async function saveKeys() {
@@ -190,9 +189,8 @@ export default async function MedicalHistory() {
             <Item>
               VIEW YOUR DATA HERE:
               <p>{medicalData}</p>
+              {/* TODO - Pull your data from the db and show it here */}
             </Item>
-            <Item>SEND YOUR DATA TO ANYONE HERE:</Item>
-            {/* TODO: connect to abi of animal hospital. */}
           </Stack>
           <Grid container bgcolor="white" padding={4}>
             <Grid item>
@@ -245,12 +243,3 @@ export default async function MedicalHistory() {
     </>
   );
 }
-
-// NOTES
-// extract private key: https://accountkit.alchemy.com/signers/alchemy-signer/export-private-key.html
-// 1. https://docs.chain.link/chainlink-functions/tutorials/api-post-data
-// 2. https://ethereum.stackexchange.com/questions/3092/how-to-encrypt-a-message-with-the-public-key-of-an-ethereum-address
-// 3. Base64 encode the message?
-// 4. checksum is it needed? Does it make our lives easier
-
-// you encrypt the message with the senders public key and then they decrypt it with their private one!
