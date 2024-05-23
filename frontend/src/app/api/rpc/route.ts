@@ -18,13 +18,12 @@ export async function POST(req: Request) {
   const res = await fetch(`${rpcUrl}/${apiKey}`, {
     method: "POST",
     headers: {
-      ...req.headers,
     },
     body: JSON.stringify(body),
   });
 
   if (!res.ok) {
-      return NextResponse.json(await res.json().catch((e) => ({})), {
+    return NextResponse.json(await res.json().catch((e) => ({})), {
       status: res.status,
     });
   }
