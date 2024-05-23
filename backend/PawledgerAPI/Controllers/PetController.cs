@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Nethereum.Contracts;
 using PawledgerAPI.Services;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using static PawledgerAPI.Services.BlockChainService;
 
 namespace PawledgerAPI.Controllers
@@ -22,7 +23,7 @@ namespace PawledgerAPI.Controllers
         }
 
         [HttpGet("eventLogs")]
-        public List<EventLog<MintEvent>> GetEventLogs()
+        public Task<List<EventLog<MintEvent>>> GetEventLogs()
         {
             return _blockChainService.GetEventLogs();
         }

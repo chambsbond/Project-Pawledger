@@ -49,7 +49,7 @@ namespace PawledgerAPI.Services
       await processor.ExecuteAsync(
           cancellationToken: cancellationToken);
 
-      return transferEventLogs;
+      return await Task.FromResult(transferEventLogs);
     }
 
     private static Task StoreLogAsync(List<EventLog<MintEvent>> list, EventLog<MintEvent> eventLog)
