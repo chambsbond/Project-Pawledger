@@ -57,7 +57,7 @@ export default function RegisterPage() {
         const callData = encodeFunctionData({
             abi: OrgContractCompile.abi,
             functionName: "registerAnimal",
-            args: [registreeAddress]
+            args: [registreeAddress, 10000]
         });
 
         await sendUserOperation({

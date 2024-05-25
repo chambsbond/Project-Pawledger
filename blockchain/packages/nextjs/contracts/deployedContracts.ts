@@ -770,7 +770,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x58421C1b9E0C3d705F3F72aD6F45742D2eB8e059",
+      address: "0x6783ce9AB73429A33d1c242020406A20C360e33C",
       abi: [
         {
           inputs: [],
@@ -875,7 +875,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0x7E232fD8Fb1DA72FC1147A30FDAC3a28E0571eCB",
+      address: "0xDf588d28b10f5a801C19825D424780fc49b5EcD5",
       abi: [
         {
           inputs: [
@@ -1011,7 +1011,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0xe83cB521137bb370995221924dcEB9F31c48dDCd",
+      address: "0xea5a6c8D7Bf2a6136f121B6ea37fE7b6CF15C961",
       abi: [
         {
           inputs: [
@@ -1019,6 +1019,16 @@ const deployedContracts = {
               internalType: "contract OrganizationRegistry",
               name: "orgRegistry",
               type: "address",
+            },
+            {
+              internalType: "address",
+              name: "functionRouter",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "calculationLogic",
+              type: "string",
             },
           ],
           stateMutability: "nonpayable",
@@ -1160,6 +1170,31 @@ const deployedContracts = {
           inputs: [
             {
               indexed: true,
+              internalType: "bytes32",
+              name: "requestId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "result",
+              type: "bytes",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "err",
+              type: "bytes",
+            },
+          ],
+          name: "OCRResponse",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
               internalType: "address",
               name: "from",
               type: "address",
@@ -1179,6 +1214,19 @@ const deployedContracts = {
           ],
           name: "Transfer",
           type: "event",
+        },
+        {
+          inputs: [],
+          name: "_decryptConsumer",
+          outputs: [
+            {
+              internalType: "contract DecryptConsumer",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
         },
         {
           inputs: [
@@ -1215,6 +1263,29 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "requestId",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes",
+              name: "response",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes",
+              name: "err",
+              type: "bytes",
+            },
+          ],
+          name: "eventDecryted",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -1259,6 +1330,19 @@ const deployedContracts = {
           outputs: [
             {
               internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getDecryptContract",
+          outputs: [
+            {
+              internalType: "contract DecryptConsumer",
               name: "",
               type: "address",
             },
@@ -1326,6 +1410,11 @@ const deployedContracts = {
               internalType: "address",
               name: "prospectOwner",
               type: "address",
+            },
+            {
+              internalType: "uint32",
+              name: "gasLimit",
+              type: "uint32",
             },
           ],
           name: "mint",
