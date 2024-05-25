@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { useEffect, useState } from "react";
@@ -13,6 +13,9 @@ import { useSelector } from "react-redux";
 import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
 import { Input } from '@mui/material';
 
+const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
+const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
+const registreeOptions = ["Your Organization", "A different user", "No one"];
 
 export default function ChartingPage() {
     const user = useUser();
