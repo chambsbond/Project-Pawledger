@@ -770,7 +770,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x43B4071b02C75a9E141a47Af1feC29c4379a3962",
+      address: "0x58421C1b9E0C3d705F3F72aD6F45742D2eB8e059",
       abi: [
         {
           inputs: [],
@@ -875,7 +875,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0xfb6ECc3D2e5DB5f98DeaeE7c9a8d357D7951A0cB",
+      address: "0x7E232fD8Fb1DA72FC1147A30FDAC3a28E0571eCB",
       abi: [
         {
           inputs: [
@@ -1011,7 +1011,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0x24dfD5e00508c58bAE0aD5f50B8d3920892ba7e9",
+      address: "0xe83cB521137bb370995221924dcEB9F31c48dDCd",
       abi: [
         {
           inputs: [
@@ -1097,6 +1097,37 @@ const deployedContracts = {
             },
           ],
           name: "FoundClaimMade",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "orgAffiliation",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "claimee",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "prtOwner",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "medPayload",
+              type: "string",
+            },
+          ],
+          name: "MedicalPayload",
           type: "event",
         },
         {
@@ -1349,6 +1380,41 @@ const deployedContracts = {
             },
           ],
           name: "rebukeClaim",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "org",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "claimee",
+                  type: "address",
+                },
+              ],
+              internalType: "struct OrgAffilliation",
+              name: "orgAff",
+              type: "tuple",
+            },
+            {
+              internalType: "address",
+              name: "petOwner",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "medPayload",
+              type: "string",
+            },
+          ],
+          name: "receiveMedicalPayload",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",

@@ -80,10 +80,10 @@ export default function RegisterPage() {
         const displayIndex = async () => {
             const petAddress = PetAmoy?.address;
             const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
-            const registryContract = new ethers.Contract(petAddress,
+            const petContract = new ethers.Contract(petAddress,
                 PetAmoy.abi, provider);
 
-            setNftIndex((await registryContract.getNextId()) - BigInt(1));
+            setNftIndex((await petContract.getNextId()) - BigInt(1));
             setOpen(true);
         }
 

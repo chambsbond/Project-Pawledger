@@ -18,6 +18,12 @@ contract Pet is ERC721 {
 		address orgAffiliation,
 		address claimee
 	);
+	event MedicalPayload(
+		address orgAffiliation,
+		address claimee,
+		address prtOwner,
+		string medPayload
+	);
 	uint256 private _nextTokenId;
 	OrganizationRegistry private immutable _orgRegistry;
 
@@ -55,6 +61,14 @@ contract Pet is ERC721 {
 		emit FoundClaimMade(tokenId, orgAff.org, orgAff.claimee);
 
 		_foundClaimMap[tokenId] = orgAff;
+	}
+
+	function receiveMedicalPayload(
+		OrgAffilliation memory orgAff,
+		address petOwner,
+		string memory medPayload
+	) public onlyValidOrg {
+		emit MedicalPayload(orgAff.org, orgAff.claimee, petOwner, medPayload);
 	}
 
 	//may want to enable anyone from the same org to be able to withdraw a claim

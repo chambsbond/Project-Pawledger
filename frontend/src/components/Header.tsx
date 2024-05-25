@@ -5,14 +5,49 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { Avatar, MenuItem, Select, Stack, Tooltip } from '@mui/material';
+import { Avatar, Container, Menu, MenuItem, Select, Stack, Tooltip } from '@mui/material';
 import { memberShipSelector, setSelectedOrgIndex } from '@/store/slices/OrgSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useAccount, useLogout, useUser } from '@alchemy/aa-alchemy/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 
 export default function Header() {
     const orgs = useSelector(memberShipSelector);
     const dispatch = useDispatch();
+    const router = useRouter();
+    const { logout } = useLogout({
+        onSuccess: () => {
+            router.push('');
+        },
+        onError: (error) => {
+            // [optional] Do something with the error
+        },
+        // [optional] ...additional mutationArgs
+    });
+    const { account, address, isLoadingAccount } = useAccount({
+        type: "MultiOwnerModularAccount",
+    });
+    const user = useUser();
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    useEffect(() => {
+        console.log(user, account, address)
+        if (user != null && account != null && address) {
+            
+        } else {
+            console.log('hello')
+            // router.push('/');
+        } 
+    }, [user, account, address])
 
     return (
         <AppBar position="static">
@@ -56,11 +91,18 @@ export default function Header() {
                             </Select>
                         }
                     </Stack>
-                    <Tooltip title="Open settings">
-                        <IconButton sx={{ p: 0 }}>
-                            <Avatar  />
+                    <Stack>
+                        <IconButton sx={{ p: 0 }} onClick={handleClick}>
+                            <Avatar />
                         </IconButton>
-                    </Tooltip>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={() => logout}>Logout</MenuItem>
+                        </Menu>
+                    </Stack>
                 </Stack>
             </Toolbar>
         </AppBar>
