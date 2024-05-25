@@ -25,7 +25,8 @@ contract Pet is ERC721 {
 		address prtOwner,
 		string medPayload
 	);
-	event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
+	event reEncryptResponse(bytes32 indexed requestId, bytes result, bytes err);
+
 	uint256 private _nextTokenId;
 	OrganizationRegistry private immutable _orgRegistry;
 	DecryptConsumer public immutable _decryptConsumer;
@@ -61,19 +62,23 @@ contract Pet is ERC721 {
 
 	function mint(
 		OrgAffilliation memory orgAff,
-		address prospectOwner,
-		uint32 gasLimit
+		address prospectOwner
 	) public onlyValidOrg returns (uint256) {
 		emit MintClaimMade(orgAff.org, orgAff.claimee, prospectOwner);
 		uint256 tokenId = _nextTokenId++;
-
-		// string[] calldata args = ["test", "pop"];
-		_decryptConsumer.testApiCall(gasLimit);
 
 		//TODO validate prospect owner can recieve prior to this call
 		_safeMint(prospectOwner, tokenId);
 
 		return tokenId;
+	}
+
+	function adoptAnimal(
+		address to,
+		uint256 tokenId,
+		uint32 gasLimit) public onlyValidOrg() {
+			_decryptConsumer.reEncryptMedicalRecords(gasLimit);
+			_safeTransfer(msg.sender, to, tokenId, "");
 	}
 
 	function foundPetClaim(
@@ -115,12 +120,12 @@ contract Pet is ERC721 {
 		delete _foundClaimMap[tokenId];
 	}
 
-	function eventDecryted(
+	function eventsDecryted(
 		bytes32 requestId,
 		bytes memory response,
 		bytes memory err
 	) public {
-		emit OCRResponse(requestId, response, err);
+		emit reEncryptResponse(requestId, response, err);
 	}
 
 	modifier onlyValidOrg() {

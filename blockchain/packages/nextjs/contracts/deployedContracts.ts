@@ -770,7 +770,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x6783ce9AB73429A33d1c242020406A20C360e33C",
+      address: "0x496FB10692EBa0b05bF078406A460eC81A192F55",
       abi: [
         {
           inputs: [],
@@ -875,7 +875,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0xDf588d28b10f5a801C19825D424780fc49b5EcD5",
+      address: "0xF139f5603ec02fe518366d208B7b67c93ed7D945",
       abi: [
         {
           inputs: [
@@ -1011,7 +1011,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0xea5a6c8D7Bf2a6136f121B6ea37fE7b6CF15C961",
+      address: "0x1fCb9358A250442a19F6C72C567F5D6282170924",
       abi: [
         {
           inputs: [
@@ -1170,31 +1170,6 @@ const deployedContracts = {
           inputs: [
             {
               indexed: true,
-              internalType: "bytes32",
-              name: "requestId",
-              type: "bytes32",
-            },
-            {
-              indexed: false,
-              internalType: "bytes",
-              name: "result",
-              type: "bytes",
-            },
-            {
-              indexed: false,
-              internalType: "bytes",
-              name: "err",
-              type: "bytes",
-            },
-          ],
-          name: "OCRResponse",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
               internalType: "address",
               name: "from",
               type: "address",
@@ -1216,6 +1191,31 @@ const deployedContracts = {
           type: "event",
         },
         {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "requestId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "result",
+              type: "bytes",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "err",
+              type: "bytes",
+            },
+          ],
+          name: "reEncryptResponse",
+          type: "event",
+        },
+        {
           inputs: [],
           name: "_decryptConsumer",
           outputs: [
@@ -1226,6 +1226,29 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "uint32",
+              name: "gasLimit",
+              type: "uint32",
+            },
+          ],
+          name: "adoptAnimal",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -1283,7 +1306,7 @@ const deployedContracts = {
               type: "bytes",
             },
           ],
-          name: "eventDecryted",
+          name: "eventsDecryted",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -1410,11 +1433,6 @@ const deployedContracts = {
               internalType: "address",
               name: "prospectOwner",
               type: "address",
-            },
-            {
-              internalType: "uint32",
-              name: "gasLimit",
-              type: "uint32",
             },
           ],
           name: "mint",
