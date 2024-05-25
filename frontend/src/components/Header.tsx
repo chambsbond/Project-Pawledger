@@ -45,7 +45,7 @@ export default function Header() {
             
         } else {
             console.log('hello')
-            // router.push('/');
+            router.push('');
         } 
     }, [user, account, address])
 
