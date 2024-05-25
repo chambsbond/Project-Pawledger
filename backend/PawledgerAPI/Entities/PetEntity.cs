@@ -7,6 +7,6 @@ namespace PawledgerAPI.Entities
     {
         [Key]
         public string TokenId { get; set; }
-        public DateTime CreatedTs { get; set; }
+        public DateTime CreatedTimestamp { get; set; }
     }
 }
