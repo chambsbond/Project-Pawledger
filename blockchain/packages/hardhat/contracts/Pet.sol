@@ -28,23 +28,27 @@ contract Pet is ERC721 {
 	event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 	uint256 private _nextTokenId;
 	OrganizationRegistry private immutable _orgRegistry;
-	DecryptConsumer private immutable _decryptConsumer;
+	DecryptConsumer public immutable _decryptConsumer;
 
 	mapping(uint256 => OrgAffilliation) _foundClaimMap;
 
 	constructor(
 		OrganizationRegistry orgRegistry,
 		address functionRouter,
-		bytes32 donId,
+		// bytes32 donId,
 		string memory calculationLogic
 	) ERC721("Pet", "PET") {
 		_orgRegistry = orgRegistry;
 		_decryptConsumer = new DecryptConsumer(
 			functionRouter,
-			donId,
+			"fun-polygon-amoy-1",
 			calculationLogic,
 			this
 		);
+	}
+
+	function getDecryptContract() public view returns(DecryptConsumer) {
+		return _decryptConsumer;
 	}
 
 	function _baseURI() internal pure override returns (string memory) {
@@ -57,13 +61,14 @@ contract Pet is ERC721 {
 
 	function mint(
 		OrgAffilliation memory orgAff,
-		address prospectOwner
+		address prospectOwner,
+		uint32 gasLimit
 	) public onlyValidOrg returns (uint256) {
 		emit MintClaimMade(orgAff.org, orgAff.claimee, prospectOwner);
 		uint256 tokenId = _nextTokenId++;
 
 		// string[] calldata args = ["test", "pop"];
-		_decryptConsumer.testApiCall(1000);
+		_decryptConsumer.testApiCall(gasLimit);
 
 		//TODO validate prospect owner can recieve prior to this call
 		_safeMint(prospectOwner, tokenId);

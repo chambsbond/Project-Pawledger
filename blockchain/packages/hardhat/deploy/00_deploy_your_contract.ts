@@ -3,6 +3,7 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 import fs from "fs/promises";
 import path from "node:path";
+import PetAbi  from "../deployments/polygonAmoy/Pet.json"
 
 /**
  * Deploys a contract named "YourContract" using the deployer account and
@@ -25,7 +26,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deploy, execute } = hre.deployments;
 
   console.log(deployer)
-  
+
   const admin = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3"
 
   await deploy("OrganizationFactory", {
@@ -36,28 +37,28 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 
   const orgFactory = await hre.ethers.getContract<Contract>("OrganizationFactory", deployer);
-  
+
   await deploy("OrganizationRegistry", {
     from: deployer,
     args: [admin, orgFactory.target],
     log: true,
     autoMine: true
   })
-  
+
   const orgRegistry = await hre.ethers.getContract<Contract>("OrganizationRegistry", deployer);
-  
-  await execute("OrganizationFactory",{from: deployer},"setRegistry", orgRegistry.target);
 
-  try {
-    const source = await fs.readFile(
-      path.join(__dirname, '../functions/test.js'),
-      { encoding: 'utf8' }
-    );
+  await execute("OrganizationFactory", { from: deployer }, "setRegistry", orgRegistry.target);
 
+  const source = await fs.readFile(
+    path.join(__dirname, '../functions/test.js'),
+    { encoding: 'utf8' }
+  );
+
+  console.log(source);
   await deploy("Pet", {
     from: deployer,
     // Contract constructor arguments
-    args: [orgRegistry.target, "0xC22a79eBA640940ABB6dF0f7982cc119578E11De", "fun-polygon-amoy-1", source],
+    args: [orgRegistry.target, "0xC22a79eBA640940ABB6dF0f7982cc119578E11De", source],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -66,7 +67,13 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   const pet = await hre.ethers.getContract<Contract>("Pet", deployer);
 
-  await execute("OrganizationFactory",{from: deployer},"setPet", pet.target);
+  const getFunction = pet.getFunction("getDecryptContract");
+
+  const contract = pet.attach(PetAbi.address); 
+
+  console.log(await contract.getDecryptContract());
+
+  await execute("OrganizationFactory", { from: deployer }, "setPet", pet.target);
 };
 
 
