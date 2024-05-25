@@ -1,7 +1,8 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
-import { ethers } from "hardhat";
+import fs from "fs/promises";
+import path from "node:path";
 
 /**
  * Deploys a contract named "YourContract" using the deployer account and
@@ -22,7 +23,6 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   */
   const { deployer } = await hre.getNamedAccounts();
   const { deploy, execute } = hre.deployments;
-
 
   console.log(deployer)
   
@@ -48,10 +48,16 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   
   await execute("OrganizationFactory",{from: deployer},"setRegistry", orgRegistry.target);
 
+  try {
+    const source = await fs.readFile(
+      path.join(__dirname, '../functions/test.js'),
+      { encoding: 'utf8' }
+    );
+
   await deploy("Pet", {
     from: deployer,
     // Contract constructor arguments
-    args: [orgRegistry.target],
+    args: [orgRegistry.target, "0xC22a79eBA640940ABB6dF0f7982cc119578E11De", "fun-polygon-amoy-1", source],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.

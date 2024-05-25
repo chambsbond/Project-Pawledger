@@ -6,6 +6,7 @@ import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { OrgAffilliation } from "../models/OrgAffilliation.sol";
 import { OrganizationRegistry } from "./OrganizationRegistry.sol";
 import { IOrganization } from "./IOrganization.sol";
+import { DecryptConsumer } from "./DecryptConsumer.sol";
 
 contract Pet is ERC721 {
 	event MintClaimMade(
@@ -24,13 +25,26 @@ contract Pet is ERC721 {
 		address prtOwner,
 		string medPayload
 	);
+	event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 	uint256 private _nextTokenId;
 	OrganizationRegistry private immutable _orgRegistry;
+	DecryptConsumer private immutable _decryptConsumer;
 
 	mapping(uint256 => OrgAffilliation) _foundClaimMap;
 
-	constructor(OrganizationRegistry orgRegistry) ERC721("Pet", "PET") {
+	constructor(
+		OrganizationRegistry orgRegistry,
+		address functionRouter,
+		bytes32 donId,
+		string memory calculationLogic
+	) ERC721("Pet", "PET") {
 		_orgRegistry = orgRegistry;
+		_decryptConsumer = new DecryptConsumer(
+			functionRouter,
+			donId,
+			calculationLogic,
+			this
+		);
 	}
 
 	function _baseURI() internal pure override returns (string memory) {
@@ -47,6 +61,9 @@ contract Pet is ERC721 {
 	) public onlyValidOrg returns (uint256) {
 		emit MintClaimMade(orgAff.org, orgAff.claimee, prospectOwner);
 		uint256 tokenId = _nextTokenId++;
+
+		// string[] calldata args = ["test", "pop"];
+		_decryptConsumer.testApiCall(1000);
 
 		//TODO validate prospect owner can recieve prior to this call
 		_safeMint(prospectOwner, tokenId);
@@ -91,6 +108,14 @@ contract Pet is ERC721 {
 		);
 
 		delete _foundClaimMap[tokenId];
+	}
+
+	function eventDecryted(
+		bytes32 requestId,
+		bytes memory response,
+		bytes memory err
+	) public {
+		emit OCRResponse(requestId, response, err);
 	}
 
 	modifier onlyValidOrg() {
