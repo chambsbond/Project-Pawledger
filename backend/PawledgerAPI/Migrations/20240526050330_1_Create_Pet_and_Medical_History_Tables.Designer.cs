@@ -10,8 +10,8 @@ using PawledgerAPI.Context;
 namespace PawledgerAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240518154821_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240526050330_1_Create_Pet_and_Medical_History_Tables")]
+    partial class _1_Create_Pet_and_Medical_History_Tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,24 +23,25 @@ namespace PawledgerAPI.Migrations
 
             modelBuilder.Entity("PawledgerAPI.Entities.MedicalHistoryEntity", b =>
                 {
-                    b.Property<string>("MedicalHistoryId")
-                        .HasColumnType("text");
+                    b.Property<long>("MedicalHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("CreatedTs")
+                    b.Property<DateTime>("CreatedTimestamp")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("PetTokenId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ResponseBytes")
+                    b.Property<string>("EncryptedHistory")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TokenId")
                         .HasColumnType("text");
 
-                    b.HasKey("MedicalHistoryId");
+                    b.Property<DateTime>("UpdatedTimestamp")
+                        .HasColumnType("timestamp without time zone");
 
-                    b.HasIndex("PetTokenId");
+                    b.HasKey("MedicalHistoryId");
 
                     b.ToTable("MedicalHistory");
                 });
@@ -50,21 +51,12 @@ namespace PawledgerAPI.Migrations
                     b.Property<string>("TokenId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedTs")
+                    b.Property<DateTime>("CreatedTimestamp")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("TokenId");
 
                     b.ToTable("Pet");
-                });
-
-            modelBuilder.Entity("PawledgerAPI.Entities.MedicalHistoryEntity", b =>
-                {
-                    b.HasOne("PawledgerAPI.Entities.PetEntity", "Pet")
-                        .WithMany()
-                        .HasForeignKey("PetTokenId");
-
-                    b.Navigation("Pet");
                 });
 #pragma warning restore 612, 618
         }
