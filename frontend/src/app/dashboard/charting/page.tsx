@@ -1,245 +1,177 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import TextField from "@mui/material/TextField";
-import { Button, Typography } from "@mui/material";
-import dayjs from "dayjs";
-import EthCrypto, { Encrypted } from "eth-crypto";
-import { ethers } from "ethers";
-import { useSigner } from "@alchemy/aa-alchemy/react";
-import Stack from "@mui/material/Stack";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
-import { Address, encodeFunctionData } from "viem";
-import {
-  useSendUserOperation,
-  useSmartAccountClient,
-} from "@alchemy/aa-alchemy/react";
-import { useSelector } from "react-redux";
-import {
-  memberShipSelector,
-  orgSelectedIndexSelector,
-} from "@/store/slices/OrgSlice";
-import OrgContractCompile from "../../../../../blockchain/packages/hardhat/artifacts/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
+import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
+import { useEffect, useState } from "react";
+import { useAppDispatch } from "@/store/hooks";
+import { useRouter } from "next/navigation";
+import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+
+//look into pet.json for needed contract functions
 import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
+import { ethers } from "ethers";
+import { useSelector } from "react-redux";
+import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
+import { Input } from '@mui/material';
 
 const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
 const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
 const registreeOptions = ["Your Organization", "A different user", "No one"];
 
-// This allows us to style the embedded iframe
-const iframeCss = `
-iframe {
-    box-sizing: border-box;
-    width: 100%;
-    height: 50px;
-    border-radius: 8px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(216, 219, 227, 1);
-    padding: 0px;
-}
-`;
+export default function ChartingPage() {
+    const user = useUser();
+    const router = useRouter();
+    const [recordType, setRecordType] = useState<number>(0);
+    const dispatch = useAppDispatch();
+    const [fields, setFields] = useState<any>(null);
+    const [userText, setUserText] = useState<string>('');
+    const [mnemonic, setMnemonic] = useState<string>("");
+    const [petId, setPetId] = useState<BigInt | undefined>();
+    const orgs = useSelector(memberShipSelector);
+    // const orgIndex = useSelector(orgSelectedIndexSelector);
+    const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
+    const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
+    const iframeCss = `
+        iframe {
+            box-sizing: border-box;
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgba(216, 219, 227, 1);
+            padding: 0px;
+        }
+        `;
 
-export default async function MedicalHistory() {
-  const [isVaccinated, setIsVaccinated] = useState(true);
-  const [dateVaccinated, setDateVaccinated] = useState(dayjs());
-  const [userText, setUserText] = useState("");
-  const [encryptedMedicalData, setEncryptedMedicalData] = useState<Encrypted>();
-  const [medicalData, setMedicalData] = useState("Nothing here yet");
-  const [publicKey, setPublicKey] = useState("");
-  const [privateKey, setPrivateKey] = useState("");
-  const [mnemonic, setMnemonic] = useState<string>("");
-  const signer = useSigner();
-  const orgs = useSelector(memberShipSelector);
-  const orgIndex = useSelector(orgSelectedIndexSelector);
-  const [registree, setRegistree] = useState<string>(registreeOptions[0]);
-
-  const { client } = useSmartAccountClient({
-    type: "MultiOwnerModularAccount",
-    gasManagerConfig: {
-      policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
-    },
-    opts: {
-      txMaxRetries: 20,
-    },
-  });
-
-  const {
-    sendUserOperation,
-    sendUserOperationResult,
-    isSendingUserOperation,
-    error: isSendUserOperationError,
-  } = useSendUserOperation({ client, waitForTxn: true });
-
-  // Fires on page load.
-  useEffect(() => {
-    signer.exportWallet({
-      iframeContainerId: TurnkeyExportWalletContainerId,
-      iframeElementId: TurnkeyExportWalletElementId,
-    });
-  }, []);
-
-  async function handleFormSubmitted() {
-    const medicalDataPlainText = {
-      vaccinatedForRabbies: isVaccinated,
-      rabbiesVaccineDate: dateVaccinated,
-      userText: userText,
-    };
-    setEncryptedMedicalData(await encryptMedicalData(medicalDataPlainText));
-    setMedicalData((await encryptMedicalData(medicalDataPlainText)).ciphertext);
-    await transmitMedicalData(encryptedMedicalData);
-  }
-
-  async function encryptMedicalData(plainTextData: any) {
-    const encrypt = await EthCrypto.encryptWithPublicKey(
-      EthCrypto.publicKey.decompress(publicKey.substring(2)),
-      JSON.stringify(plainTextData)
-    );
-    return encrypt;
-  }
-
-  async function transmitMedicalData(encryptedData: string) {
-    let registreeAddress: string;
-
-    // YourOrganization
-    if (registree === registreeOptions[0]) {
-      registreeAddress = orgs[orgIndex].address;
-    }
-    // TODO : implement
-    else if (registree === registreeOptions[1]) {
-      registreeAddress = "0x0";
-    }
-    // No one
-    else {
-      registreeAddress = PetAmoy.address;
-    }
-
-    const callData = encodeFunctionData({
-      abi: OrgContractCompile.abi,
-      functionName: "sendMedicalInfo",
-      args: [registreeAddress, encryptedData],
+    const { client } = useSmartAccountClient({
+        type: "MultiOwnerModularAccount",
+        gasManagerConfig: {
+            policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
+        },
+        opts: {
+            txMaxRetries: 20,
+        },
     });
 
-    await sendUserOperation({
-      uo: {
-        target: orgs[orgIndex].address as Address,
-        data: callData,
-      },
-    });
-  }
+    const {
+        sendUserOperation,
+        sendUserOperationResult,
+        isSendingUserOperation,
+        error: isSendUserOperationError,
+    } = useSendUserOperation({ client, waitForTxn: true });
 
-  async function saveKeys() {
-    const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
+    // construct call data and send userOperation for creating a new pet medical record entry
+    const createPetRecord = async () => {
+        const petAddress = PetAmoy?.address;
+        const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
+        const petContract = new ethers.Contract(petAddress,
+            PetAmoy.abi, provider);
 
-    setPrivateKey(hdNode.privateKey);
-    setPublicKey(hdNode.publicKey);
-  }
 
-  async function handleDecrypt() {
-    setMedicalData(
-      await EthCrypto.decryptWithPrivateKey(privateKey, encryptedMedicalData)
-    );
-  }
+        const owner = await petContract.ownerOf(petId);
+        const medicalDataPlainText = {
+            by: user?.address,
+            type: recordType,
+            userText: userText
+        };
+        console.log(medicalDataPlainText, owner);
+        // setEncryptedMedicalData(await encryptMedicalData(medicalDataPlainText, owner));
+        // await transmitMedicalData(encryptedMedicalData);
+    }
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
+    async function encryptMedicalData(plainTextData: any, owner: string) {
+        const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
+        // ethers.
 
-  return (
-    <>
-      {publicKey == "" && privateKey == "" ? (
-        <Stack spacing={2} padding={4}>
-          <Item>
-            <strong>Seed Phrase</strong>
-            <div
-              className="w-full"
-              style={{ display: "block" }}
-              id={TurnkeyExportWalletContainerId}
-            >
-              <style>{iframeCss}</style>
-            </div>
-          </Item>
-          <Item>
-            <TextField
-              id="outlined-basic"
-              label="Paste seed phrase here :)"
-              variant="outlined"
-              value={mnemonic}
-              onChange={(e) => setMnemonic(e.target.value)}
-            />
-            <Button variant="contained" onClick={saveKeys}>
-              Submit
-            </Button>
-          </Item>
-        </Stack>
-      ) : (
-        <div>
-          <Stack spacing={1} padding={4}>
-            <Item>
-              VIEW YOUR DATA HERE:
-              <p>{medicalData}</p>
-              {/* TODO - Pull your data from the db and show it here */}
-            </Item>
-          </Stack>
-          <Grid container bgcolor="white" padding={4}>
-            <Grid item>
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label={
-                  <Typography color="black">
-                    Rabbies Vaccine Completed
-                  </Typography>
-                }
-                value={isVaccinated}
-                onChange={(e) => setIsVaccinated(!isVaccinated)}
-              />
-            </Grid>
-            <Grid item>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Date Completed"
-                  value={dateVaccinated}
-                  onChange={(e) =>
-                    setDateVaccinated(
-                      dayjs(new Date(e?.year(), e?.month(), e?.day()))
-                    )
-                  }
-                />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item>
-              <TextField
-                id="outlined-basic"
-                label="Something else to encrypt"
-                variant="outlined"
-                value={userText}
-                onChange={(e) => setUserText(e.target.value)}
-              />
-            </Grid>
-            <Grid item>
-              <Button variant="contained" onClick={handleFormSubmitted}>
-                Encrypt Data
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant="contained" onClick={handleDecrypt}>
-                Decrypt Data
-              </Button>
-            </Grid>
-          </Grid>
-        </div>
-      )}
-    </>
-  );
+        // const encrypt = await EthCrypto.encryptWithPublicKey(
+        //     EthCrypto.publicKey.decompress(owner.substring(2)),
+        //     JSON.stringify(plainTextData)
+        // );
+
+        // console.log('ciphertext', encrypt)
+        // return encrypt;
+    }
+
+
+    useEffect(() => {
+        if (client) {
+            client?.account.getSigner().exportWallet({
+                iframeContainerId: TurnkeyExportWalletContainerId,
+                iframeElementId: TurnkeyExportWalletElementId
+            }).catch(() => console.log("expected iframe issue"));
+        }
+    }, [client, user]);
+
+    useEffect(() => {
+        console.log("error", isSendUserOperationError);
+    }, [isSendUserOperationError]);
+
+    return (
+        <Container>
+            <Paper>
+                <Stack padding={10} spacing={4}>
+                    <Typography textAlign="center" variant="h3">Add New Medical Record for Animal</Typography>
+                    <Stack spacing={1}>
+                        <Typography variant="h5" fontWeight="bold" gutterBottom>Seed Phrase</Typography>
+                        <Typography variant="h6" color="text.secondary">Copy your seed phrase into the seed phrase text field in
+                            order to encrypt the medical history</Typography>
+                        <div
+                            className="w-full"
+                            style={{ display: "block" }}
+                            id={TurnkeyExportWalletContainerId}
+                        >
+                            <style>{iframeCss}</style>
+                        </div>
+                        <TextField
+                            required
+                            id="submitter-name"
+                            label="Paste Seed Phrase"
+                            value={mnemonic}
+                            onChange={(e) => setMnemonic(e.target.value)}
+                            disabled={isSendingUserOperation}>
+                        </TextField>
+                    </Stack>
+                    <br></br>
+                    <Typography variant="h5" fontWeight="bold" gutterBottom>Medical Form</Typography>
+                    <FormGroup>
+                        <Stack spacing={2}>
+                            <Input
+                                required
+                                id="animal-id"
+                                value={petId}
+                                type="number"
+                                onChange={(e) => setPetId((e.target.value as unknown) as BigInt)}
+                                disabled={isSendingUserOperation}>
+                            </Input>
+                            <Select
+                                required
+                                // onChange={(e) => setRecordType(e.target.value as number)}
+                                defaultValue={0}
+                                id="org-type"
+                                disabled={isSendingUserOperation}>
+                                <option value={0}>Vaccine</option>
+                                <option value={1}>Procedure</option>
+                                <option value={2}>Checkup</option>
+                                <option value={3}>Other</option>
+                            </Select>
+                            <TextField
+                                multiline
+                                id="outlined-basic"
+                                label="Record Details"
+                                variant="outlined"
+                                value={userText}
+                                onChange={(e) => setUserText(e.target.value)}
+                            />
+                            <Button
+                                variant="contained"
+                                onClick={() => { createPetRecord() }}
+                                disabled={isSendingUserOperation}>
+                                {isSendingUserOperation ? <CircularProgress /> : <Typography>Submit</Typography>}
+                            </Button>
+                        </Stack>
+                    </FormGroup>
+                </Stack>
+            </Paper>
+        </Container >
+    )
 }

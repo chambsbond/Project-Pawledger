@@ -23,6 +23,13 @@ const features: IFeature[] = [
         image: "/catSleuth.png"
     },
     {
+        displayName: "Animal Found",
+        name: "foundAnimal",
+        description: "Peep at animals details",
+        scope: ["Animal.Read"],
+        image: "/catSleuth.png"
+    },
+    {
         displayName: "Charting",
         name: "charting",
         description: "Create a health record for an animal",

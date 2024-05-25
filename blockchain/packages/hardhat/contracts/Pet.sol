@@ -67,11 +67,8 @@ contract Pet is ERC721 {
 		OrgAffilliation memory orgAff,
 		address petOwner,
 		string memory medPayload
-	) public onlyValidOrg returns (uint256) {
+	) public onlyValidOrg {
 		emit MedicalPayload(orgAff.org, orgAff.claimee, petOwner, medPayload);
-
-		uint256 tokenId = _nextTokenId++;
-		return tokenId;
 	}
 
 	//may want to enable anyone from the same org to be able to withdraw a claim
