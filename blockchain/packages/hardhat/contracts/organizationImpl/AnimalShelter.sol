@@ -16,8 +16,8 @@ contract AnimalShelter is BaseOrganization {
 	) BaseOrganization(address(pet), owner, name) {
 	}
 
-	function registerAnimal(address prospectiveOwner, uint32 gasLimit) public onlyEmployee() returns(uint256) {
-		return Pet(_pet).mint(OrgAffilliation({org: address(this), claimee: msg.sender}), prospectiveOwner, gasLimit);
+	function registerAnimal(address prospectiveOwner) public onlyEmployee() returns(uint256) {
+		return Pet(_pet).mint(OrgAffilliation({org: address(this), claimee: msg.sender}), prospectiveOwner);
 	}
 
 	function sendMedicalInfo(address petOwner, string memory payload) public onlyEmployee() {
@@ -26,6 +26,10 @@ contract AnimalShelter is BaseOrganization {
 
 	function foundPetClaim(uint256 tokenId) public onlyEmployee() {
 		Pet(_pet).foundPetClaim(tokenId, OrgAffilliation({org: address(this), claimee: msg.sender}));
+	}
+
+	function adoptAnimal(uint256 tokenId, address user, uint32 gasLimit) public onlyEmployee() {
+		Pet(_pet).adoptAnimal(user, tokenId, gasLimit);
 	}
 
 	function onERC721Received(

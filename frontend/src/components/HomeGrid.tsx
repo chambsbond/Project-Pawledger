@@ -22,12 +22,19 @@ const features: IFeature[] = [
         scope: ["Animal.Read"],
         image: "/catSleuth.png"
     },
+    // {
+    //     displayName: "Animal Found",
+    //     name: "foundAnimal",
+    //     description: "Peep at animals details",
+    //     scope: ["Animal.Read"],
+    //     image: "/catSleuth.png"
+    // },
     {
-        displayName: "Animal Found",
-        name: "foundAnimal",
-        description: "Peep at animals details",
-        scope: ["Animal.Read"],
-        image: "/catSleuth.png"
+        displayName: "Adopt Animal",
+        name: "adopt",
+        description: "Transfer ownership of an animal",
+        scope: ["Animal.Read", "Animal.Write", "Chart.Write"],
+        image: "/adopt.png"
     },
     {
         displayName: "Charting",

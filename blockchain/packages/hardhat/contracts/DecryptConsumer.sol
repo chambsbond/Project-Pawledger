@@ -8,26 +8,26 @@ import { Pet } from "./Pet.sol";
 contract DecryptConsumer is FunctionsClient {
 	using FunctionsRequest for FunctionsRequest.Request;
 
-  event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
+	event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 
 	string private calculationLogic;
 	bytes32 private donId;
-  Pet private immutable pet;
+	Pet private immutable pet;
 
 	constructor(
 		address oracle,
 		bytes32 _donId,
 		string memory _calculationLogic,
-    Pet _pet
+		Pet _pet
 	) FunctionsClient(oracle) {
 		donId = _donId;
 		calculationLogic = _calculationLogic;
-    pet = _pet;
+		pet = _pet;
 	}
 
-  // subscriptionId is for chainLink
-  // args may not be needed
-	function testApiCall(
+	// subscriptionId is for chainLink
+	// args may not be needed
+	function reEncryptMedicalRecords(
 		// string[] calldata args,
 		uint32 gasLimit
 	) public returns (bytes32) {
@@ -61,6 +61,6 @@ contract DecryptConsumer is FunctionsClient {
 		bytes memory response,
 		bytes memory err
 	) internal override {
-    pet.eventDecryted(requestId, response, err);
+		pet.eventsDecryted(requestId, response, err);
 	}
 }

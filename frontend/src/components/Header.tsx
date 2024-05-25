@@ -39,12 +39,10 @@ export default function Header() {
         setAnchorEl(null);
     };
 
-    useEffect(() => {
-        console.log(user, account, address)
+    useEffect(() => {        
         if (user != null && account != null && address) {
             
         } else {
-            console.log('hello')
             router.push('');
         } 
     }, [user, account, address])
