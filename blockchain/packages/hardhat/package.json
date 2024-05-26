@@ -42,6 +42,7 @@
     "hardhat-deploy": "^0.11.45",
     "hardhat-deploy-ethers": "^0.4.1",
     "hardhat-gas-reporter": "^1.0.9",
+    "openpgp": "^5.11.1",
     "prettier": "^2.8.4",
     "solidity-coverage": "^0.8.5",
     "ts-node": "^10.9.1",
