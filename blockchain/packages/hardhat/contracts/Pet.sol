@@ -76,8 +76,9 @@ contract Pet is ERC721 {
 	function adoptAnimal(
 		address to,
 		uint256 tokenId,
+		string memory transfereePublicKey,
 		uint32 gasLimit) public onlyValidOrg() {
-			_decryptConsumer.reEncryptMedicalRecords(gasLimit);
+			_decryptConsumer.reEncryptMedicalRecords(transfereePublicKey , tokenId, gasLimit);
 			_safeTransfer(msg.sender, to, tokenId, "");
 	}
 

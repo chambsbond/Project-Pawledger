@@ -28,8 +28,8 @@ contract AnimalShelter is BaseOrganization {
 		Pet(_pet).foundPetClaim(tokenId, OrgAffilliation({org: address(this), claimee: msg.sender}));
 	}
 
-	function adoptAnimal(uint256 tokenId, address user, uint32 gasLimit) public onlyEmployee() {
-		Pet(_pet).adoptAnimal(user, tokenId, gasLimit);
+	function adoptAnimal(uint256 tokenId, address user, string memory transfereePublicKey, uint32 gasLimit) public onlyEmployee() {
+		Pet(_pet).adoptAnimal(user, tokenId, transfereePublicKey, gasLimit);
 	}
 
 	function onERC721Received(
