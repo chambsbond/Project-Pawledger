@@ -11,9 +11,10 @@ namespace PawledgerAPI.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long MedicalHistoryId { get; set; }
         [ForeignKey("PetEntity")]
-        public string TokenId {get; set;}
+        public string TokenId { get; set; }
         [Required]
         public string EncryptedHistory { get; set; }
+        public string AddressedTo { get; set; }
         public DateTime CreatedTimestamp { get; set; }
         public DateTime UpdatedTimestamp { get; set; }
     }
