@@ -1,4 +1,4 @@
-const openpgp = require('openpgp');
+const openpgp = await require('npm:openpgp');
 
 [tokenId, reEncryptPublicKey] = args
 

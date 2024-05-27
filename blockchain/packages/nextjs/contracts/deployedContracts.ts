@@ -770,7 +770,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x496FB10692EBa0b05bF078406A460eC81A192F55",
+      address: "0x7F3DA98781D5cdF363375EE52Ee56e924f94Af59",
       abi: [
         {
           inputs: [],
@@ -875,7 +875,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0xF139f5603ec02fe518366d208B7b67c93ed7D945",
+      address: "0x65632fcB496e52E75B30c7e5f773456ceCCD9776",
       abi: [
         {
           inputs: [
@@ -1011,7 +1011,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0x1fCb9358A250442a19F6C72C567F5D6282170924",
+      address: "0x0f406eE495B480b59d3A43C2FD5c3494EE0E94a9",
       abi: [
         {
           inputs: [
@@ -1239,6 +1239,11 @@ const deployedContracts = {
               internalType: "uint256",
               name: "tokenId",
               type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "transfereePublicKey",
+              type: "string",
             },
             {
               internalType: "uint32",

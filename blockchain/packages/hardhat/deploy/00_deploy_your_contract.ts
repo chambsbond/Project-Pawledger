@@ -3,7 +3,6 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 import fs from "fs/promises";
 import path from "node:path";
-import PetAbi  from "../deployments/polygonAmoy/Pet.json";
 import  { ethers } from "ethers";
 
 /**
@@ -28,7 +27,9 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   console.log(deployer)
 
-  const admin = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3"
+  const admin = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3";
+  const routerAddress = "0xC22a79eBA640940ABB6dF0f7982cc119578E11De";
+  const donId = "fun-polygon-amoy-1";
 
   await deploy("OrganizationFactory", {
     from: deployer,
@@ -68,9 +69,8 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   const pet = await hre.ethers.getContract<Contract>("Pet", deployer);
 
-  const getFunction = pet.getFunction("getDecryptContract");
 
-  const contract = pet.attach(PetAbi.address); 
+  const contract = pet.attach(pet.target); 
 
   console.log(await contract.getDecryptContract());
 

@@ -9,17 +9,25 @@ import { useRouter } from "next/navigation";
 export const LogInCard = () => {
   const [email, setEmail] = useState<string>("");
   const { authenticate, isPending: isAuthenticatingUser } = useAuthenticate();
-  const { account, address, isLoadingAccount } = useAccount({
-    type: "MultiOwnerModularAccount",
+  const { isLoadingAccount, } = useAccount({
+    type: "MultiOwnerModularAccount", // alternatively pass in "MultiOwnerModularAccount",
+    accountParams: {}, // optional param for overriding any account specific properties
+    skipCreate: true, // optional param to skip creating the account
+    onSuccess: (account) => {
+      // [optional] Do something with the account
+    },
+    onError: (error) => {
+      // [optional] Do something with the error
+    },
   });
   const user = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (user != null && account != null && address) {
+    if (user != null) {
       router.push('/dashboard')
     }
-  }, [account, user, address])
+  }, [user])
 
   return (
     <Box display="flex" height="100vh" flexDirection="column" justifyContent="center" alignItems="center" >

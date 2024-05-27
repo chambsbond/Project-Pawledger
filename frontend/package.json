@@ -12,23 +12,23 @@
     "@alchemy/aa-accounts": "^3.12.0",
     "@alchemy/aa-alchemy": "^3.12.0",
     "@alchemy/aa-core": "^3.12.0",
-    "@mui/x-date-pickers": "^7.4.0",
-    "dayjs": "^1.11.11",
-    "eth-crypto": "^2.6.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.17",
     "@mui/material": "^5.15.17",
+    "@mui/x-date-pickers": "^7.4.0",
     "@reduxjs/toolkit": "^2.2.5",
     "@tanstack/react-query": "5.28.9",
+    "dayjs": "^1.11.11",
+    "eth-crypto": "^2.6.0",
     "ethers": "^6.12.1",
     "jquery": "^3.7.1",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
-    "viem": "2.8.6",
     "react-hook-form": "^7.51.4",
-    "react-redux": "^9.1.2"
+    "react-redux": "^9.1.2",
+    "viem": "2.8.6"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
@@ -39,5 +39,6 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

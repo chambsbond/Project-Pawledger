@@ -41,7 +41,7 @@ export default function adoptAnimal() {
         const callData = encodeFunctionData({
             abi: OrgContractCompile.abi,
             functionName: "adoptAnimal",
-            args: [tokenId, adopteeAddress, 10000]
+            args: [tokenId, adopteeAddress, adopteeAddress, 10000]
         });
 
         sendUserOperation({

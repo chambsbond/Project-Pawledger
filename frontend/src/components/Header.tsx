@@ -17,15 +17,15 @@ export default function Header() {
     const orgs = useSelector(memberShipSelector);
     const dispatch = useDispatch();
     const router = useRouter();
-    const { logout } = useLogout({
-        onSuccess: () => {
-            router.push('');
-        },
-        onError: (error) => {
-            // [optional] Do something with the error
-        },
-        // [optional] ...additional mutationArgs
-    });
+    // const { logout } = useLogout({
+    //     onSuccess: () => {
+    //         router.push('');
+    //     },
+    //     onError: (error) => {
+    //         // [optional] Do something with the error
+    //     },
+    //     // [optional] ...additional mutationArgs
+    // });
     const { account, address, isLoadingAccount } = useAccount({
         type: "MultiOwnerModularAccount",
     });
@@ -39,13 +39,18 @@ export default function Header() {
         setAnchorEl(null);
     };
 
-    useEffect(() => {        
-        if (user != null && account != null && address) {
+    // useEffect(() => {        
+    //     if (user != null && account != null && address) {
             
-        } else {
-            router.push('');
-        } 
-    }, [user, account, address])
+    //     } else {
+    //         router.push('');
+    //     } 
+    // }, [user, account, address])
+
+    const handleSelectChange = (event : any) => {
+        dispatch(setSelectedOrgIndex(event.target.value as number))
+        router.push('/dashboard')
+    }
 
     return (
         <AppBar position="static">
@@ -80,7 +85,7 @@ export default function Header() {
                         {orgs != undefined && orgs?.length > 1 &&
                             <Select
                                 defaultValue={0}
-                                onChange={(event) => dispatch(setSelectedOrgIndex(event.target.value as number))}
+                                onChange={(event) => handleSelectChange(event)}
                                 sx={{ color: "white", borderColor: "white" }}
                             >
                                 {orgs.map((org, index) =>

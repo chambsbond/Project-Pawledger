@@ -33,9 +33,11 @@ const deployYourContract = async function (hre: HardhatRuntimeEnvironment) {
     encryptedSecretsHexstring: encryptedSecretsObj.encryptedSecrets,
     gatewayUrls: gatewayUrls,
     slotId: 0,
-    minutesUntilExpiration: 15,
+    minutesUntilExpiration: 2500,
   });
   
+  console.log(uploadResult);
+
   if (!uploadResult.success)
     throw new Error(`Encrypted secrets not uploaded to ${gatewayUrls}`);
 
