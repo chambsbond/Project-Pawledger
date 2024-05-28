@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using PawledgerAPI.Context;
 using PawledgerAPI.Entities;
 using PawledgerAPI.Models;
@@ -34,7 +35,7 @@ namespace PawledgerAPI.Repositories
       var entity = new MedicalHistoryEntity
       {
         TokenId = history.TokenId,
-        EncryptedHistory = history.EncryptedHistory,
+        EncryptedHistory = JsonSerializer.Serialize(history.EncryptedHistory),
         AddressedTo = history.AddressedTo,
         RequestId = history.RequestId,
         CreatedTimestamp = DateTime.UtcNow,
