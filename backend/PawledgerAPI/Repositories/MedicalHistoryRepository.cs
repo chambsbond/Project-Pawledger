@@ -31,20 +31,24 @@ namespace PawledgerAPI.Repositories
         .Count() > 0;
     }
 
-    public async Task AddMedicalHistory(MedicalHistory history)
+    public void AddMedicalHistory(MedicalHistory history)
     {
-      var entity = new MedicalHistoryEntity
+
+      lock (history.RequestId)
       {
-        TokenId = history.TokenId,
-        EncryptedHistory = JsonSerializer.Serialize(history.EncryptedHistory),
-        AddressedTo = history.AddressedTo,
-        RequestId = history.RequestId,
-        CreatedTimestamp = DateTime.UtcNow,
-        UpdatedTimestamp = DateTime.UtcNow
-      };
-      
-      _context.MedicalHistory.Add(entity);
-      await _context.SaveChangesAsync();
+        var entity = new MedicalHistoryEntity
+        {
+          TokenId = history.TokenId,
+          EncryptedHistory = JsonSerializer.Serialize(history.EncryptedHistory),
+          AddressedTo = history.AddressedTo,
+          RequestId = history.RequestId,
+          CreatedTimestamp = DateTime.UtcNow,
+          UpdatedTimestamp = DateTime.UtcNow
+        };
+
+        _context.MedicalHistory.Add(entity);
+        _context.SaveChanges();
+      }
     }
   }
 }

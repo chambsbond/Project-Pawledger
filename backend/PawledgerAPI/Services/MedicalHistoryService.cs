@@ -19,10 +19,10 @@ namespace PawledgerAPI.Services
             return _repository.GetMedicalHistoriesByTokenId(tokenId);
         }
 
-        public async Task CreateMedicalHistory(MedicalHistory payload)
+        public void CreateMedicalHistory(MedicalHistory payload)
         {
             if (!_repository.MedicalHistoryExistsByRequestId(payload.RequestId)) {
-                await _repository.AddMedicalHistory(payload);
+                _repository.AddMedicalHistory(payload);
             }
         }
     }

@@ -25,9 +25,9 @@ namespace PawledgerAPI.Controllers
         }
 
         [HttpPut("medicalHistory")]
-        public async Task<IActionResult> CreateMedicalHistory(MedicalHistory payload)
+        public IActionResult CreateMedicalHistory(MedicalHistory payload)
         {
-            await _service.CreateMedicalHistory(payload);
+            _service.CreateMedicalHistory(payload);
             return Ok(new {status = "Success"});
         }
     }
