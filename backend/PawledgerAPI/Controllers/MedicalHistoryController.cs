@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PawledgerAPI.Entities;
+using PawledgerAPI.Models;
 using PawledgerAPI.Services;
 
 namespace PawledgerAPI.Controllers
@@ -19,6 +20,13 @@ namespace PawledgerAPI.Controllers
         public MedicalHistoryEntity[] GetMedicalHistoryListByTokenId(string tokenId)
         {
             return _service.GetMedicalHistoryListByTokenId(tokenId);
+        }
+
+        [HttpPut("medicalHistory")]
+        public ActionResult CreateMedicalHistory(MedicalHistory payload)
+        {
+            _service.CreateMedicalHistory(payload);
+            return Ok();
         }
     }
 }
