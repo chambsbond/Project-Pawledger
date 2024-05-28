@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using PawledgerAPI.Context;
 using PawledgerAPI.Entities;
 using PawledgerAPI.Models;
@@ -30,7 +31,7 @@ namespace PawledgerAPI.Repositories
         .Count() > 0;
     }
 
-    public void AddMedicalHistory(MedicalHistory history)
+    public async Task AddMedicalHistory(MedicalHistory history)
     {
       var entity = new MedicalHistoryEntity
       {
@@ -43,7 +44,7 @@ namespace PawledgerAPI.Repositories
       };
       
       _context.MedicalHistory.Add(entity);
-      _context.SaveChanges();
+      await _context.SaveChangesAsync();
     }
   }
 }

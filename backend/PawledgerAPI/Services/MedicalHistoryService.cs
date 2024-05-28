@@ -1,6 +1,7 @@
 ﻿using PawledgerAPI.Repositories;
 using PawledgerAPI.Entities;
 using PawledgerAPI.Models;
+using System.Threading.Tasks;
 
 namespace PawledgerAPI.Services
 {
@@ -18,10 +19,10 @@ namespace PawledgerAPI.Services
             return _repository.GetMedicalHistoriesByTokenId(tokenId);
         }
 
-        public void CreateMedicalHistory(MedicalHistory payload)
+        public async Task CreateMedicalHistory(MedicalHistory payload)
         {
             if (!_repository.MedicalHistoryExistsByRequestId(payload.RequestId)) {
-                _repository.AddMedicalHistory(payload);
+                await _repository.AddMedicalHistory(payload);
             }
         }
     }

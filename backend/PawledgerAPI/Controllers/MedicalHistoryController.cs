@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using PawledgerAPI.Entities;
 using PawledgerAPI.Models;
 using PawledgerAPI.Services;
@@ -23,10 +24,10 @@ namespace PawledgerAPI.Controllers
         }
 
         [HttpPut("medicalHistory")]
-        public ActionResult CreateMedicalHistory(MedicalHistory payload)
+        public async Task<IActionResult> CreateMedicalHistory(MedicalHistory payload)
         {
-            _service.CreateMedicalHistory(payload);
-            return Ok();
+            await _service.CreateMedicalHistory(payload);
+            return Ok("Success");
         }
     }
 }
