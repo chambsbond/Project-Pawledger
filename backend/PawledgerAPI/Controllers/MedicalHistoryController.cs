@@ -22,7 +22,7 @@ namespace PawledgerAPI.Controllers
             return _service.GetMedicalHistoryListByTokenId(tokenId);
         }
 
-        [HttpPut("medicalHistory")]
+        [HttpPost("medicalHistory")]
         public ActionResult CreateMedicalHistory(MedicalHistory payload)
         {
             _service.CreateMedicalHistory(payload);
