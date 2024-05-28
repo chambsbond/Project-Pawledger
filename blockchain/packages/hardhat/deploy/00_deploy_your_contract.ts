@@ -4,7 +4,7 @@ import { Contract } from "ethers";
 import fs from "fs/promises";
 import path from "node:path";
 import  { ethers } from "ethers";
-
+import { simulateScript } from "@chainlink/functions-toolkit";
 /**
  * Deploys a contract named "YourContract" using the deployer account and
  * constructor arguments set to the deployer address
@@ -25,11 +25,32 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy, execute } = hre.deployments;
 
-  console.log(deployer)
-
   const admin = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3";
   const routerAddress = "0xC22a79eBA640940ABB6dF0f7982cc119578E11De";
-  const donId = "fun-polygon-amoy-1";
+
+  const privateKey =  { privateKey: process.env.DECRYPT_PRIVATE_KEY ?? "1234" }
+  const tempPublicKey = "95ac1fbdf77cbe075bc34368543a2bd0c5cf92f7832eedfb0e40f03ff4e279e2d3cbdd05b633251a10df3229ba095b551f4b1b725c75c2c2e5231bc8f0c00828";
+
+  const source = await fs.readFile(
+    path.join(__dirname, '../functions/test.js'),
+    { encoding: 'utf8' }
+  );
+
+
+  const response = await simulateScript({
+    source: source,
+    args: ["0", tempPublicKey, admin, "515315"],
+    bytesArgs: [], // bytesArgs - arguments can be encoded off-chain to bytes.
+    secrets: privateKey,
+  });
+
+  console.log(response);
+
+  if(response.errorString) {
+    console.error("decrypt function failed! Exiting! Error:", response.errorString);
+    return;
+  }
+    
 
   await deploy("OrganizationFactory", {
     from: deployer,
@@ -51,12 +72,6 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   await execute("OrganizationFactory", { from: deployer }, "setRegistry", orgRegistry.target);
 
-  const source = await fs.readFile(
-    path.join(__dirname, '../functions/test.js'),
-    { encoding: 'utf8' }
-  );
-
-  console.log(source);
   await deploy("Pet", {
     from: deployer,
     // Contract constructor arguments

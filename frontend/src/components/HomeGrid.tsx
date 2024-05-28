@@ -15,20 +15,20 @@ const features: IFeature[] = [
         scope: ["Animal.Write"],
         image: "/managerDog.png"
     },
-    {
-        displayName: "Lookup",
-        name: "lookup",
-        description: "Peep at animals details",
-        scope: ["Animal.Read"],
-        image: "/catSleuth.png"
-    },
     // {
-    //     displayName: "Animal Found",
-    //     name: "foundAnimal",
+    //     displayName: "Lookup",
+    //     name: "lookup",
     //     description: "Peep at animals details",
     //     scope: ["Animal.Read"],
     //     image: "/catSleuth.png"
     // },
+    {
+        displayName: "Animal Found",
+        name: "foundAnimal",
+        description: "Peep at animals details",
+        scope: ["Animal.Read"],
+        image: "/catSleuth.png"
+    },
     {
         displayName: "Adopt Animal",
         name: "adopt",

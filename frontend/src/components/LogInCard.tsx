@@ -18,6 +18,7 @@ export const LogInCard = () => {
     },
     onError: (error) => {
       // [optional] Do something with the error
+      console.log(error);
     },
   });
   const user = useUser();

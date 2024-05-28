@@ -2394,6 +2394,7 @@ __metadata:
   dependencies:
     "@chainlink/contracts": ^1.1.1
     "@chainlink/env-enc": ^1.0.5
+    "@chainlink/functions-toolkit": ^0.2.8
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/providers": ^5.7.1
     "@nomicfoundation/hardhat-chai-matchers": ^2.0.3

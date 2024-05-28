@@ -770,7 +770,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x7F3DA98781D5cdF363375EE52Ee56e924f94Af59",
+      address: "0xB06ece3EE47DB9bFCECCBf2c54036E912930e4Ed",
       abi: [
         {
           inputs: [],
@@ -875,7 +875,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0x65632fcB496e52E75B30c7e5f773456ceCCD9776",
+      address: "0x76EC73AC886EED8A393fBe6EF004aaFb9525301B",
       abi: [
         {
           inputs: [
@@ -1011,7 +1011,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0x0f406eE495B480b59d3A43C2FD5c3494EE0E94a9",
+      address: "0xD196F7a59215fb3d24A303802f5f649F717d85Ff",
       abi: [
         {
           inputs: [

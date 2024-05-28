@@ -8,7 +8,7 @@ import { Pet } from "./Pet.sol";
 
 contract DecryptConsumer is FunctionsClient {
 	using FunctionsRequest for FunctionsRequest.Request;
-
+	uint256 private _requestCounter;
 	event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 
 	string private calculationLogic;
@@ -29,13 +29,13 @@ contract DecryptConsumer is FunctionsClient {
 	// subscriptionId is for chainLink
 	// args may not be needed
 	function reEncryptMedicalRecords(
-		string memory transfereePublicKey,
-		uint256 tokenId,
+		string[] memory args,
 		uint32 gasLimit
 	) public returns (bytes32) {
 		FunctionsRequest.Request memory req;
-		// string[] memory args;// = [Strings.toString(tokenId), transfereePublicKey, "mDMEZlJsrhYJKwYBBAHaRw8BAQdAtTjnExj2iuKRArmOf+MxS222Q+y+OOC2yCMXPDRm4iG0DExpYW0gUmV0aG9yZYiZBBMWCgBBFiEEwV7wBxoB9xi4H7ri6AuRm+FmNRgFAmZSbK4CGwMFCQWjYwIFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQ6AuRm+FmNRix8gD/XOJdBswbRCUOae1yGQiEEkivtnG1YgS8sYsP1R8WFJgA/j/LhvPXS9Y0sWY42ZP/3o9ro/E2zfI2Rj73BbU2euMNuDgEZlJsrhIKKwYBBAGXVQEFAQEHQLlgTfKWfkwLsul/FCXY8iXOJUF2XcZ2+AG1AIey7x1EAwEIB4h+BBgWCgAmFiEEwV7wBxoB9xi4H7ri6AuRm+FmNRgFAmZSbK4CGwwFCQWjYwIACgkQ6AuRm+FmNRhGWwEA20Cj1/UWgB1J5U0DZ6AQhVLg1icBTVqaK4xvmZQvw2oA/1VNxClukmMfOymonjo1KWQaqy/GTMvm4MhaP313NjMP=v7hr"];
 		
+		args[3] = Strings.toString(_requestCounter);
+
 		req.initializeRequest(
 			FunctionsRequest.Location.Inline,
 			FunctionsRequest.CodeLanguage.JavaScript,
@@ -44,10 +44,10 @@ contract DecryptConsumer is FunctionsClient {
 
 		req.addDONHostedSecrets(
 			0,
-			1716787163
+			1716848112
 		);
 		
-		// req.setArgs(args);
+		req.setArgs(args);
 
 		bytes32 assignedReqID = _sendRequest(
 			req.encodeCBOR(),

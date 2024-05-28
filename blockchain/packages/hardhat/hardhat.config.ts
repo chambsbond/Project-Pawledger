@@ -41,6 +41,8 @@ const config: HardhatUserConfig = {
     polygonAmoy: {
       url: `https://polygon-amoy.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
+      gasPrice: 20e9,
+      gas: 25e6
     },
     polygonZkEvm: {
       url: `https://polygonzkevm-mainnet.g.alchemy.com/v2/${providerApiKey}`,

@@ -7,6 +7,7 @@ import { OrgAffilliation } from "../models/OrgAffilliation.sol";
 import { OrganizationRegistry } from "./OrganizationRegistry.sol";
 import { IOrganization } from "./IOrganization.sol";
 import { DecryptConsumer } from "./DecryptConsumer.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Pet is ERC721 {
 	event MintClaimMade(
@@ -78,7 +79,12 @@ contract Pet is ERC721 {
 		uint256 tokenId,
 		string memory transfereePublicKey,
 		uint32 gasLimit) public onlyValidOrg() {
-			_decryptConsumer.reEncryptMedicalRecords(transfereePublicKey , tokenId, gasLimit);
+			string[] memory args = new string[](4);
+			args[0] = Strings.toString(tokenId);
+			args[1] = transfereePublicKey;
+			args[2] = Strings.toHexString(uint256(uint160(to)), 20);
+
+			_decryptConsumer.reEncryptMedicalRecords(args, gasLimit);
 			_safeTransfer(msg.sender, to, tokenId, "");
 	}
 
