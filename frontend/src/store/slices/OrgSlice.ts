@@ -5,7 +5,6 @@ import OrgFactoryContractAmoy from "../../../../blockchain/packages/hardhat/depl
 import OrgContractCompile from "../../../../blockchain/packages/hardhat/artifacts/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
 import OrgRegistryAmoy from "../../../../blockchain/packages/hardhat/deployments/polygonAmoy/OrganizationRegistry.json";
 import { ethers } from 'ethers';
-import { UseUserResult } from '@alchemy/aa-alchemy/react';
 import { RootState } from '../store';
 import { Address } from 'viem';
 
