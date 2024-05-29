@@ -1,20 +1,3 @@
-//TODO SEE BELOW TODOs
-//Figure out dynamic DON hosted secret
-//UI: Figure out how to to get transfereePublicKey
-//UI: Add/View charts from portal
-
-
-//UI: User side portal
-  // Onramp/Dashboard
-    // Transfer
-    // View Charts
-//BE: Found Animal Flow
-    //UI/Chainlink/BE: Timer for abandoned strays (chainlink points)
-
-//General Bug Fixes (state change in verified)
-
-
-
 const EthCrypto = await import('npm:eth-crypto');
 const { Buffer } = await import('node:buffer')
 

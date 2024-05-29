@@ -17,10 +17,10 @@ namespace PawledgerAPI.Repositories
       _context = dataContext;
     }
 
-    public MedicalHistoryEntity[] GetMedicalHistoriesByTokenId(string tokenId)
+    public MedicalHistoryEntity[] GetMedicalHistoriesByTokenId(string tokenId, string addressTo)
     {
       return _context.MedicalHistory
-        .Where(m => m.TokenId == tokenId)
+        .Where(m => m.TokenId == tokenId && m.AddressedTo == addressTo)
         .ToArray();
     }
 
@@ -28,27 +28,23 @@ namespace PawledgerAPI.Repositories
     {
       return _context.MedicalHistory
         .Where(m => m.RequestId == requestId)
-        .Count() > 0;
+        .Any();
     }
 
     public void AddMedicalHistory(MedicalHistory history)
     {
-
-      lock (history.RequestId)
+      var entity = new MedicalHistoryEntity
       {
-        var entity = new MedicalHistoryEntity
-        {
-          TokenId = history.TokenId,
-          EncryptedHistory = JsonSerializer.Serialize(history.EncryptedHistory),
-          AddressedTo = history.AddressedTo,
-          RequestId = history.RequestId,
-          CreatedTimestamp = DateTime.UtcNow,
-          UpdatedTimestamp = DateTime.UtcNow
-        };
+        TokenId = history.TokenId,
+        EncryptedHistory = JsonSerializer.Serialize(history.EncryptedHistory),
+        AddressedTo = history.AddressedTo,
+        RequestId = history.RequestId,
+        CreatedTimestamp = DateTime.UtcNow,
+        UpdatedTimestamp = DateTime.UtcNow
+      };
 
-        _context.MedicalHistory.Add(entity);
-        _context.SaveChanges();
-      }
+      _context.MedicalHistory.Add(entity);
+      _context.SaveChanges();
     }
   }
 }

@@ -5,25 +5,32 @@ using System.Threading.Tasks;
 
 namespace PawledgerAPI.Services
 {
-    public class MedicalHistoryService
+  public class MedicalHistoryService
+  {
+    private readonly MedicalHistoryRepository _repository;
+
+    public MedicalHistoryService(MedicalHistoryRepository repository)
     {
-        private readonly MedicalHistoryRepository _repository;
-
-        public MedicalHistoryService(MedicalHistoryRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public MedicalHistoryEntity[] GetMedicalHistoryListByTokenId(string tokenId)
-        {
-            return _repository.GetMedicalHistoriesByTokenId(tokenId);
-        }
-
-        public void CreateMedicalHistory(MedicalHistory payload)
-        {
-            if (!_repository.MedicalHistoryExistsByRequestId(payload.RequestId)) {
-                _repository.AddMedicalHistory(payload);
-            }
-        }
+      _repository = repository;
     }
+
+    public MedicalHistoryEntity[] GetMedicalHistoryListByTokenId(string tokenId, string addressTo)
+    {
+      return _repository.GetMedicalHistoriesByTokenId(tokenId, addressTo);
+    }
+
+    public void CreateMedicalHistories(MedicalHistory[] payloads)
+    {
+      lock (payloads[0].RequestId)
+      {
+        foreach (var payload in payloads)
+        {
+          if (!_repository.MedicalHistoryExistsByRequestId(payload.RequestId))
+          {
+            _repository.AddMedicalHistory(payload);
+          }
+        }
+      }
+    }
+  }
 }
