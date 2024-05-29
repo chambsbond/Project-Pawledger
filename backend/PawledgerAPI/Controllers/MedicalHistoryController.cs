@@ -18,16 +18,16 @@ namespace PawledgerAPI.Controllers
             _service = service;
         }
 
-        [HttpGet("medicalHistories/{tokenId}")]
-        public MedicalHistoryEntity[] GetMedicalHistoryListByTokenId(string tokenId)
+        [HttpGet("medicalHistories/token/{tokenId}/address/{addressTo}")]
+        public MedicalHistoryEntity[] GetMedicalHistoryListByTokenId(string tokenId, string addressTo)
         {
-            return _service.GetMedicalHistoryListByTokenId(tokenId);
+            return _service.GetMedicalHistoryListByTokenId(tokenId, addressTo);
         }
 
-        [HttpPut("medicalHistory")]
-        public Task<IActionResult> CreateMedicalHistory(MedicalHistory payload)
+        [HttpPut("medicalHistories")]
+        public Task<IActionResult> CreateMedicalHistories(MedicalHistory[] payloads)
         {
-            _service.CreateMedicalHistory(payload);
+            _service.CreateMedicalHistories(payloads);
             return Task.FromResult<IActionResult>(Ok(new { status = "Success" }));
         }
     }
