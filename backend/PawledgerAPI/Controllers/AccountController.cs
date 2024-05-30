@@ -24,7 +24,10 @@ namespace PawledgerAPI.Controllers
         [HttpGet("{address}")]
         public async Task<IActionResult> GetAccountByAddress(string address)
         {
-            return Ok(await _accountService.GetAccountByAddress(address));
+            var model = await _accountService.GetAccountByAddress(address);
+            if(model == null)
+                return NotFound();
+            return Ok(model);
         }
 
         [HttpPost("")]

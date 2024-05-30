@@ -18,7 +18,10 @@ namespace PawledgerAPI.Repositories
 
         public async Task<AccountModel> GetAccountByAddress(string address) 
         {
-            var entity = await _context.AccountEntity.FirstAsync((a) => a.Address.Equals(address));
+            var entity = await _context.AccountEntity.FirstOrDefaultAsync((a) => a.Address.Equals(address));
+
+            if(entity == null)
+                return null;
 
             return new AccountModel() {
                 Address = entity.Address,

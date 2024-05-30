@@ -7,6 +7,7 @@ import OrgRegistryAmoy from "../../../../blockchain/packages/hardhat/deployments
 import { ethers } from 'ethers';
 import { RootState } from '../store';
 import { Address } from 'viem';
+import axios from 'axios';
 
 export type Roles = "Member" | "Owner" | "Unaffiliated";
 
@@ -27,13 +28,15 @@ export interface Org {
 export interface OrgState {
     orgs: Org[],
     selectedOrg: number,
-    registryAdmin: boolean
+    registryAdmin: boolean,
+    publicKey: string | undefined
 }
 
 const initialState: OrgState = {
     orgs: [],
     selectedOrg: 0,
-    registryAdmin: false
+    registryAdmin: false,
+    publicKey: undefined,
 }
 
 
@@ -94,8 +97,26 @@ export const isOrgRegistryAdmin = createAsyncThunk(
 
         return await registryContract.isAdmin(client);
     }
-)
+);
 
+
+export const fetchPublicKey = createAsyncThunk(
+    'orgs/publicKey',
+    async (address : Address) => {
+        const response = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/account/${address}`);
+        console.log(response);
+        return response.data.publicKey;
+    }
+);
+
+export const addPublicKey = createAsyncThunk(
+    'orgs/publicKey',
+    async ( model : { address: Address, publicKey: string}) => {
+        const response = await axios.post(`https://eus-pawledger-backend.azurewebsites.net/api/account`, model);
+        console.log(response);
+        return response.data.publicKey;
+    }
+);
 
 export const orgContractSlice = createSlice({
     name: 'orgContract',
@@ -129,6 +150,9 @@ export const orgContractSlice = createSlice({
                 });
             }
         });
+        builder.addCase(fetchPublicKey.fulfilled, (state, action) => {
+            state.publicKey = action.payload as unknown as string;
+        })
     }
 })
 
