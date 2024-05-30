@@ -12,6 +12,6 @@ namespace PawledgerAPI.Context
 
         public DbSet<PetEntity> Pet { get; set; }
         public DbSet<MedicalHistoryEntity> MedicalHistory { get; set; }
-
+        public DbSet<AccountEntity> AccountEntity { get; set;}
     }
 }

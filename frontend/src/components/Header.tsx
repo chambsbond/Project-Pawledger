@@ -8,7 +8,7 @@ import * as React from 'react';
 import { Avatar, Container, Menu, MenuItem, Select, Stack, Tooltip } from '@mui/material';
 import { memberShipSelector, setSelectedOrgIndex } from '@/store/slices/OrgSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useAccount, useLogout, useUser } from '@alchemy/aa-alchemy/react';
+import { useAccount, useLogout, useSmartAccountClient, useUser } from '@alchemy/aa-alchemy/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -17,18 +17,27 @@ export default function Header() {
     const orgs = useSelector(memberShipSelector);
     const dispatch = useDispatch();
     const router = useRouter();
-    const { logout } = useLogout({
+    const { logout, isLoggingOut } = useLogout({
         onSuccess: () => {
-            router.push('');
+            console.log('succesfully logged out')
+            router.push('/');
         },
-        onError: (error) => {
+        onError: (error: any) => {
             // [optional] Do something with the error
+            console.log("error logging out", error)
         },
         // [optional] ...additional mutationArgs
     });
-    const { account, address, isLoadingAccount } = useAccount({
+    const { client, isLoadingClient} = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
+        gasManagerConfig: {
+            policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
+        },
+        opts: {
+            txMaxRetries: 20,
+        },
     });
+
     const user = useUser();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -39,15 +48,17 @@ export default function Header() {
         setAnchorEl(null);
     };
 
-    useEffect(() => {        
-        if (user != null && account != null && address) {
-            
-        } else {
-            router.push('');
-        } 
-    }, [user, account, address])
+    const handleLogOut = async () => {
 
-    const handleSelectChange = (event : any) => {
+    }
+
+    useEffect(() => {
+        if (!client && !isLoadingClient) {
+            router.push('/');
+        }
+    }, [isLoadingClient, client])
+
+    const handleSelectChange = (event: any) => {
         dispatch(setSelectedOrgIndex(event.target.value as number))
         router.push('/dashboard')
     }
@@ -103,7 +114,7 @@ export default function Header() {
                             open={open}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={() => logout}>Logout</MenuItem>
+                            <MenuItem onClick={() => logout()}>Logout</MenuItem>
                         </Menu>
                     </Stack>
                 </Stack>
