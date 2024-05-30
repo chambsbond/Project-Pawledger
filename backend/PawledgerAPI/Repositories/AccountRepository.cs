@@ -1,4 +1,5 @@
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PawledgerAPI.Context;
@@ -31,7 +32,14 @@ namespace PawledgerAPI.Repositories
 
         public async Task AddAccount(AccountModel model)
         {
-            await _context.AccountEntity.AddAsync(new AccountEntity {Address = model.Address, PublicKey = model.PublicKey});
+            await _context.AccountEntity.AddAsync(
+                new AccountEntity 
+                {
+                    Address = model.Address,
+                    PublicKey = model.PublicKey,
+                    CreatedTimestamp = DateTime.UtcNow,
+                    UpdatedTimestamp = DateTime.UtcNow
+                });
 
             await _context.SaveChangesAsync();
         }

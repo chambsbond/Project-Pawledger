@@ -58,6 +58,12 @@ namespace PawledgerAPI
       {
         endpoints.MapControllers();
       });
+
+      app.UseCors((policy) =>
+      {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+      });
     }
   }
 }
