@@ -12,7 +12,9 @@ import { RootState } from "@/store/store";
 
 export const LogInCard = () => {
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const publicKey = useAppSelector((state: RootState) => state.orgContract.publicKey);
+  const publicKeyIsLoading = useAppSelector((state: RootState) => state.orgContract.publicKeyIsLoading);
   const [email, setEmail] = useState<string>("");
   const { authenticate, isPending: isAuthenticatingUser } = useAuthenticate();
   const { client, isLoadingClient } = useSmartAccountClient({
@@ -42,24 +44,19 @@ export const LogInCard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchAndSet = async () => {
-      if (user != null && client != null) {
-        await dispatch(fetchPublicKey(client.account.publicKey));
-      }
+    if (client != null && !isLoading) {
+      dispatch(fetchPublicKey(client.account.publicKey));
+      setIsLoading(true);
     }
 
-    fetchAndSet();
-  }, [user, client, isLoadingClient])
-
-  useEffect(() => {
-    if(user != null && client != null && publicKey) {
+    if(user != null && client != null && publicKey && !publicKeyIsLoading) {
       router.push('/dashboard');
     }
-    else if (user != null && client != null && !publicKey) {
+    else if (user != null && client != null && publicKey == "" && !publicKeyIsLoading) {
       router.push('/signup')
     }
 
-  }, [user, client, isLoadingClient, publicKey])
+  }, [client, publicKey, publicKeyIsLoading])
 
   return (
     <Box display="flex" height="100vh" flexDirection="column" justifyContent="center" alignItems="center" >

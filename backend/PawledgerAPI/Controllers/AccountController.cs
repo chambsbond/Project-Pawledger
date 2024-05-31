@@ -30,7 +30,7 @@ namespace PawledgerAPI.Controllers
             return Ok(model);
         }
 
-        [HttpPost("")]
+        [HttpPut("")]
         public async Task<IActionResult> AddAccount(AccountModel model)
         {
             await _accountService.AddAccount(model);

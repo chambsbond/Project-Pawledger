@@ -39,6 +39,9 @@ namespace PawledgerAPI
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
     {
       dataContext.Database.Migrate();
+      app.UseCors(options =>
+        options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+      );
 
       if (env.IsDevelopment())
       {
@@ -59,11 +62,6 @@ namespace PawledgerAPI
         endpoints.MapControllers();
       });
 
-      app.UseCors((policy) =>
-      {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyHeader();
-      });
     }
   }
 }

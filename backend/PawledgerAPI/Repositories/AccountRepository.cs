@@ -32,6 +32,12 @@ namespace PawledgerAPI.Repositories
 
         public async Task AddAccount(AccountModel model)
         {
+            
+            var entity = await _context.AccountEntity.FirstOrDefaultAsync((a) => a.Address.Equals(model.Address));
+
+            if(entity != null)
+                return;
+
             await _context.AccountEntity.AddAsync(
                 new AccountEntity 
                 {

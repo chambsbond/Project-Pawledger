@@ -1,11 +1,20 @@
 "use client";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { Button, CircularProgress, Container, Paper, Stack, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
+import { ethers, verifyMessage } from "ethers";
+import { addPublicKey } from "@/store/slices/OrgSlice";
+import { useRouter } from "next/navigation";
+import { RootState } from "@/store/store";
 
 export default function WalletFetcher() {
     const user = useUser();
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const [mnemonic, setMnemonic] = useState<string>("");
+    const publicKeyIsLoading = useAppSelector((state: RootState) => state.orgContract.publicKeyIsLoading);
+    const publicKey = useAppSelector((state: RootState) => state.orgContract.publicKey);
     const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
     const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
     const iframeCss = `
@@ -44,6 +53,21 @@ export default function WalletFetcher() {
 
         method();
     }, [client, user]);
+
+    useEffect(() => {
+        console.log(publicKey);
+        if (!publicKeyIsLoading && publicKey && publicKey != "") {
+            router.push('/dashboard')
+        }
+    }, [publicKeyIsLoading, publicKey])
+
+    const handleSubmit = async () => {
+        if (mnemonic != null && mnemonic != "") {
+            const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
+            dispatch(addPublicKey({ address: hdNode.address, publicKey: hdNode.publicKey }));
+        }
+    }
+
     return (
         <Container>
             <Paper>
@@ -51,8 +75,9 @@ export default function WalletFetcher() {
                     <Typography textAlign="center" variant="h3">First Time Registration</Typography>
                     <Stack spacing={1}>
                         <Typography variant="h5" fontWeight="bold" gutterBottom>Seed Phrase</Typography>
-                        <Typography variant="h6" color="text.secondary">Copy your seed phrase into the seed phrase text field in
-                            order to encrypt the medical history</Typography>
+                        <Typography variant="h6" color="text.secondary">We need your seed phrase in order to get your PUBLIC key.
+                            Your private key will not leave the browser. We map your public key and address so users can encrypt health records using public keys.
+                            Please paste your seed phrase in the box below and click Submit.</Typography>
                         <div
                             className="w-full"
                             style={{ display: "block" }}
@@ -70,8 +95,9 @@ export default function WalletFetcher() {
                     </Stack>
                     <br></br>
                     <Button
-                        variant="contained">
-                        Submit
+                        variant="contained"
+                        onClick={handleSubmit}>
+                        {publicKeyIsLoading ? <CircularProgress></CircularProgress> : <>Submit</>}
                     </Button>
 
                 </Stack>

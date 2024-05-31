@@ -8,8 +8,11 @@ import { ethers } from 'ethers';
 import { RootState } from '../store';
 import { Address } from 'viem';
 import axios from 'axios';
+import { headers } from 'next/headers';
 
 export type Roles = "Member" | "Owner" | "Unaffiliated";
+
+const backendConfig = { headers: { 'Access-Control-Allow-Origin': '*', "Content-Type": "application/json" } };
 
 export enum OrgType {
     AnimalShelter = 0,
@@ -29,7 +32,8 @@ export interface OrgState {
     orgs: Org[],
     selectedOrg: number,
     registryAdmin: boolean,
-    publicKey: string | undefined
+    publicKey: string | undefined,
+    publicKeyIsLoading: boolean
 }
 
 const initialState: OrgState = {
@@ -37,6 +41,7 @@ const initialState: OrgState = {
     selectedOrg: 0,
     registryAdmin: false,
     publicKey: undefined,
+    publicKeyIsLoading: false
 }
 
 
@@ -57,7 +62,7 @@ export const fetchOrgInfo = createAsyncThunk(
         ///    "2":"0x0"
         ///}        
         const res = await factoryContract.getDeployedOrgs();
-        const orgContracts = Object.values(res) as string[];        
+        const orgContracts = Object.values(res) as string[];
         let orgMembership: Org[] = [];
 
         for (var org of orgContracts) {
@@ -70,9 +75,9 @@ export const fetchOrgInfo = createAsyncThunk(
 
             await Promise.all([isValidOrgPromise, isOwnerPromise, isMemberPromise, namePromise]);
 
-            if(await isOwnerPromise)
+            if (await isOwnerPromise)
                 role = "Owner"
-            else if(await isMemberPromise)
+            else if (await isMemberPromise)
                 role = "Member"
 
             orgMembership.push({
@@ -101,20 +106,20 @@ export const isOrgRegistryAdmin = createAsyncThunk(
 
 
 export const fetchPublicKey = createAsyncThunk(
-    'orgs/publicKey',
-    async (address : Address) => {
-        const response = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/account/${address}`);
+    'orgs/publicKey/fetch',
+    async (address: Address) => {
+        const response = await axios.get(`https://localhost:5001/api/account/${address}`, backendConfig);
         console.log(response);
         return response.data.publicKey;
     }
 );
 
 export const addPublicKey = createAsyncThunk(
-    'orgs/publicKey',
-    async ( model : { address: Address, publicKey: string}) => {
-        const response = await axios.post(`https://eus-pawledger-backend.azurewebsites.net/api/account`, model);
+    'orgs/publicKey/add',
+    async (model: { address: string, publicKey: string }) => {
+        const response = await axios.put(`https://localhost:5001/api/account`, model, backendConfig);
         console.log(response);
-        return response.data.publicKey;
+        return model.publicKey;
     }
 );
 
@@ -134,8 +139,8 @@ export const orgContractSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchOrgInfo.fulfilled, (state, action) => {
-            action.payload.forEach(org => {                
-                if(!state.orgs.some(orgInc => orgInc.address == org.address))
+            action.payload.forEach(org => {
+                if (!state.orgs.some(orgInc => orgInc.address == org.address))
                     state.orgs.push(org);
             });
         });
@@ -150,19 +155,40 @@ export const orgContractSlice = createSlice({
                 });
             }
         });
+        builder.addCase(fetchPublicKey.pending, (state, action) => {
+            state.publicKeyIsLoading = true;
+        })
         builder.addCase(fetchPublicKey.fulfilled, (state, action) => {
             state.publicKey = action.payload as unknown as string;
+            state.publicKeyIsLoading = false;
+        })
+        builder.addCase(fetchPublicKey.rejected, (state, action) => {
+            if (action.error.code == "ERR_BAD_REQUEST") {
+                state.publicKey = "";
+            }
+            state.publicKeyIsLoading = false;
+        })
+        builder.addCase(addPublicKey.fulfilled, (state, action) => {
+            console.log(action.payload)
+            state.publicKey = action.payload as unknown as string;
+            state.publicKeyIsLoading = false;
+        })
+        builder.addCase(addPublicKey.pending, (state, action) => {
+            state.publicKeyIsLoading = true;
+        })
+        builder.addCase(addPublicKey.rejected, (state, action) => {
+            state.publicKeyIsLoading = false;
         })
     }
 })
 
 export const { setOrg, addOrg, setSelectedOrgIndex } = orgContractSlice.actions;
 
-const selectedOrgIndex = (state : RootState) => (state.orgContract.selectedOrg)
-const selectedOrg = (state : RootState) => (state.orgContract.orgs[state.orgContract.selectedOrg]);
+const selectedOrgIndex = (state: RootState) => (state.orgContract.selectedOrg)
+const selectedOrg = (state: RootState) => (state.orgContract.orgs[state.orgContract.selectedOrg]);
 
-export const memberShipSelector = createSelector((state : RootState) => state.orgContract.orgs, (orgs) => orgs.filter(org => org.role == "Member" || org.role == "Owner"));
-export const orgSelectedIndexSelector = createSelector(selectedOrgIndex, (org : number) => { return org });
+export const memberShipSelector = createSelector((state: RootState) => state.orgContract.orgs, (orgs) => orgs.filter(org => org.role == "Member" || org.role == "Owner"));
+export const orgSelectedIndexSelector = createSelector(selectedOrgIndex, (org: number) => { return org });
 export const orgSelectedSelector = createSelector(selectedOrg, (org: Org) => { return org });
 
 export default orgContractSlice.reducer;
