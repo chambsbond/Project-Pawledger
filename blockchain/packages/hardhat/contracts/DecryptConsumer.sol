@@ -8,7 +8,6 @@ import { Pet } from "./Pet.sol";
 
 contract DecryptConsumer is FunctionsClient {
 	using FunctionsRequest for FunctionsRequest.Request;
-	uint256 private _requestCounter;
 	event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 
 	string private calculationLogic;
@@ -26,15 +25,11 @@ contract DecryptConsumer is FunctionsClient {
 		pet = _pet;
 	}
 
-	// subscriptionId is for chainLink
-	// args may not be needed
 	function reEncryptMedicalRecords(
 		string[] memory args,
 		uint32 gasLimit
 	) public returns (bytes32) {
 		FunctionsRequest.Request memory req;
-		
-		args[3] = Strings.toString(_requestCounter);
 
 		req.initializeRequest(
 			FunctionsRequest.Location.Inline,
@@ -43,15 +38,15 @@ contract DecryptConsumer is FunctionsClient {
 		);
 
 		req.addDONHostedSecrets(
-			0,
-			1716848112
+			0, // secret index
+			1716848112 // secret id
 		);
 		
 		req.setArgs(args);
 
 		bytes32 assignedReqID = _sendRequest(
 			req.encodeCBOR(),
-			231,
+			231, // subscriptionId for chainlink
 			gasLimit,
 			donId
 		);

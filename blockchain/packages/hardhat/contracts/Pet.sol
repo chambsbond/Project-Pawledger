@@ -31,6 +31,7 @@ contract Pet is ERC721 {
 	uint256 private _nextTokenId;
 	OrganizationRegistry private immutable _orgRegistry;
 	DecryptConsumer public immutable _decryptConsumer;
+	address private immutable _pawledgerAddress;
 
 	mapping(uint256 => OrgAffilliation) _foundClaimMap;
 
@@ -38,9 +39,11 @@ contract Pet is ERC721 {
 		OrganizationRegistry orgRegistry,
 		address functionRouter,
 		// bytes32 donId,
-		string memory calculationLogic
+		string memory calculationLogic,
+		address pawledgerAddress
 	) ERC721("Pet", "PET") {
 		_orgRegistry = orgRegistry;
+		_pawledgerAddress = pawledgerAddress;
 		_decryptConsumer = new DecryptConsumer(
 			functionRouter,
 			"fun-polygon-amoy-1",
@@ -83,6 +86,7 @@ contract Pet is ERC721 {
 			args[0] = Strings.toString(tokenId);
 			args[1] = transfereePublicKey;
 			args[2] = Strings.toHexString(uint256(uint160(to)), 20);
+			args[3] = Strings.toHexString(uint256(uint160(_pawledgerAddress)), 20);
 
 			_decryptConsumer.reEncryptMedicalRecords(args, gasLimit);
 			_safeTransfer(msg.sender, to, tokenId, "");

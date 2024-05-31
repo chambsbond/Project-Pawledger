@@ -1,47 +1,50 @@
 const EthCrypto = await import('npm:eth-crypto');
-const { Buffer } = await import('node:buffer')
-
+const { v4: uuidv4 } = await import('npm:uuid')
 
 const tokenId = args[0];
 const transfereePublicKey = args[1];
 const addressTo = args[2];
-const requestId = args[3];
+const pawledgerAddress = args[3];
 
-const data  = await Functions.makeHttpRequest({
-  url: `http://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/${tokenId}`,
+const response = await Functions.makeHttpRequest({
+  url: `http://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/${tokenId}/address/${pawledgerAddress}`,
   method: "GET",
   timeout: 10000
 });
 
-//TODO: Make this a loop
-const encryptedMessage = data.data[0].encryptedHistory;
+const requestId = uuidv4();
+let newEncryptedHistories = [];
+for (let i = 0; i < response.data.length; i++) {
+  let oldEncryptedHistory = response.data[i].encryptedHistory;
 
-//Decrypting with DON's private key
-const result = await EthCrypto.decryptWithPrivateKey(secrets.privateKey, JSON.parse(encryptedMessage));
+  const plaintextHistory = await EthCrypto.decryptWithPrivateKey(
+    secrets.privateKey, 
+    JSON.parse(oldEncryptedHistory)
+  );
 
-//ReEncrypt with New Owners public key
-const reEncryptedMessage = await EthCrypto.encryptWithPublicKey(
-  transfereePublicKey, // publicKey
-  result // message
-);
+  const newEncryptedHistory = await EthCrypto.encryptWithPublicKey(
+    transfereePublicKey, 
+    plaintextHistory
+  );
 
-// console.log(historyString)
-const test = {
-  tokenId: tokenId,
-  encryptedHistory: reEncryptedMessage,
-  addressedTo: addressTo,
-  requestId: requestId
+  const request = {
+    tokenId: tokenId,
+    encryptedHistory: newEncryptedHistory,
+    addressedTo: addressTo,
+    requestId: requestId
+  };
+
+  newEncryptedHistories.push(request);
+  console.log(i, response.data.length)
 }
 
-
-//TODO: Make endpoint that posts all history at once
 await Functions.makeHttpRequest({
-  url: `https://eus-pawledger-backend.azurewebsites.net/api/medicalHistory`,
+  url: `https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories`,
   method: "PUT",
   headers: {
     "Content-Type": "application/json",
   },
-  data: test,
+  data: newEncryptedHistories,
   timeout: 10000
 });
 

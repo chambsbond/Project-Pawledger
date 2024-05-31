@@ -3,8 +3,10 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 import fs from "fs/promises";
 import path from "node:path";
-import  { ethers } from "ethers";
 import { simulateScript } from "@chainlink/functions-toolkit";
+
+import EthCrypto from "eth-crypto";
+
 /**
  * Deploys a contract named "YourContract" using the deployer account and
  * constructor arguments set to the deployer address
@@ -27,30 +29,25 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   const admin = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3";
   const routerAddress = "0xC22a79eBA640940ABB6dF0f7982cc119578E11De";
-
-  const privateKey =  { privateKey: process.env.DECRYPT_PRIVATE_KEY ?? "1234" }
-  const tempPublicKey = "95ac1fbdf77cbe075bc34368543a2bd0c5cf92f7832eedfb0e40f03ff4e279e2d3cbdd05b633251a10df3229ba095b551f4b1b725c75c2c2e5231bc8f0c00828";
-
+  const pawLedgerPrivateKey =  { privateKey: "0xaef68b3370863496198e5edce3648bb21f14f6ffe23f913a86d6aa4deb91d668" };
+  const pawLedgerPublicKey = "aecf7df15a3a750fb293df93cecb6bc8b5206da52298cf18a9b4be7b7519e97dd99ce7ac05474f68ee44d5bd121f5a375fb71340ca30eb6d546668058025d99e";
   const source = await fs.readFile(
     path.join(__dirname, '../functions/test.js'),
     { encoding: 'utf8' }
   );
 
-
   const response = await simulateScript({
     source: source,
-    args: ["0", tempPublicKey, admin, "515315"],
-    bytesArgs: [], // bytesArgs - arguments can be encoded off-chain to bytes.
-    secrets: privateKey,
+    args: ["0", pawLedgerPublicKey, admin, "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3"],
+    bytesArgs: [],
+    secrets: pawLedgerPrivateKey,
   });
+  console.log(response) // todo its not adding multiple records need to fix this
 
-  console.log(response);
-
-  if(response.errorString) {
+  if (response.errorString) {
     console.error("decrypt function failed! Exiting! Error:", response.errorString);
     return;
   }
-    
 
   await deploy("OrganizationFactory", {
     from: deployer,
@@ -75,7 +72,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   await deploy("Pet", {
     from: deployer,
     // Contract constructor arguments
-    args: [orgRegistry.target, routerAddress, source],
+    args: [orgRegistry.target, routerAddress, source, "TODO_address_here"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -84,14 +81,12 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   const pet = await hre.ethers.getContract<Contract>("Pet", deployer);
 
-
   const contract = pet.attach(pet.target); 
 
   console.log(await contract.getDecryptContract());
 
   await execute("OrganizationFactory", { from: deployer }, "setPet", pet.target);
 };
-
 
 export default deployYourContract;
 
