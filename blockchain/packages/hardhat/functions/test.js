@@ -35,7 +35,6 @@ for (let i = 0; i < response.data.length; i++) {
   };
 
   newEncryptedHistories.push(request);
-  console.log(i, response.data.length)
 }
 
 await Functions.makeHttpRequest({

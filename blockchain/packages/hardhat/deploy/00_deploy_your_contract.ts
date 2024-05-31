@@ -42,7 +42,6 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     bytesArgs: [],
     secrets: pawLedgerPrivateKey,
   });
-  console.log(response) // todo its not adding multiple records need to fix this
 
   if (response.errorString) {
     console.error("decrypt function failed! Exiting! Error:", response.errorString);
