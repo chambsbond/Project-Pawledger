@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
 
   //allows us to persist state across page boundaries
-  const initialState = cookieToInitialState(config, headers().get("alchemy-account-state")!);
+  const initialState = cookieToInitialState(config, headers().get("alchemy-account-state") as string);
 
   return (
     <html lang="en">
