@@ -108,8 +108,7 @@ export const isOrgRegistryAdmin = createAsyncThunk(
 export const fetchPublicKey = createAsyncThunk(
     'orgs/publicKey/fetch',
     async (address: Address) => {
-        const response = await axios.get(`https://localhost:5001/api/account/${address}`, backendConfig);
-        console.log(response);
+        const response = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/account/${address}`, backendConfig);
         return response.data.publicKey;
     }
 );
@@ -117,8 +116,7 @@ export const fetchPublicKey = createAsyncThunk(
 export const addPublicKey = createAsyncThunk(
     'orgs/publicKey/add',
     async (model: { address: string, publicKey: string }) => {
-        const response = await axios.put(`https://localhost:5001/api/account`, model, backendConfig);
-        console.log(response);
+        const response = await axios.put(`https://eus-pawledger-backend.azurewebsites.net/api/account`, model, backendConfig);
         return model.publicKey;
     }
 );
