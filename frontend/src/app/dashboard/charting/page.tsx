@@ -2,32 +2,20 @@
 
 import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/store/hooks";
-import { useRouter } from "next/navigation";
 import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 
 //look into pet.json for needed contract functions
 import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
-import { ethers } from "ethers";
-import { useSelector } from "react-redux";
-import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
+import { ethers, verifyMessage } from "ethers";
 import { Input } from '@mui/material';
 
-const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
-const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
-const registreeOptions = ["Your Organization", "A different user", "No one"];
+import EthCrypto from 'eth-crypto';
 
 export default function ChartingPage() {
     const user = useUser();
-    const router = useRouter();
-    const [recordType, setRecordType] = useState<number>(0);
-    const dispatch = useAppDispatch();
-    const [fields, setFields] = useState<any>(null);
-    const [userText, setUserText] = useState<string>('');
+    const [userText, setUserText] = useState<string>("");
     const [mnemonic, setMnemonic] = useState<string>("");
     const [petId, setPetId] = useState<BigInt | undefined>();
-    const orgs = useSelector(memberShipSelector);
-    // const orgIndex = useSelector(orgSelectedIndexSelector);
     const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
     const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
     const iframeCss = `
@@ -42,7 +30,6 @@ export default function ChartingPage() {
             padding: 0px;
         }
         `;
-
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
         gasManagerConfig: {
@@ -62,44 +49,57 @@ export default function ChartingPage() {
 
     // construct call data and send userOperation for creating a new pet medical record entry
     const createPetRecord = async () => {
-        const petAddress = PetAmoy?.address;
-        const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
-        const petContract = new ethers.Contract(petAddress,
-            PetAmoy.abi, provider);
+        // const petAddress = PetAmoy?.address;
+        // const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
+        // const petContract = new ethers.Contract(petAddress,
+        //     PetAmoy.abi, provider);
 
 
-        const owner = await petContract.ownerOf(petId);
-        const medicalDataPlainText = {
-            by: user?.address,
-            type: recordType,
-            userText: userText
-        };
-        console.log(medicalDataPlainText, owner);
-        // setEncryptedMedicalData(await encryptMedicalData(medicalDataPlainText, owner));
+        // const owner = await petContract.ownerOf(petId);
+        // const medicalDataPlainText = {
+        //     by: user?.address,
+        //     type: recordType,
+        //     userText: userText
+        // };
+        // const test2 = await client?.account.getSigner().getAuthDetails();
+        // console.log(test2, await client?.account.getSigner().getAddress());
+        // // console.log('keyTest', publicKeyTest, client?.account.publicKey);
+
+        const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
+        const test = await encryptMedicalData(userText, hdNode.publicKey);
+        console.log(await client?.account.address, await client?.account.publicKey, hdNode.address);
+        
+
+        console.log("output", await EthCrypto.decryptWithPrivateKey(hdNode.privateKey, test));
+
         // await transmitMedicalData(encryptedMedicalData);
     }
 
     async function encryptMedicalData(plainTextData: any, owner: string) {
-        const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
         // ethers.
 
-        // const encrypt = await EthCrypto.encryptWithPublicKey(
-        //     EthCrypto.publicKey.decompress(owner.substring(2)),
-        //     JSON.stringify(plainTextData)
-        // );
+        const encrypt = await EthCrypto.encryptWithPublicKey(
+            EthCrypto.publicKey.decompress(owner.substring(2)),
+            JSON.stringify(plainTextData)
+        );
 
-        // console.log('ciphertext', encrypt)
-        // return encrypt;
+        console.log('ciphertext', encrypt)
+        return encrypt;
     }
 
 
     useEffect(() => {
-        if (client) {
-            client?.account.getSigner().exportWallet({
-                iframeContainerId: TurnkeyExportWalletContainerId,
-                iframeElementId: TurnkeyExportWalletElementId
-            }).catch(() => console.log("expected iframe issue"));
+        const method = async () => {
+            if (client) {
+                client?.account.getSigner().exportWallet({
+                    iframeContainerId: TurnkeyExportWalletContainerId,
+                    iframeElementId: TurnkeyExportWalletElementId
+                }).catch((e) => { });//expected - ignore error
+
+            }
         }
+
+        method();
     }, [client, user]);
 
     useEffect(() => {
@@ -135,14 +135,15 @@ export default function ChartingPage() {
                     <Typography variant="h5" fontWeight="bold" gutterBottom>Medical Form</Typography>
                     <FormGroup>
                         <Stack spacing={2}>
-                            <Input
+                            <TextField
                                 required
                                 id="animal-id"
                                 value={petId}
                                 type="number"
+                                placeholder="PET Id"
                                 onChange={(e) => setPetId((e.target.value as unknown) as BigInt)}
                                 disabled={isSendingUserOperation}>
-                            </Input>
+                            </TextField>
                             <Select
                                 required
                                 // onChange={(e) => setRecordType(e.target.value as number)}

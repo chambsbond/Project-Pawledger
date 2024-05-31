@@ -30,6 +30,8 @@ namespace PawledgerAPI
       services.AddScoped<MedicalHistoryRepository>();
       services.AddScoped<MedicalHistoryService>();
       services.AddScoped<BlockChainService>();
+      services.AddTransient<AccountService>();
+      services.AddTransient<AccountRepository>();
       services.AddHostedService<BlockChainWorker>();
     }
 
@@ -55,6 +57,12 @@ namespace PawledgerAPI
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+      });
+
+      app.UseCors((policy) =>
+      {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
       });
     }
   }

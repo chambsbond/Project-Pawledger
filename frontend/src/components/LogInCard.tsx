@@ -1,14 +1,30 @@
 "use client";
 
-import { useAccount, useAuthenticate, useUser } from "@alchemy/aa-alchemy/react";
+import { useAccount, useAuthenticate, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { Box, Button, Card, CircularProgress, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { addPublicKey, fetchPublicKey } from "@/store/slices/OrgSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { RootState } from "@/store/store";
 
 export const LogInCard = () => {
+  const dispatch = useAppDispatch();
+  const publicKey = useAppSelector((state: RootState) => state.orgContract.publicKey);
   const [email, setEmail] = useState<string>("");
   const { authenticate, isPending: isAuthenticatingUser } = useAuthenticate();
+  const { client, isLoadingClient } = useSmartAccountClient({
+    type: "MultiOwnerModularAccount",
+    gasManagerConfig: {
+      policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
+    },
+    opts: {
+      txMaxRetries: 20,
+    },
+  });
+
   const { isLoadingAccount, } = useAccount({
     type: "MultiOwnerModularAccount", // alternatively pass in "MultiOwnerModularAccount",
     accountParams: {}, // optional param for overriding any account specific properties
@@ -21,14 +37,29 @@ export const LogInCard = () => {
       console.log(error);
     },
   });
+
   const user = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (user != null) {
-      router.push('/dashboard')
+    const fetchAndSet = async () => {
+      if (user != null && client != null) {
+        await dispatch(fetchPublicKey(client.account.publicKey));
+      }
     }
-  }, [user])
+
+    fetchAndSet();
+  }, [user, client, isLoadingClient])
+
+  useEffect(() => {
+    if(user != null && client != null && publicKey) {
+      router.push('/dashboard');
+    }
+    else if (user != null && client != null && !publicKey) {
+      router.push('/signup')
+    }
+
+  }, [user, client, isLoadingClient, publicKey])
 
   return (
     <Box display="flex" height="100vh" flexDirection="column" justifyContent="center" alignItems="center" >

@@ -4,7 +4,7 @@ import { ArrowBack } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from "react";
-import { useSmartAccountClient } from "@alchemy/aa-alchemy/react";
+import { useAccount, useSmartAccountClient } from "@alchemy/aa-alchemy/react";
 import { fetchOrgInfo, isOrgRegistryAdmin } from "@/store/slices/OrgSlice";
 import { useAppDispatch } from "@/store/hooks";
 
@@ -13,6 +13,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const pathName = usePathname();
     const router = useRouter();
     const dispatch = useAppDispatch();
+
+    const { account, isLoadingAccount } = useAccount({
+        type: "MultiOwnerModularAccount", // alternatively pass in "MultiOwnerModularAccount",
+        accountParams: {}, // optional param for overriding any account specific properties
+        skipCreate: true, // optional param to skip creating the account
+    });
 
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
@@ -25,11 +31,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     });
 
     useEffect(() => {
+        if(!account) {
+            router.push('');
+        }
         if (client?.account?.address) {
             dispatch(fetchOrgInfo(client?.account?.address));
             dispatch(isOrgRegistryAdmin(client?.account?.address));
         }
-    }, [client, dispatch])
+    }, [client, dispatch, account, isLoadingAccount])
 
     return (
         <Box height="100vh" display="flex" flexDirection="column">
