@@ -1,7 +1,7 @@
 # We do this now
 
 ## MUST HAVES
-0. Liam - TODO SEE BELOW TODOs (query param on address for better fetching for sac)
+0. (DONE) Liam - TODO SEE BELOW TODOs (query param on address for better fetching for sac)
 1. Jacob - UI: Figure out how to to get transfereePublicKey
 2. BE/UI: Add/View charts from portal -> listner to save from smart contract (jacob says thats done)
     a. BE - Alex listener
@@ -24,6 +24,6 @@
  2. Document things we punted on and add link architecture docs -> in a readme 
 
 ## LIKEY WONT DO BUT WOULD BE LIT TO GET
- 0. General Bug Fixes (state change in verified)
+ 0. (DONE) General Bug Fixes (state change in verified)
  1. Liam - Deploy UI
  2. Figure out dynamic DON hosted secret
