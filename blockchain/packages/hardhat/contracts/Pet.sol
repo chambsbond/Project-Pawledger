@@ -24,7 +24,9 @@ contract Pet is ERC721 {
 		address orgAffiliation,
 		address claimee,
 		address prtOwner,
-		string medPayload
+		string medPayload,
+		uint256 tokenId, 
+		bytes32 requestId
 	);
 	event reEncryptResponse(bytes32 indexed requestId, bytes result, bytes err);
 
@@ -104,9 +106,11 @@ contract Pet is ERC721 {
 	function receiveMedicalPayload(
 		OrgAffilliation memory orgAff,
 		address petOwner,
-		string memory medPayload
+		string memory medPayload,
+		uint256 tokenId,
+		bytes32 requestId
 	) public onlyValidOrg {
-		emit MedicalPayload(orgAff.org, orgAff.claimee, petOwner, medPayload);
+		emit MedicalPayload(orgAff.org, orgAff.claimee, petOwner, medPayload, tokenId, requestId);
 	}
 
 	//may want to enable anyone from the same org to be able to withdraw a claim

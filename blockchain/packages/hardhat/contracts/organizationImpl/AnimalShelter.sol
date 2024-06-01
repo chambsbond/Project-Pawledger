@@ -20,8 +20,8 @@ contract AnimalShelter is BaseOrganization {
 		return Pet(_pet).mint(OrgAffilliation({org: address(this), claimee: msg.sender}), prospectiveOwner);
 	}
 
-	function sendMedicalInfo(address petOwner, string memory payload) public onlyEmployee() {
-		Pet(_pet).receiveMedicalPayload(OrgAffilliation({org: address(this), claimee: msg.sender}), petOwner, payload);
+	function sendMedicalInfo(address petOwner, string memory payload, uint256 tokenId, bytes32 requestId) public onlyEmployee() {
+		Pet(_pet).receiveMedicalPayload(OrgAffilliation({org: address(this), claimee: msg.sender}), petOwner, payload, tokenId, requestId);
 	}
 
 	function foundPetClaim(uint256 tokenId) public onlyEmployee() {
