@@ -1,24 +1,33 @@
 "use client";
 
-import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
+import { useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { useEffect, useState } from "react";
-import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, Container, FormGroup, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 
 //look into pet.json for needed contract functions
 import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
-import { ethers, verifyMessage } from "ethers";
-import { Input } from '@mui/material';
 
-import EthCrypto from 'eth-crypto';
+import EthCrypto, { publicKey } from 'eth-crypto';
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
+import { Address, encodeFunctionData } from "viem";
+import { ethers } from "ethers";
+import { useSelector } from "react-redux";
+import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
+import axios from "axios";
 
 export default function ChartingPage() {
-    const publicKey = useAppSelector((state: RootState) => state.orgContract.publicKey);
+
+    const pawLedgerPublicKey = "aecf7df15a3a750fb293df93cecb6bc8b5206da52298cf18a9b4be7b7519e97dd99ce7ac05474f68ee44d5bd121f5a375fb71340ca30eb6d546668058025d99e";
+    const backendConfig = { headers: { 'Access-Control-Allow-Origin': '*', "Content-Type": "application/json" } };
+    
+    const loggedInUserPublicKey = useAppSelector((state: RootState) => state.orgContract.publicKey);
     const user = useUser();
-    const [userText, setUserText] = useState<string>("");
-    const [mnemonic, setMnemonic] = useState<string>("");
+    const [recordDetails, setRecordDetails] = useState<string>("");
+    const [recordType, setRecordType] = useState<string>("");
     const [petId, setPetId] = useState<BigInt | undefined>();
+    const orgs = useSelector(memberShipSelector);
+    const orgIndex = useSelector(orgSelectedIndexSelector);
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
         gasManagerConfig: {
@@ -37,36 +46,44 @@ export default function ChartingPage() {
     } = useSendUserOperation({ client, waitForTxn: true });
 
     // construct call data and send userOperation for creating a new pet medical record entry
-    const createPetRecord = async () => {
-        // const petAddress = PetAmoy?.address;
-        // const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
-        // const petContract = new ethers.Contract(petAddress,
-        //     PetAmoy.abi, provider);
+    const createPetRecord = async () => { 
+        const medicalDataPlainText = {
+            by: user?.address,
+            type: recordType,
+            recordDetails: recordDetails
+        };
 
+        const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
+        const petContract = new ethers.Contract(PetAmoy.address, PetAmoy.abi, provider);
+        const petOwnerAddress = await petContract.ownerOf(petId);
 
-        // const owner = await petContract.ownerOf(petId);
-        // const medicalDataPlainText = {
-        //     by: user?.address,
-        //     type: recordType,
-        //     userText: userText
-        // };
-        // const test2 = await client?.account.getSigner().getAuthDetails();
-        // console.log(test2, await client?.account.getSigner().getAddress());
-        // // console.log('keyTest', publicKeyTest, client?.account.publicKey);
+        const orgAffilliation = {
+            org: orgs[orgIndex].address,
+            claimee: petOwnerAddress,
+        };
 
-        const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
-        const test = await encryptMedicalData(userText, hdNode.publicKey);
-        console.log(await client?.account.address, await client?.account.publicKey, hdNode.address);
-        
+        const petOwnerAccount = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/account/${petOwnerAddress}`, backendConfig);
 
-        console.log("output", await EthCrypto.decryptWithPrivateKey(hdNode.privateKey, test));
+        const encryptedPayloadList = [];
+        encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, petOwnerAccount?.data?.publicKey));
+        encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, pawLedgerPublicKey));
+        encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, loggedInUserPublicKey || "heck"));
 
-        // await transmitMedicalData(encryptedMedicalData);
+        const callData = encodeFunctionData({
+            abi: PetAmoy.abi,
+            functionName: "receiveMedicalPayload",
+            args: [orgAffilliation, petOwnerAddress, JSON.stringify(encryptedPayloadList)]
+        });
+
+        await sendUserOperation({
+            uo: {
+                target: PetAmoy?.address as Address,
+                data: callData
+            }
+        })
     }
 
     async function encryptMedicalData(plainTextData: any, owner: string) {
-        // ethers.
-
         const encrypt = await EthCrypto.encryptWithPublicKey(
             EthCrypto.publicKey.decompress(owner.substring(2)),
             JSON.stringify(plainTextData)
@@ -98,22 +115,22 @@ export default function ChartingPage() {
                             </TextField>
                             <Select
                                 required
-                                // onChange={(e) => setRecordType(e.target.value as number)}
+                                onChange={(e) => setRecordType(e.target.value as string)}
                                 defaultValue={0}
                                 id="org-type"
                                 disabled={isSendingUserOperation}>
-                                <option value={0}>Vaccine</option>
-                                <option value={1}>Procedure</option>
-                                <option value={2}>Checkup</option>
-                                <option value={3}>Other</option>
+                                <MenuItem value={0}>Vaccine</MenuItem>
+                                <MenuItem value={1}>Procedure</MenuItem>
+                                <MenuItem value={2}>Checkup</MenuItem>
+                                <MenuItem value={3}>Other</MenuItem>
                             </Select>
                             <TextField
                                 multiline
                                 id="outlined-basic"
                                 label="Record Details"
                                 variant="outlined"
-                                value={userText}
-                                onChange={(e) => setUserText(e.target.value)}
+                                value={recordDetails}
+                                onChange={(e) => setRecordDetails(e.target.value)}
                             />
                             <Button
                                 variant="contained"
