@@ -24,6 +24,7 @@ namespace PawledgerAPI.Worker
       using var scope = _serviceProvider.CreateScope();
       var blockChainService = scope.ServiceProvider.GetRequiredService<BlockChainService>();
       await blockChainService.GetEventLogs();
+      await blockChainService.GetMedicalEventLogs();
 
       // Ensure the thread does not stop lisening.
       // FIXME change this to true to run. We did not want the app service busy waiting so we stopped in like this.
