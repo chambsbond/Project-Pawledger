@@ -1,7 +1,6 @@
 ﻿using PawledgerAPI.Repositories;
 using PawledgerAPI.Entities;
 using PawledgerAPI.Models;
-using System.Threading.Tasks;
 
 namespace PawledgerAPI.Services
 {
@@ -21,11 +20,12 @@ namespace PawledgerAPI.Services
 
     public void CreateMedicalHistories(MedicalHistory[] payloads)
     {
-      lock (payloads[0].RequestId)
+      string requestId = payloads[0].RequestId;
+      lock (requestId)
       {
-        foreach (var payload in payloads)
+        if (!_repository.MedicalHistoryExistsByRequestId(requestId))
         {
-          if (!_repository.MedicalHistoryExistsByRequestId(payload.RequestId))
+          foreach (var payload in payloads)
           {
             _repository.AddMedicalHistory(payload);
           }
