@@ -26,7 +26,7 @@ contract Pet is ERC721 {
 		address prtOwner,
 		string medPayload,
 		uint256 tokenId, 
-		bytes requestId
+		bytes32 requestId
 	);
 	event reEncryptResponse(bytes32 indexed requestId, bytes result, bytes err);
 

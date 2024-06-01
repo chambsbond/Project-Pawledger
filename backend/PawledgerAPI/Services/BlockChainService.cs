@@ -101,7 +101,6 @@ namespace PawledgerAPI.Services
         {
             list.Add(eventLog);
             MedicalHistory medicalHistory = new MedicalHistory();
-            //Don't we need tokenID?
             medicalHistory.AddressedTo = eventLog.Event.PrtOwner;
             EncryptedHistory encryptedHistory = new EncryptedHistory();
             var histories = eventLog.Event.MedicalPayload.Split(",");
