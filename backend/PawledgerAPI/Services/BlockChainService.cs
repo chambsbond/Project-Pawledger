@@ -8,6 +8,7 @@ using Nethereum.BlockchainProcessing.ProgressRepositories;
 using System.Threading;
 using System;
 using PawledgerAPI.Models;
+using Newtonsoft.Json;
 
 namespace PawledgerAPI.Services
 {
@@ -19,9 +20,10 @@ namespace PawledgerAPI.Services
         private PetRepository _petRepository;
         private MedicalHistoryRepository _medicalHistoryRepository;
 
-        public BlockChainService(PetRepository petRepository)
+        public BlockChainService(PetRepository petRepository, MedicalHistoryRepository medicalHistoryRepository)
         {
             _petRepository = petRepository;
+            _medicalHistoryRepository = medicalHistoryRepository;
         }
 
         [Event("MintClaimMade")]
@@ -97,23 +99,34 @@ namespace PawledgerAPI.Services
       return Task.CompletedTask;
     }
 
-    private Task StoreMedicalEventAsync(List<EventLog<MedicalPayloadEvent>> list, EventLog<MedicalPayloadEvent> eventLog)
+    public Task StoreMedicalEventAsync(List<EventLog<MedicalPayloadEvent>> list, EventLog<MedicalPayloadEvent> eventLog)
         {
             list.Add(eventLog);
             MedicalHistory medicalHistory = new MedicalHistory();
-            medicalHistory.AddressedTo = eventLog.Event.PrtOwner;
-            EncryptedHistory encryptedHistory = new EncryptedHistory();
-            var histories = eventLog.Event.MedicalPayload.Split(",");
-            encryptedHistory.Iv = histories[0];
-            encryptedHistory.EphemPublicKey = histories[1];
-            encryptedHistory.Ciphertext = histories[2];
-            medicalHistory.EncryptedHistory = encryptedHistory;
-            medicalHistory.TokenId = eventLog.Event.tokenId.ToString();
-            medicalHistory.RequestId = eventLog.Event.requestId.ToString();
-
-            _medicalHistoryRepository.AddMedicalHistory(medicalHistory);
+            var histories = mapMedicalHistories(eventLog);
+            
+            foreach (var history in histories)
+            {
+                _medicalHistoryRepository.AddMedicalHistory(history);
+            }
+            
             return Task.CompletedTask;
 
+        }
+    private List<MedicalHistory> mapMedicalHistories(EventLog<MedicalPayloadEvent> eventLog)
+        {
+            var medicalHistoryList = new List<MedicalHistory>();
+            List<EncryptedHistory> encryptedHistories = JsonConvert.DeserializeObject<List<EncryptedHistory>>(eventLog.Event.MedicalPayload);
+            foreach (var encryptedHistory in encryptedHistories)
+            {
+                var medicalHistory = new MedicalHistory();
+                medicalHistory.TokenId = eventLog.Event.tokenId.ToString();
+                medicalHistory.RequestId = eventLog.Event.requestId.ToString();
+                medicalHistory.EncryptedHistory = encryptedHistory;
+                medicalHistory.AddressedTo = eventLog.Event.PrtOwner;
+                medicalHistoryList.Add(medicalHistory);
+            }
+            return medicalHistoryList;
         }
   }
 }

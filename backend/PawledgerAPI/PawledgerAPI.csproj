@@ -13,6 +13,7 @@
     <PackageReference Include="Nethereum.Contracts" Version="4.20.0" />
     <PackageReference Include="Nethereum.RPC" Version="4.20.0" />
     <PackageReference Include="Nethereum.Web3" Version="4.20.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.29" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.31">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
