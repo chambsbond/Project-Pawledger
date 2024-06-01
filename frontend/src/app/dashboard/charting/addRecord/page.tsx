@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 
 //look into pet.json for needed contract functions
-import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
+import PetAmoy from "../../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
 import { ethers, verifyMessage } from "ethers";
 import { Input } from '@mui/material';
 

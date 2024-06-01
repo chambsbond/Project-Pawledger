@@ -5,19 +5,46 @@ import { useEffect, useState } from "react";
 import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 
 //look into pet.json for needed contract functions
-import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
+import PetAmoy from "../../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
 import { ethers, verifyMessage } from "ethers";
 import { Input } from '@mui/material';
 
 import EthCrypto from 'eth-crypto';
+import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
+import { useSelector } from "react-redux";
+import axios from "axios";
+
+export interface Record {
+    medicalHistoryId: number;
+    tokenId: number;
+    encryptedHistory: string;
+    addressedTo: BigInt;
+    requestId: number;
+    createdTimeStamp: string;
+    updatedTimeStamp: string;
+}
+
+export interface DecryptedRecord {
+    medicalHistoryId: number;
+    tokenId: number;
+    encryptedHistory:
+    addressedTo: BigInt;
+    requestId: number;
+    createdTimeStamp: string;
+    updatedTimeStamp: string;
+}
 
 export default function ChartingPage() {
     const user = useUser();
     const [userText, setUserText] = useState<string>("");
     const [mnemonic, setMnemonic] = useState<string>("");
+    const [medicalRecord, setMedicalRecord] = useState<string>("");
     const [petId, setPetId] = useState<BigInt | undefined>();
     const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
     const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
+    const orgs = useSelector(memberShipSelector);
+    const orgIndex = useSelector(orgSelectedIndexSelector);
+    
     const iframeCss = `
         iframe {
             box-sizing: border-box;
@@ -48,29 +75,18 @@ export default function ChartingPage() {
     } = useSendUserOperation({ client, waitForTxn: true });
 
     // construct call data and send userOperation for creating a new pet medical record entry
-    const createPetRecord = async () => {
-        // const petAddress = PetAmoy?.address;
-        // const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
-        // const petContract = new ethers.Contract(petAddress,
-        //     PetAmoy.abi, provider);
-
-
-        // const owner = await petContract.ownerOf(petId);
-        // const medicalDataPlainText = {
-        //     by: user?.address,
-        //     type: recordType,
-        //     userText: userText
-        // };
-        // const test2 = await client?.account.getSigner().getAuthDetails();
-        // console.log(test2, await client?.account.getSigner().getAddress());
-        // // console.log('keyTest', publicKeyTest, client?.account.publicKey);
-
-        const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
-        const test = await encryptMedicalData(userText, hdNode.publicKey);
-        console.log(await client?.account.address, await client?.account.publicKey, hdNode.address);
+    const viewPetRecord = async () => {        
+        //const response = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/0/address/${petId}`);
+        const response = await axios.get<Record[]>(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/0/address/${petId}`);
         
+        const temp: Record[] = [];
+        response.data.forEach((record) => {
+            console.log(record)
+            temp.push(record)
+        })
+        setMedicalRecord(JSON.stringify(temp))
 
-        console.log("output", await EthCrypto.decryptWithPrivateKey(hdNode.privateKey, test));
+        // console.log("output", await EthCrypto.decryptWithPrivateKey(mnemonic, JSON.stringify(response));
 
         // await transmitMedicalData(encryptedMedicalData);
     }
@@ -112,9 +128,9 @@ export default function ChartingPage() {
                 <Stack padding={10} spacing={4}>
                     <Typography textAlign="center" variant="h3">View Existing Medical Record for Animal</Typography>
                     <Stack spacing={1}>
-                        <Typography variant="h5" fontWeight="bold" gutterBottom>Seed Phrase</Typography>
-                        <Typography variant="h6" color="text.secondary">Copy your seed phrase into the seed phrase text field in
-                            order to encrypt the medical history</Typography>
+                        <Typography variant="h5" fontWeight="bold" gutterBottom>Identification</Typography>
+                        <Typography variant="h6" color="text.secondary">Copy the pet's TokenID and your private key
+                            to get and decrypt the pet medical history</Typography>
                         <div
                             className="w-full"
                             style={{ display: "block" }}
@@ -124,9 +140,17 @@ export default function ChartingPage() {
                         </div>
                         <TextField
                             required
-                            id="submitter-name"
-                            label="Paste Seed Phrase"
+                            id="animal-id"
+                            value={petId}
+                            placeholder="PET Id"
+                            onChange={(e) => setPetId((e.target.value as unknown) as BigInt)}
+                            disabled={isSendingUserOperation}>
+                        </TextField>
+                        <TextField
+                            required
+                            id="submitter-key"
                             value={mnemonic}
+                            placeholder="Private Key"
                             onChange={(e) => setMnemonic(e.target.value)}
                             disabled={isSendingUserOperation}>
                         </TextField>
@@ -134,24 +158,21 @@ export default function ChartingPage() {
                     <br></br>
                     <FormGroup>
                         <Stack spacing={2}>
-                            <TextField
-                                required
-                                id="animal-id"
-                                value={petId}
-                                type="number"
-                                placeholder="PET Id"
-                                onChange={(e) => setPetId((e.target.value as unknown) as BigInt)}
-                                disabled={isSendingUserOperation}>
-                            </TextField>
                             <Button
                                 variant="contained"
-                                onClick={() => { createPetRecord() }}
+                                onClick={() => { viewPetRecord() }}
                                 disabled={isSendingUserOperation}>
                                 {isSendingUserOperation ? <CircularProgress /> : <Typography>View</Typography>}
                             </Button>
                         </Stack>
                     </FormGroup>
-                    <br></br>
+                    <hr></hr>
+                    <TextField
+                        id="medical-history"
+                        value={medicalRecord}
+                        placeholder="medical record"
+                        disabled={isSendingUserOperation}>
+                    </TextField>
                 </Stack>
             </Paper>
         </Container >
