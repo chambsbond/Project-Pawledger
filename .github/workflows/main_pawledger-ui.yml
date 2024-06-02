@@ -31,6 +31,9 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+          
+      - name: Zip artifact for deployment
+        run: zip -r release.zip * .env .next
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -52,6 +55,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: node-app
+          
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
       
       - name: Login to Azure
         uses: azure/login@v1
