@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build-contract": "cd ../blockchain/packages/hardhat/ && yarn compile && xcopy artifacts\\contracts\\  ..\\..\\..\\frontend\\generated\\contracts\\ /s /y && xcopy deployments\\  ..\\..\\..\\frontend\\generated\\deployments\\ /s /y",
-    "dev": "yarn build-contract && next dev",
-    "build": "yarn build-contract && next build",
+    "build-contract": "cd ../blockchain/packages/hardhat/ && npm run compile && xcopy artifacts\\contracts\\  ..\\..\\..\\frontend\\generated\\contracts\\ /s /y && xcopy deployments\\  ..\\..\\..\\frontend\\generated\\deployments\\ /s /y",
+    "dev": "npm run build-contract && next dev",
+    "build": "npm run build-contract && next build",
     "start": "next start",
     "lint": "next lint"
   },
