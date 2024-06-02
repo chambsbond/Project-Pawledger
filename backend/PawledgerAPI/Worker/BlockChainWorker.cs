@@ -11,24 +11,22 @@ namespace PawledgerAPI.Worker
   public class BlockChainWorker : BackgroundService
   {
     private readonly ILogger<BlockChainWorker> _logger;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly BlockChainService _blockChainService;
 
-    public BlockChainWorker(ILogger<BlockChainWorker> logger, IServiceProvider serviceProvider)
+    public BlockChainWorker(ILogger<BlockChainWorker> logger, IServiceProvider provider)
     {
+      var scope = provider.CreateScope();
       _logger = logger;
-      _serviceProvider = serviceProvider;
+      _blockChainService = scope.ServiceProvider.GetRequiredService<BlockChainService>();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-      using var scope = _serviceProvider.CreateScope();
-      var blockChainService = scope.ServiceProvider.GetRequiredService<BlockChainService>();
-      await blockChainService.GetEventLogs();
-      await blockChainService.GetMedicalEventLogs();
+      await _blockChainService.GetMedicalEventLogs(stoppingToken);
 
       // Ensure the thread does not stop lisening.
       // FIXME change this to true to run. We did not want the app service busy waiting so we stopped in like this.
-      while (false)
+      while (true)
       {
         // 16.67 minute delay, not scientific just a long wait.
         await Task.Delay(1000000);

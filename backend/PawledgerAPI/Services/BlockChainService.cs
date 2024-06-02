@@ -9,6 +9,7 @@ using System.Threading;
 using System;
 using PawledgerAPI.Models;
 using Newtonsoft.Json;
+using System.Numerics;
 
 namespace PawledgerAPI.Services
 {
@@ -44,64 +45,55 @@ namespace PawledgerAPI.Services
     {
       [Parameter("address", "orgAffiliation", 1)]
       public string OrgAffiliation { get; set; }
-      [Parameter("address", "Claimee", 2)]
+      [Parameter("address", "claimee", 2)]
       public string Claimee { get; set; }
       [Parameter("address", "prtOwner", 3)]
       public string PrtOwner { get; set; }
       [Parameter("string", "medPayload", 4)]
       public string MedicalPayload { get; set; }
       [Parameter("uint256", "tokenId", 5)]
-      public int tokenId { get; set; }
+      public BigInteger tokenId { get; set; }
       [Parameter("bytes32", "requestId", 6)]
-      public int requestId { get; set; }
+      public BigInteger requestId { get; set; }
     }
 
-    public async Task<List<EventLog<MintEvent>>> GetEventLogs()
+    public Task GetEventLogs()
     {
-      var transferEventLogs = new List<EventLog<MintEvent>>();
       var blockProgressRepository = new InMemoryBlockchainProgressRepository();
       var processor = web3.Processing.Logs.CreateProcessorForContract<MintEvent>(
         contractAddress: petContractAddress,
-        action: log => StoreLogAsync(transferEventLogs, log),
+        action: async log => await StoreLogAsync(log),
         blockProgressRepository: blockProgressRepository);
 
       var cancellationToken = new CancellationToken();
 
-      // FIXME Consider storing that start block in db on cancelation to start back up in case app is restarted.
-      await processor.ExecuteAsync(
+      return processor.ExecuteAsync(
           cancellationToken: cancellationToken,
           startAtBlockNumberIfNotProcessed: 7298259);
-
-      return await Task.FromResult(transferEventLogs);
     }
 
-    public async Task<List<EventLog<MedicalPayloadEvent>>> GetMedicalEventLogs()
+    public Task GetMedicalEventLogs(CancellationToken cancellationToken)
     {
-      var medicalEventLogs = new List<EventLog<MedicalPayloadEvent>>();
       var blockProgressRepository = new InMemoryBlockchainProgressRepository();
       var processor = web3.Processing.Logs.CreateProcessorForContract<MedicalPayloadEvent>(
           contractAddress: petContractAddress,
-          action: log => StoreMedicalEventAsync(medicalEventLogs, log),
+          action: async log => await StoreMedicalEventAsync(log),
           blockProgressRepository: blockProgressRepository);
 
-      var cancellationToken = new CancellationToken();
-      await processor.ExecuteAsync(
+      return processor.ExecuteAsync(
           cancellationToken: cancellationToken,
-          startAtBlockNumberIfNotProcessed: 7298259);
-      return await Task.FromResult(medicalEventLogs);
+          startAtBlockNumberIfNotProcessed: 7767295);
     }
-    private Task StoreLogAsync(List<EventLog<MintEvent>> list, EventLog<MintEvent> eventLog)
-    {
 
-      list.Add(eventLog);
+    private Task StoreLogAsync(EventLog<MintEvent> eventLog)
+    {
       // FIXME the claimee is not the token id but need to check why its not in the mint event.
       _petRepository.AddPet(eventLog.Event.Claimee + Guid.NewGuid().ToString());
       return Task.CompletedTask;
     }
 
-    public Task StoreMedicalEventAsync(List<EventLog<MedicalPayloadEvent>> list, EventLog<MedicalPayloadEvent> eventLog)
+    public Task StoreMedicalEventAsync(EventLog<MedicalPayloadEvent> eventLog)
     {
-      list.Add(eventLog);
       var histories = mapMedicalHistories(eventLog);
 
       foreach (var history in histories)
@@ -110,8 +102,8 @@ namespace PawledgerAPI.Services
       }
 
       return Task.CompletedTask;
-
     }
+
     private List<MedicalHistory> mapMedicalHistories(EventLog<MedicalPayloadEvent> eventLog)
     {
       var medicalHistoryList = new List<MedicalHistory>();

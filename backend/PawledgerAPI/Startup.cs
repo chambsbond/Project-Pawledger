@@ -28,8 +28,8 @@ namespace PawledgerAPI
       services.AddControllers();
       services.AddScoped<PetRepository>();
       services.AddScoped<MedicalHistoryRepository>();
-      services.AddScoped<MedicalHistoryService>();
       services.AddScoped<BlockChainService>();
+      services.AddScoped<MedicalHistoryService>();
       services.AddTransient<AccountService>();
       services.AddTransient<AccountRepository>();
       services.AddHostedService<BlockChainWorker>();
