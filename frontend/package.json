@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build-contract": "cd ../blockchain/packages/hardhat/ && npm install && npm run compile && xcopy artifacts\\contracts\\  ..\\..\\..\\frontend\\generated\\contracts\\ /s /y && xcopy deployments\\  ..\\..\\..\\frontend\\generated\\deployments\\ /s /y",
+    "build-contract": "cd ../blockchain/packages/hardhat/ && npm install && npm run compile && mkdir -p ../../../frontend/generated/contracts && cp -r artifacts/contracts ../../../frontend/generated && mkdir -p ../../../frontend/generated/deployments && cp -r deployments ../../../frontend/generated",
     "dev": "npm run build-contract && next dev",
     "build": "npm run build-contract && next build",
     "start": "next start",
@@ -44,6 +44,9 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "typescript": "^5"
+  },
+  "engines": {
+   "node": ">=20.0.0"
   },
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
