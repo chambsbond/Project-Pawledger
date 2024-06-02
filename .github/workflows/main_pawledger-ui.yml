@@ -33,13 +33,14 @@ jobs:
           npm run test --if-present
           
       - name: Zip artifact for deployment
-        run: Compress-Archive * release.zip
+        run: Compress-Archive * build-bundle.zip
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: release.zip
+          path: frontend/build-bundle.zip
+          if-bo-files-found: error
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,7 +58,7 @@ jobs:
           name: node-app
           
       - name: Unzip artifact for deployment
-        run: Expand-Archive release.zip -DestinationPath .
+        run: Expand-Archive build-bundle.zip -DestinationPath .
       
       - name: Login to Azure
         uses: azure/login@v1
