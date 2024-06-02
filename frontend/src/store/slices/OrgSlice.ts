@@ -1,14 +1,12 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 
-
-import OrgFactoryContractAmoy from "../../../../blockchain/packages/hardhat/deployments/polygonAmoy/OrganizationFactory.json";
-import OrgContractCompile from "../../../../blockchain/packages/hardhat/artifacts/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
-import OrgRegistryAmoy from "../../../../blockchain/packages/hardhat/deployments/polygonAmoy/OrganizationRegistry.json";
+import OrgFactoryContractAmoy from "../../../generated/deployments/polygonAmoy/OrganizationFactory.json";
+import OrgContractCompile from "../../../generated/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
+import OrgRegistryAmoy from "../../../generated/deployments/polygonAmoy/OrganizationRegistry.json";
 import { ethers } from 'ethers';
 import { RootState } from '../store';
 import { Address } from 'viem';
 import axios from 'axios';
-import { headers } from 'next/headers';
 
 export type Roles = "Member" | "Owner" | "Unaffiliated";
 

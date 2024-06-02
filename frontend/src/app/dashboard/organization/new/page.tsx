@@ -2,8 +2,7 @@
 import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 
-import OrgFactoryContractAmoy from "../../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/OrganizationFactory.json";
-//import OrgFactoryContractLocal from "../../../../../../blockchain/packages/hardhat/deployments/localhost/OrganizationFactory.json";
+import OrgFactoryContractAmoy from "../../../../../generated/deployments/polygonAmoy/OrganizationFactory.json";
 import { Address, encodeFunctionData } from "viem";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";

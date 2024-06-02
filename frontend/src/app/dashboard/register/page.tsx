@@ -6,8 +6,8 @@ import { Button, CircularProgress, Container, Grid, InputLabel, MenuItem, Paper,
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Address, encodeFunctionData } from "viem"
-import OrgContractCompile from "../../../../../blockchain/packages/hardhat/artifacts/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
-import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
+import OrgContractCompile from "../../../../generated/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
+import PetAmoy from "../../../../generated/deployments/polygonAmoy/Pet.json";
 import { ethers } from "ethers"
 import Image from "next/image"
 import { grey } from "@mui/material/colors"

@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cd ../blockchain/packages/hardhat/ && yarn compile && cd ../../../frontend && next dev",
-    "build": "next build",
+    "build-contract": "cd ../blockchain/packages/hardhat/ && yarn compile && xcopy artifacts\\contracts\\  ..\\..\\..\\frontend\\generated\\contracts\\ /s /y && xcopy deployments\\  ..\\..\\..\\frontend\\generated\\deployments\\ /s /y",
+    "dev": "yarn build-contract && next dev",
+    "build": "yarn build-contract && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -19,6 +20,7 @@
     "@mui/x-date-pickers": "^7.4.0",
     "@reduxjs/toolkit": "^2.2.5",
     "@tanstack/react-query": "5.28.9",
+    "@types/uuid": "^9.0.8",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "eccrypto-js": "^5.4.0",

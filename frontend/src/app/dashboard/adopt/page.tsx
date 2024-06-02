@@ -5,13 +5,14 @@ import { Container, Paper, Stack, Typography, Checkbox, FormGroup, FormControlLa
 import { useState } from "react";
 import { Address, encodeFunctionData } from "viem";
 
-import OrgContractCompile from "../../../../../blockchain/packages/hardhat/artifacts/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
+import OrgContractCompile from "../../../../generated/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
+
 import { useSelector } from "react-redux";
 import { memberShipSelector, Org, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 
-export default function adoptAnimal() {    
+export default function AdoptAnimal() {    
     const orgs = useAppSelector((state: RootState) => state.orgContract.orgs) as Org[];
     const orgIndex = useAppSelector((state: RootState) => state.orgContract.selectedOrg) as number;
     const [tokenId, setTokenId] = useState<BigInt | undefined>();
