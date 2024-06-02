@@ -1,4 +1,5 @@
-﻿using PawledgerAPI.Context;
+﻿using System;
+using PawledgerAPI.Context;
 using PawledgerAPI.Entities;
 
 namespace PawledgerAPI.Repositories
@@ -15,7 +16,8 @@ namespace PawledgerAPI.Repositories
     {
       var petEntity = new PetEntity
       {
-        TokenId = tokenId
+        TokenId = tokenId,
+        CreatedTimestamp = DateTime.UtcNow
       };
       _context.Pet.Add(petEntity);
       _context.SaveChanges();
