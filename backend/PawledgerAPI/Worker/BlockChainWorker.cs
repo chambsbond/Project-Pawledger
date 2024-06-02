@@ -28,7 +28,7 @@ namespace PawledgerAPI.Worker
 
       // Ensure the thread does not stop lisening.
       // FIXME change this to true to run. We did not want the app service busy waiting so we stopped in like this.
-      while (false)
+      while (true)
       {
         // 16.67 minute delay, not scientific just a long wait.
         await Task.Delay(1000000);

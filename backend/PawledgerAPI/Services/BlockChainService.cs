@@ -15,7 +15,7 @@ namespace PawledgerAPI.Services
     //Log Processing https://nethereum.readthedocs.io/en/latest/nethereum-log-processing-detail/
     public class BlockChainService
     {
-        private readonly string petContractAddress = "0x24dfD5e00508c58bAE0aD5f50B8d3920892ba7e9";
+        private readonly string petContractAddress = "0x3b2a767c3f8fC0a51C32AEF5cCbd33db9929bBa7";
         private readonly Web3 web3 = new("https://polygon-amoy.g.alchemy.com/v2/vUzR4uiV0ccwFLOEliOjn8FtV_Mnzqc1");
         private PetRepository _petRepository;
         private MedicalHistoryRepository _medicalHistoryRepository;

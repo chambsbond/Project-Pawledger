@@ -103,13 +103,14 @@ contract Pet is ERC721 {
 		_foundClaimMap[tokenId] = orgAff;
 	}
 
+	// FIXME add this back onlyOrgMember
 	function receiveMedicalPayload(
 		OrgAffilliation memory orgAff,
 		address petOwner,
 		string memory medPayload,
 		uint256 tokenId,
 		bytes32 requestId
-	) public onlyValidOrg {
+	) public {
 		emit MedicalPayload(orgAff.org, orgAff.claimee, petOwner, medPayload, tokenId, requestId);
 	}
 
@@ -147,6 +148,14 @@ contract Pet is ERC721 {
 		require(
 			_orgRegistry.isValidated(IOrganization(msg.sender)),
 			"Only a registered user of a validated organization can use this function"
+		);
+		_;
+	}
+
+	modifier onlyOrgMember() {
+		require(
+			_orgRegistry.isOrgMember(IOrganization(msg.sender)),
+			"Only a registered user of an organization can use this function"
 		);
 		_;
 	}

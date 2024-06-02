@@ -10,5 +10,7 @@ interface IOrganization is IERC721Receiver {
 
     function isEmployee(address employeeAddress) external view returns (bool);
 
+    function isOwner(address ownnerAddress) external view returns (bool);
+
 	//TODO - Add transfer method to return pets to their rightful owners after given scenario.
 }

@@ -27,11 +27,11 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy, execute } = hre.deployments;
 
-  const admin = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3";
+  const admin = "0x24665E36547dd473DFE96Fd8C045dAe4bb1370f6"; // liamliamliam@yopmail.com
   const routerAddress = "0xC22a79eBA640940ABB6dF0f7982cc119578E11De";
   const pawLedgerPrivateKey =  { privateKey: "0xaef68b3370863496198e5edce3648bb21f14f6ffe23f913a86d6aa4deb91d668" };
   const pawLedgerPublicKey = "aecf7df15a3a750fb293df93cecb6bc8b5206da52298cf18a9b4be7b7519e97dd99ce7ac05474f68ee44d5bd121f5a375fb71340ca30eb6d546668058025d99e";
-  const pawLedgerAddress = "0x2d72722533f7E0e58C4aAC8Ed37992b17DCF44c3";
+  const pawLedgerAddress = "0x6A47311F11DD847159Bd79facB0aF54932BA4349";
   const source = await fs.readFile(
     path.join(__dirname, '../functions/test.js'),
     { encoding: 'utf8' }

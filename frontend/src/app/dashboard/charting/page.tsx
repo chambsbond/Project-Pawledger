@@ -7,7 +7,7 @@ import { Button, CircularProgress, Container, FormGroup, MenuItem, Paper, Select
 //look into pet.json for needed contract functions
 import PetAmoy from "../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
 
-import EthCrypto, { publicKey } from 'eth-crypto';
+import EthCrypto from 'eth-crypto';
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import { Address, encodeFunctionData } from "viem";
@@ -15,10 +15,11 @@ import { ethers } from "ethers";
 import { useSelector } from "react-redux";
 import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 export default function ChartingPage() {
 
-    const pawLedgerPublicKey = "aecf7df15a3a750fb293df93cecb6bc8b5206da52298cf18a9b4be7b7519e97dd99ce7ac05474f68ee44d5bd121f5a375fb71340ca30eb6d546668058025d99e";
+    const pawLedgerPublicKey = "0xaecf7df15a3a750fb293df93cecb6bc8b5206da52298cf18a9b4be7b7519e97dd99ce7ac05474f68ee44d5bd121f5a375fb71340ca30eb6d546668058025d99e";
     const backendConfig = { headers: { 'Access-Control-Allow-Origin': '*', "Content-Type": "application/json" } };
     
     const loggedInUserPublicKey = useAppSelector((state: RootState) => state.orgContract.publicKey);
@@ -69,10 +70,12 @@ export default function ChartingPage() {
         encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, pawLedgerPublicKey));
         encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, loggedInUserPublicKey || "heck"));
 
+        // FIXME request id needs to fit a uuid but bytes32 is too small
+        const requestId = Math.random() * 100;
         const callData = encodeFunctionData({
             abi: PetAmoy.abi,
             functionName: "receiveMedicalPayload",
-            args: [orgAffilliation, petOwnerAddress, JSON.stringify(encryptedPayloadList)]
+            args: [orgAffilliation, petOwnerAddress, JSON.stringify(encryptedPayloadList), petId, ethers.encodeBytes32String(requestId.toString())]
         });
 
         await sendUserOperation({

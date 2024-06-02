@@ -202,6 +202,25 @@ const deployedContracts = {
               type: "address",
             },
           ],
+          name: "isOrgMember",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "contract IOrganization",
+              name: "org",
+              type: "address",
+            },
+          ],
           name: "isValidated",
           outputs: [
             {
@@ -975,7 +994,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0x7bFc6DF5F933b518dcddA67E1AA427b43d8d9C1a",
+      address: "0xC7B003d590CF0ef2F02655e36E9BE98Aba7D8567",
       abi: [
         {
           inputs: [],
@@ -1080,7 +1099,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0x38a7c880516AfD0e63699DC9979B728e8c6Ec68d",
+      address: "0x271098Be086884E8682A2BEB191Bd82D5366AEd3",
       abi: [
         {
           inputs: [
@@ -1170,6 +1189,25 @@ const deployedContracts = {
               type: "address",
             },
           ],
+          name: "isOrgMember",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "contract IOrganization",
+              name: "org",
+              type: "address",
+            },
+          ],
           name: "isValidated",
           outputs: [
             {
@@ -1216,7 +1254,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0x3320d1590514D0B0f1D2Edaebd84E81822bB9492",
+      address: "0x3b2a767c3f8fC0a51C32AEF5cCbd33db9929bBa7",
       abi: [
         {
           inputs: [

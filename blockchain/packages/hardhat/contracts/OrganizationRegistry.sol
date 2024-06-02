@@ -35,6 +35,10 @@ contract OrganizationRegistry {
 		return _orgs[org];
 	}
 
+    function isOrgMember(IOrganization org) public view returns (bool) {
+        return org.isEmployee(msg.sender) || org.isOwner(msg.sender);
+    }
+
     function setOrganizationValidity(IOrganization org, bool orgValidity) adminOnly() public {
         emit OrganizationValiditySet(org, orgValidity);
         _orgs[org] = orgValidity;
