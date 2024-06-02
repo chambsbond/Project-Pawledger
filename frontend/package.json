@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build-contract": "cd ../blockchain/packages/hardhat/ && npm install && npm run compile && mkdir -p ../../../frontend/generated/contracts && cp -r artifacts/contracts ../../../frontend/generated/contracts && mkdir -p ../../../frontend/generated/deployments && cp -r deployments ../../../frontend/generated/deployments",
+    "build-contract": "cd ../blockchain/packages/hardhat/ && npm install && npm run compile && mkdir -p ../../../frontend/generated/contracts && cp -r artifacts/contracts ../../../frontend/generated && mkdir -p ../../../frontend/generated/deployments && cp -r deployments ../../../frontend/generated",
     "dev": "npm run build-contract && next dev",
     "build": "npm run build-contract && next build",
     "start": "next start",
