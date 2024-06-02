@@ -1,20 +1,15 @@
 "use client";
 
-import { useAccount, useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
+import { useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { useEffect, useState } from "react";
-import { Button, CircularProgress, Container, FormGroup, NativeSelect, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, Container, FormGroup, Paper, Stack, TextField, Typography } from "@mui/material";
 
-//look into pet.json for needed contract functions
-import PetAmoy from "../../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
-import { ethers, verifyMessage } from "ethers";
-import { Input } from '@mui/material';
-
-import EthCrypto from 'eth-crypto';
+import EthCrypto, { Encrypted } from 'eth-crypto';
 import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-export interface Record {
+export interface EncryptedRecord {
     medicalHistoryId: number;
     tokenId: number;
     encryptedHistory: string;
@@ -27,23 +22,24 @@ export interface Record {
 export interface DecryptedRecord {
     medicalHistoryId: number;
     tokenId: number;
-    encryptedHistory:
+    medicalHistory: string;
     addressedTo: BigInt;
     requestId: number;
-    createdTimeStamp: string;
-    updatedTimeStamp: string;
+}
+
+export interface MedicalDataPlainText {
+    by: any,
+    type: string,
+    recordDetails: string
 }
 
 export default function ChartingPage() {
     const user = useUser();
-    const [userText, setUserText] = useState<string>("");
     const [mnemonic, setMnemonic] = useState<string>("");
     const [medicalRecord, setMedicalRecord] = useState<string>("");
     const [petId, setPetId] = useState<BigInt | undefined>();
     const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
     const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
-    const orgs = useSelector(memberShipSelector);
-    const orgIndex = useSelector(orgSelectedIndexSelector);
     
     const iframeCss = `
         iframe {
@@ -57,6 +53,7 @@ export default function ChartingPage() {
             padding: 0px;
         }
         `;
+        
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
         gasManagerConfig: {
@@ -76,33 +73,26 @@ export default function ChartingPage() {
 
     // construct call data and send userOperation for creating a new pet medical record entry
     const viewPetRecord = async () => {        
-        //const response = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/0/address/${petId}`);
-        const response = await axios.get<Record[]>(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/0/address/${petId}`);
+        let response = await axios.get<EncryptedRecord[]>(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/0/address/${petId}`);  
+        let decryptedResponse: DecryptedRecord[] = [];
         
-        const temp: Record[] = [];
-        response.data.forEach((record) => {
-            console.log(record)
-            temp.push(record)
-        })
-        setMedicalRecord(JSON.stringify(temp))
+        for ( const record of response.data) {
+            var encryptedMeds = JSON.parse(record.encryptedHistory.replace('\\', '')) as Encrypted;
+            var decryptedMeds = await EthCrypto.decryptWithPrivateKey(mnemonic, encryptedMeds);
 
-        // console.log("output", await EthCrypto.decryptWithPrivateKey(mnemonic, JSON.stringify(response));
+            var decryptedRecord: DecryptedRecord = {
+                medicalHistoryId: record.medicalHistoryId,
+                tokenId: record.tokenId,
+                medicalHistory: decryptedMeds,
+                addressedTo: record.addressedTo,
+                requestId: record.requestId,
+            };
 
-        // await transmitMedicalData(encryptedMedicalData);
+            decryptedResponse.push(decryptedRecord);
+        }
+
+        setMedicalRecord(JSON.stringify(decryptedResponse))
     }
-
-    async function encryptMedicalData(plainTextData: any, owner: string) {
-        // ethers.
-
-        const encrypt = await EthCrypto.encryptWithPublicKey(
-            EthCrypto.publicKey.decompress(owner.substring(2)),
-            JSON.stringify(plainTextData)
-        );
-
-        console.log('ciphertext', encrypt)
-        return encrypt;
-    }
-
 
     useEffect(() => {
         const method = async () => {
@@ -167,12 +157,13 @@ export default function ChartingPage() {
                         </Stack>
                     </FormGroup>
                     <hr></hr>
-                    <TextField
+                    <textarea
                         id="medical-history"
                         value={medicalRecord}
                         placeholder="medical record"
+                        rows={20}
                         disabled={isSendingUserOperation}>
-                    </TextField>
+                    </textarea>
                 </Stack>
             </Paper>
         </Container >
