@@ -54,7 +54,7 @@ It's exciting to see how blockchain is still a living tech that is constantly in
 
 Below are instructions to deploy and use the _Project Pawledger_ application and smart contracts.
 
-A demonstration video can be found [here]() TODO: ADD LINK TO DEMO VIDEO
+A demonstration video can be found [here](https://youtu.be/tccfnbmzn8I)
 
 ### Requirements for Local Development
 
@@ -63,15 +63,11 @@ A demonstration video can be found [here]() TODO: ADD LINK TO DEMO VIDEO
  - [Hardhat](https://hardhat.org/hardhat-runner/docs/getting-started)
  - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable)
 
-### Deployment
-
-- [UI](https://lemon-rock-09e5dbe0f.5.azurestaticapps.net/)
-
 ### Usage
 
 What does a user do when going to the website (also doubles as script for demo)
 
-1. Navigate to the UI launch page 
+1. Navigate to the [UI launch page](https://lemon-rock-09e5dbe0f.5.azurestaticapps.net/) 
 2. Input email to create an organization
 3. Use the dashboard !! ( >.< ) 
 
