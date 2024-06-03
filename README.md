@@ -22,13 +22,16 @@ Below are instructions to deploy and use the _Project Pawledger_ application and
 
 A demonstration video can be found [here]() TODO: ADD LINK TO DEMO VIDEO
 
-### Requirements
+### Requirements for Local Development
 
- [![React][React.js]][React-url]
+ - [React](https://react.dev/)
+ - [.Net Core 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+ - [Hardhat](https://hardhat.org/hardhat-runner/docs/getting-started)
+ - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable)
 
 ### Deployment
 
-How can a developer start the project
+- [UI](https://lemon-rock-09e5dbe0f.5.azurestaticapps.net/)
 
 ### Usage
 
