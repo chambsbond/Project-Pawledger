@@ -1,29 +1,79 @@
-# We do this now
+# Project Pawledger
 
-## MUST HAVES
-0. (DONE) Liam - TODO SEE BELOW TODOs (query param on address for better fetching for sac)
-1. Jacob - UI: Figure out how to to get transfereePublicKey
-2. BE/UI: Add/View charts from portal -> listner to save from smart contract (jacob says thats done)
-    a. BE - Alex listener
-       - Listen to Pet contract medicalPayload event save that into the db as you get it
-         you will get an array with 3 rows to add and you will need to parse them out of 1 message.
-    b. UI - Isaac view charts calling smart contract to add new chart
-       - Okay to have a text field that will let you put in a tokenId to call the existing API
-       - Okay to have a text field that user needs to enter private key into for decrypting the message
-       - For adding charts call pet contract recieve med history function. Extra layer of complexitity, 
-         insert 3 rows into the medical hisotry table. 1 for us/ chainlink, 1 for org, and 1 for pet owner.
-         You can send them all in the same transaction 
+<p  align="center">
+  <img src="./images/pawledger.png"/>
+</p>
 
-## STRECH GOALS
- 0. Jacob - UI User side portal
-    - Onramp/Dashboard
-    - Transfer
-    - View Charts
- 1. BE: Found Animal Flow
-    - UI/Chainlink/BE: Timer for abandoned strays (chainlink points)
- 2. Document things we punted on and add link architecture docs -> in a readme 
+This is the _Project Pawledger_ team's submission to [_Block Magic: A Chainlink Hackathon_](https://chain.link/hackathon) under the category of "Gaming & Consumer Apps." The team consists of five (5) members: 
+* [Jacob Chambers](https://github.com/chambsbond)
+* [Liam Rethore](https://github.com/liamliam2020)
+* [Alex Moerschbacher](https://github.com/alexmoerschbacher)
+* [Austin Sandmhan](https://github.com/sandmhan)
+* [Isaac McGonagle](https://github.com/ikemcgon)
 
-## LIKEY WONT DO BUT WOULD BE LIT TO GET
- 0. (DONE) General Bug Fixes (state change in verified)
- 1. Liam - Deploy UI
- 2. Figure out dynamic DON hosted secret
+
+## About the Project
+
+_Project Pawledger_ is a chainlink application that seeks to tokenize animals for secure, robust tracking of pets and strays. The track features of an animal are it's ownership and medical histories. This gives organizations and owners a resource to reliable maintanence and distribution of animals and pets through calls to Smart Contracts. This git repository contains a web-based user interface for navigating the creation and management of animal tokens.
+
+## User Guide
+
+Below are instructions to deploy and use the _Project Pawledger_ application and smart contracts.
+
+A demonstration video can be found [here]() TODO: ADD LINK TO DEMO VIDEO
+
+### Requirements for Local Development
+
+ - [React](https://react.dev/)
+ - [.Net Core 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+ - [Hardhat](https://hardhat.org/hardhat-runner/docs/getting-started)
+ - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable)
+
+### Deployment
+
+- [UI](https://lemon-rock-09e5dbe0f.5.azurestaticapps.net/)
+
+### Usage
+
+What does a user do when going to the website (also doubles as script for demo)
+
+1. Navigate to the UI launch page 
+2. Input email to create an organization
+3. Use the dashboard !! ( >.< ) 
+
+## Architechtural Diagrams
+
+### Medical Payload Event
+![MedicalPayloadEvent](/images/MedicalPayloadEvent.png)
+1. User scheudles an appointment through online form
+2. All public addresses of organization members are pulled
+3. Once a medical payload is sent out the medical payload event emits the medical payload on the pet contract
+4. Pawledger API listener takes the medical payload and inserts it into the DB
+
+### DecryptMedicalHistoryFlow
+![DecryptMedicalHistoryFlow](/images/DecryptMedicalHistoryFlow.png)
+1. User requests their medical history through online form
+2. User provides private key in this request for decryption
+3. Pawledger API pulls medical history from database
+4. Pawledger API returns encrypted medical history
+5. Application locally decrpyts medical history with private key 
+
+### TransferPetContractFlow
+![TransferPetContractFlow](/images/TransferPetContract.png)
+1. Both owner and prospect agree to transfer on pet contract
+2. Chainlink logic trigger notifies of the transfer
+3. All orgs are pulled from token history
+4. All current data owner members for each org are pulled from history
+5. Notifications are sent and stored
+6. Org members are updated in database
+
+## Roadmap
+
+- [x] Chainlink interactions
+- [x] Frontend to call contracts
+- [x] Database tracking pet entries
+- [ ] UI User side portal
+    - [x] View Charts
+    - [ ] Onramp/Dashboard
+    - [ ] Transfer
+- [ ] Timer for abandoned strays
