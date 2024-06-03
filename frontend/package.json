@@ -5,7 +5,7 @@
   "scripts": {
     "build-contract": "cd ../blockchain/packages/hardhat/ && npm install && npm run compile && mkdir -p ../../../frontend/generated/contracts && cp -r artifacts/contracts ../../../frontend/generated && mkdir -p ../../../frontend/generated/deployments && cp -r deployments ../../../frontend/generated",
     "dev": "npm run build-contract && next dev",
-    "build": "npm run build-contract && next build",
+    "build": "npm run build-contract && next build && rm -rf ./.next/cache",
     "start": "next start",
     "lint": "next lint"
   },
