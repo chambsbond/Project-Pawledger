@@ -7,7 +7,7 @@
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "PET_ADDRESS": "0x3b2a767c3f8fC0a51C32AEF5cCbd33db9929bBa7"
+        "PET_ADDRESS": "0x2E5C6952963eEF9B99B4D7c6E68beb32006fb31A"
       }
     }
   }

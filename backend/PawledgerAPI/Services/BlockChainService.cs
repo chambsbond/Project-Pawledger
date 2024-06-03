@@ -10,6 +10,7 @@ using System;
 using PawledgerAPI.Models;
 using Newtonsoft.Json;
 using System.Numerics;
+using Microsoft.Extensions.Logging;
 
 namespace PawledgerAPI.Services
 {
@@ -17,14 +18,16 @@ namespace PawledgerAPI.Services
   public class BlockChainService
   {
     private readonly string petContractAddress = Environment.GetEnvironmentVariable("PET_ADDRESS");
-    private readonly Web3 web3 = new("https://polygon-amoy.g.alchemy.com/v2/vUzR4uiV0ccwFLOEliOjn8FtV_Mnzqc1");
+    private readonly Web3 web3 = new("https://rpc-amoy.polygon.technology/");
     private PetRepository _petRepository;
     private MedicalHistoryRepository _medicalHistoryRepository;
+    private ILogger<BlockChainService> _logger;
 
-    public BlockChainService(PetRepository petRepository, MedicalHistoryRepository medicalHistoryRepository)
+    public BlockChainService(PetRepository petRepository, MedicalHistoryRepository medicalHistoryRepository, ILogger<BlockChainService> logger)
     {
       _petRepository = petRepository;
       _medicalHistoryRepository = medicalHistoryRepository;
+      _logger = logger;
     }
 
     [Event("MintClaimMade")]
@@ -57,20 +60,20 @@ namespace PawledgerAPI.Services
       public BigInteger requestId { get; set; }
     }
 
-    public Task GetEventLogs()
-    {
-      var blockProgressRepository = new InMemoryBlockchainProgressRepository();
-      var processor = web3.Processing.Logs.CreateProcessorForContract<MintEvent>(
-        contractAddress: petContractAddress,
-        action: async log => await StoreLogAsync(log),
-        blockProgressRepository: blockProgressRepository);
+    // public Task GetEventLogs()
+    // {
+    //   var blockProgressRepository = new InMemoryBlockchainProgressRepository();
+    //   var processor = web3.Processing.Logs.CreateProcessorForContract<MintEvent>(
+    //     contractAddress: petContractAddress,
+    //     action: async log => await StoreLogAsync(log),
+    //     blockProgressRepository: blockProgressRepository);
 
-      var cancellationToken = new CancellationToken();
+    //   var cancellationToken = new CancellationToken();
 
-      return processor.ExecuteAsync(
-          cancellationToken: cancellationToken,
-          startAtBlockNumberIfNotProcessed: 7298259);
-    }
+    //   return processor.ExecuteAsync(
+    //       cancellationToken: cancellationToken,
+    //       startAtBlockNumberIfNotProcessed: 7298259);
+    // }
 
     public Task GetMedicalEventLogs(CancellationToken cancellationToken)
     {
@@ -82,7 +85,7 @@ namespace PawledgerAPI.Services
 
       return processor.ExecuteAsync(
           cancellationToken: cancellationToken,
-          startAtBlockNumberIfNotProcessed: 7767295);
+          startAtBlockNumberIfNotProcessed: 7800950);
     }
 
     private Task StoreLogAsync(EventLog<MintEvent> eventLog)
@@ -94,13 +97,21 @@ namespace PawledgerAPI.Services
 
     public Task StoreMedicalEventAsync(EventLog<MedicalPayloadEvent> eventLog)
     {
-      var histories = mapMedicalHistories(eventLog);
-
-      foreach (var history in histories)
+      try
       {
-        _medicalHistoryRepository.AddMedicalHistory(history);
-      }
+        var histories = mapMedicalHistories(eventLog);
 
+        foreach (var history in histories)
+        {
+          _medicalHistoryRepository.AddMedicalHistory(history);
+        }
+
+      }
+      catch (Exception e)
+      {
+        _logger.LogError(e.Message);
+      }
+      
       return Task.CompletedTask;
     }
 
