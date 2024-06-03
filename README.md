@@ -23,7 +23,7 @@ packages, depenencies
 
 ### How to Deploy
 
-How can a developer start the project
+[UI](https://lemon-rock-09e5dbe0f.5.azurestaticapps.net/)
 
 ### How to Use
 
