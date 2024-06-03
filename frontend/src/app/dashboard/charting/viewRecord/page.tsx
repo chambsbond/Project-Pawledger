@@ -119,7 +119,7 @@ export default function ChartingPage() {
                     <Typography textAlign="center" variant="h3">View Existing Medical Record for Animal</Typography>
                     <Stack spacing={1}>
                         <Typography variant="h5" fontWeight="bold" gutterBottom>Identification</Typography>
-                        <Typography variant="h6" color="text.secondary">Copy the pet's TokenID and your private key
+                        <Typography variant="h6" color="text.secondary">Copy the pet&apos;s TokenID and your private key
                             to get and decrypt the pet medical history</Typography>
                         <div
                             className="w-full"
