@@ -25,7 +25,6 @@ namespace PawledgerAPI.Worker
       await _blockChainService.GetMedicalEventLogs(stoppingToken);
 
       // Ensure the thread does not stop lisening.
-      // FIXME change this to true to run. We did not want the app service busy waiting so we stopped in like this.
       while (true)
       {
         // 16.67 minute delay, not scientific just a long wait.

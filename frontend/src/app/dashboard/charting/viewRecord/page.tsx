@@ -8,6 +8,7 @@ import EthCrypto, { Encrypted } from 'eth-crypto';
 import { memberShipSelector, orgSelectedIndexSelector } from "@/store/slices/OrgSlice";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { ethers, verifyMessage } from "ethers";
 
 export interface EncryptedRecord {
     medicalHistoryId: number;
@@ -73,13 +74,13 @@ export default function ChartingPage() {
 
     // construct call data and send userOperation for creating a new pet medical record entry
     const viewPetRecord = async () => {        
-        let response = await axios.get<EncryptedRecord[]>(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/0/address/${petId}`);  
+        let response = await axios.get<EncryptedRecord[]>(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/${petId}/address/${user?.address}`);  
         let decryptedResponse: DecryptedRecord[] = [];
         
         for ( const record of response.data) {
             var encryptedMeds = JSON.parse(record.encryptedHistory.replace('\\', '')) as Encrypted;
-            var decryptedMeds = await EthCrypto.decryptWithPrivateKey(mnemonic, encryptedMeds);
-
+            const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
+            var decryptedMeds = await EthCrypto.decryptWithPrivateKey(hdNode.privateKey, encryptedMeds);
             var decryptedRecord: DecryptedRecord = {
                 medicalHistoryId: record.medicalHistoryId,
                 tokenId: record.tokenId,
@@ -119,7 +120,7 @@ export default function ChartingPage() {
                     <Typography textAlign="center" variant="h3">View Existing Medical Record for Animal</Typography>
                     <Stack spacing={1}>
                         <Typography variant="h5" fontWeight="bold" gutterBottom>Identification</Typography>
-                        <Typography variant="h6" color="text.secondary">Copy the pet's TokenID and your private key
+                        <Typography variant="h6" color="text.secondary">Copy the pet&apos;s TokenID and your private key
                             to get and decrypt the pet medical history</Typography>
                         <div
                             className="w-full"

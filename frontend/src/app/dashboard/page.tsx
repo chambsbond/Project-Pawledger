@@ -6,15 +6,20 @@ import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-export default function DashboardPage() {    
+export default function DashboardPage() {
     const orgs = useSelector(memberShipSelector);
-    const orgSelected = useSelector((state :RootState) => state.orgContract.selectedOrg) as number; 
-    
+    const orgSelected = useSelector((state: RootState) => state.orgContract.selectedOrg);
+    const isPersonalAccount = useSelector((state: RootState) => state.orgContract.isPersonalAccount);
+
     const [scopes, setScopes] = useState<string[]>([]);
 
     useEffect(() => {
         // debugger;
-        if (orgs.length > 0) {
+        console.log(isPersonalAccount)
+        if (isPersonalAccount) {
+            setScopes(["Animal.0.Read"]);
+        }
+        else if (orgs.length > 0) {
             if (orgs[orgSelected].type === OrgType.Registry) {
                 setScopes(["Org.Validity.Write"]);
             }
@@ -25,7 +30,7 @@ export default function DashboardPage() {
                 setScopes(["Animal.Read", "Chart.Write"]);
             }
         }
-    }, [orgSelected, orgs])
+    }, [orgSelected, orgs, isPersonalAccount])
 
 
     return (

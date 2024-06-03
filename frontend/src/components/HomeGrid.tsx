@@ -15,17 +15,10 @@ const features: IFeature[] = [
         scope: ["Animal.Write"],
         image: "/managerDog.png"
     },
-    // {
-    //     displayName: "Lookup",
-    //     name: "lookup",
-    //     description: "Peep at animals details",
-    //     scope: ["Animal.Read"],
-    //     image: "/catSleuth.png"
-    // },
     {
         displayName: "Animal Found",
         name: "foundAnimal",
-        description: "Peep at animals details",
+        description: "You recovered an animal",
         scope: ["Animal.Read"],
         image: "/catSleuth.png"
     },
@@ -50,7 +43,13 @@ const features: IFeature[] = [
         scope: ["Org.Validity.Write"],
         image: "/drshib.png"
     },
-
+    {
+        displayName: "Your Pets Records",
+        name: "charting/viewRecord",
+        description: "View Your Pets Records",
+        scope: ["Animal.0.Read",],
+        image: "/drshib.png"
+    },
 ]
 
 export const HomeGrid = ({ scopes }: { scopes: string[] }) => {

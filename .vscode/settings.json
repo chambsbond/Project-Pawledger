@@ -1,3 +1,5 @@
 {
-    "solidity.compileUsingRemoteVersion": "v0.8.25+commit.b61c2a91"
+    "solidity.compileUsingRemoteVersion": "v0.8.25+commit.b61c2a91",
+    "appService.defaultWebAppToDeploy": "/subscriptions/a181bc52-2a9d-4bc2-bd71-6af436d6653f/resourceGroups/eus-pawledger-app-service_group/providers/Microsoft.Web/sites/pawledger-ui",
+    "appService.deploySubpath": "frontend"
 }

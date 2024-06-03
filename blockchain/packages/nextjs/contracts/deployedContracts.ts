@@ -202,25 +202,6 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          name: "isOrgMember",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "contract IOrganization",
-              name: "org",
-              type: "address",
-            },
-          ],
           name: "isValidated",
           outputs: [
             {
@@ -274,21 +255,6 @@ const deployedContracts = {
             {
               internalType: "contract OrganizationRegistry",
               name: "orgRegistry",
-              type: "address",
-            },
-            {
-              internalType: "address",
-              name: "functionRouter",
-              type: "address",
-            },
-            {
-              internalType: "string",
-              name: "calculationLogic",
-              type: "string",
-            },
-            {
-              internalType: "address",
-              name: "pawledgerAddress",
               type: "address",
             },
           ],
@@ -388,49 +354,6 @@ const deployedContracts = {
             {
               indexed: false,
               internalType: "address",
-              name: "prtOwner",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "medPayload",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "tokenId",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "bytes32",
-              name: "requestId",
-              type: "bytes32",
-            },
-          ],
-          name: "MedicalPayload",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: "address",
-              name: "orgAffiliation",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "address",
-              name: "claimee",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "address",
               name: "prospectOwner",
               type: "address",
             },
@@ -462,72 +385,6 @@ const deployedContracts = {
           ],
           name: "Transfer",
           type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "bytes32",
-              name: "requestId",
-              type: "bytes32",
-            },
-            {
-              indexed: false,
-              internalType: "bytes",
-              name: "result",
-              type: "bytes",
-            },
-            {
-              indexed: false,
-              internalType: "bytes",
-              name: "err",
-              type: "bytes",
-            },
-          ],
-          name: "reEncryptResponse",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "_decryptConsumer",
-          outputs: [
-            {
-              internalType: "contract DecryptConsumer",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "to",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "tokenId",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "transfereePublicKey",
-              type: "string",
-            },
-            {
-              internalType: "uint32",
-              name: "gasLimit",
-              type: "uint32",
-            },
-          ],
-          name: "adoptAnimal",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
         },
         {
           inputs: [
@@ -564,29 +421,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "bytes32",
-              name: "requestId",
-              type: "bytes32",
-            },
-            {
-              internalType: "bytes",
-              name: "response",
-              type: "bytes",
-            },
-            {
-              internalType: "bytes",
-              name: "err",
-              type: "bytes",
-            },
-          ],
-          name: "eventsDecryted",
-          outputs: [],
-          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -631,19 +465,6 @@ const deployedContracts = {
           outputs: [
             {
               internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "getDecryptContract",
-          outputs: [
-            {
-              internalType: "contract DecryptConsumer",
               name: "",
               type: "address",
             },
@@ -765,51 +586,6 @@ const deployedContracts = {
             },
           ],
           name: "rebukeClaim",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              components: [
-                {
-                  internalType: "address",
-                  name: "org",
-                  type: "address",
-                },
-                {
-                  internalType: "address",
-                  name: "claimee",
-                  type: "address",
-                },
-              ],
-              internalType: "struct OrgAffilliation",
-              name: "orgAff",
-              type: "tuple",
-            },
-            {
-              internalType: "address",
-              name: "petOwner",
-              type: "address",
-            },
-            {
-              internalType: "string",
-              name: "medPayload",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "tokenId",
-              type: "uint256",
-            },
-            {
-              internalType: "bytes32",
-              name: "requestId",
-              type: "bytes32",
-            },
-          ],
-          name: "receiveMedicalPayload",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -994,7 +770,7 @@ const deployedContracts = {
   },
   80002: {
     OrganizationFactory: {
-      address: "0xC7B003d590CF0ef2F02655e36E9BE98Aba7D8567",
+      address: "0x50534E5cd888660F7D4783EF2C6A9B373b39D298",
       abi: [
         {
           inputs: [],
@@ -1099,7 +875,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     OrganizationRegistry: {
-      address: "0x271098Be086884E8682A2BEB191Bd82D5366AEd3",
+      address: "0x9ffA6aCf5C1D6f7B8f34aA871dc207bd5C49c478",
       abi: [
         {
           inputs: [
@@ -1254,7 +1030,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Pet: {
-      address: "0x3b2a767c3f8fC0a51C32AEF5cCbd33db9929bBa7",
+      address: "0x2E5C6952963eEF9B99B4D7c6E68beb32006fb31A",
       abi: [
         {
           inputs: [

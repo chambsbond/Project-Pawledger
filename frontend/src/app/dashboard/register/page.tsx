@@ -2,7 +2,7 @@
 
 import { memberShipSelector, orgSelectedIndexSelector, orgSelectedSelector } from "@/store/slices/OrgSlice"
 import { useSendUserOperation, useSmartAccountClient } from "@alchemy/aa-alchemy/react"
-import { Button, CircularProgress, Container, Grid, InputLabel, MenuItem, Paper, Select, Snackbar, Stack, Typography } from "@mui/material"
+import { Button, CircularProgress, Container, Grid, InputLabel, MenuItem, Paper, Select, Snackbar, Stack, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Address, encodeFunctionData } from "viem"
@@ -11,14 +11,17 @@ import PetAmoy from "../../../../generated/deployments/polygonAmoy/Pet.json";
 import { ethers } from "ethers"
 import Image from "next/image"
 import { grey } from "@mui/material/colors"
+import { useAppSelector } from "@/store/hooks"
+import { RootState } from "@/store/store"
 const registreeOptions = ["Your Organization", "A different user", "No one"]
 
 export default function RegisterPage() {
     const [registree, setRegistree] = useState<string>(registreeOptions[0]);
     const [open, setOpen] = useState(false);
     const [nftIndex, setNftIndex] = useState<BigInt>();
-    const orgs = useSelector(memberShipSelector);
-    const orgIndex = useSelector(orgSelectedIndexSelector);
+    const [userAddress, setUserAddress] = useState<string>();
+    const orgIndex = useAppSelector((state: RootState) => state.orgContract.selectedOrg);
+    const orgs = useAppSelector((state: RootState) => state.orgContract.orgs);
 
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
@@ -46,7 +49,7 @@ export default function RegisterPage() {
         }
         //TODO : implement
         else if (registree === registreeOptions[1]) {
-            registreeAddress = "0x0"
+            registreeAddress = userAddress!
         }
         //No one
         else {
@@ -87,7 +90,7 @@ export default function RegisterPage() {
             setOpen(true);
         }
 
-        if(sendUserOperationResult)
+        if (sendUserOperationResult)
             displayIndex();
     }, [sendUserOperationResult])
 
@@ -114,6 +117,12 @@ export default function RegisterPage() {
                                 )}
                             </Select>
                         </Stack>
+                        {registree === registreeOptions[1] &&
+                                <TextField
+                                    required
+                                    label="User's Address"
+                                    onChange={(e) => setUserAddress(e.target.value)}
+                                    disabled={isSendingUserOperation} />}
                         <Button
                             fullWidth
                             variant="contained"

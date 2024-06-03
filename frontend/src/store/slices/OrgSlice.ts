@@ -3,6 +3,8 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import OrgFactoryContractAmoy from "../../../generated/deployments/polygonAmoy/OrganizationFactory.json";
 import OrgContractCompile from "../../../generated/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
 import OrgRegistryAmoy from "../../../generated/deployments/polygonAmoy/OrganizationRegistry.json";
+
+import PetAmoy from "../../../generated/deployments/polygonAmoy/Pet.json";
 import { ethers } from 'ethers';
 import { RootState } from '../store';
 import { Address } from 'viem';
@@ -31,7 +33,9 @@ export interface OrgState {
     selectedOrg: number,
     registryAdmin: boolean,
     publicKey: string | undefined,
-    publicKeyIsLoading: boolean
+    publicKeyIsLoading: boolean,
+    isPersonalAccount: boolean,
+    ownedAnimals: BigInt[]
 }
 
 const initialState: OrgState = {
@@ -39,7 +43,9 @@ const initialState: OrgState = {
     selectedOrg: 0,
     registryAdmin: false,
     publicKey: undefined,
-    publicKeyIsLoading: false
+    publicKeyIsLoading: false,
+    isPersonalAccount: true,
+    ownedAnimals: []
 }
 
 
@@ -102,7 +108,6 @@ export const isOrgRegistryAdmin = createAsyncThunk(
     }
 );
 
-
 export const fetchPublicKey = createAsyncThunk(
     'orgs/publicKey/fetch',
     async (address: Address) => {
@@ -119,6 +124,17 @@ export const addPublicKey = createAsyncThunk(
     }
 );
 
+export const fetchOwnedPets = createAsyncThunk('orgs/publicKey/add',
+    async (address: string) => {
+        const petAddress = PetAmoy?.address;
+        const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
+        const petContract = new ethers.Contract(petAddress,
+            PetAmoy.abi, provider);
+
+        const balance = await petContract.balanceOf(address);
+    }    
+)
+
 export const orgContractSlice = createSlice({
     name: 'orgContract',
     initialState,
@@ -131,6 +147,9 @@ export const orgContractSlice = createSlice({
         },
         addOrg: (state, action) => {
             state.orgs.push(action.payload);
+        },
+        setPersonalAccount: (state, action) => {
+            state.isPersonalAccount = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -178,7 +197,8 @@ export const orgContractSlice = createSlice({
     }
 })
 
-export const { setOrg, addOrg, setSelectedOrgIndex } = orgContractSlice.actions;
+
+export const { setOrg, addOrg, setSelectedOrgIndex, setPersonalAccount } = orgContractSlice.actions;
 
 const selectedOrgIndex = (state: RootState) => (state.orgContract.selectedOrg)
 const selectedOrg = (state: RootState) => (state.orgContract.orgs[state.orgContract.selectedOrg]);

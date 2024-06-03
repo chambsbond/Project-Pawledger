@@ -3,8 +3,10 @@
 import { useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/aa-alchemy/react";
 import { useEffect } from "react";
 import { Button, CircularProgress, Container, FormGroup, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { useRouter } from 'next/navigation';
 
 export default function ChartingPage() {
+    const router = useRouter();
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
         gasManagerConfig: {
@@ -35,13 +37,13 @@ export default function ChartingPage() {
                         <Stack spacing={2}>
                             <Button
                                 variant="contained"
-                                onClick={() => { window.location.href = "charting/addRecord" }}
+                                onClick={() => { router.push("charting/addRecord") }}
                                 disabled={isSendingUserOperation}>
                                 {isSendingUserOperation ? <CircularProgress /> : <Typography>Add Record</Typography>}
                             </Button>
                             <Button
                                 variant="contained"
-                                onClick={() => { window.location.href = "charting/viewRecord" }}
+                                onClick={() => { router.push("charting/viewRecord") }}
                                 disabled={isSendingUserOperation}>
                                 {isSendingUserOperation ? <CircularProgress /> : <Typography>View Record</Typography>}
                             </Button>

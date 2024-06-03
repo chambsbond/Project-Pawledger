@@ -49,10 +49,10 @@ export const LogInCard = () => {
       setIsLoading(true);
     }
 
-    if(user != null && client != null && publicKey && !publicKeyIsLoading) {
+    if(user != null && client != null && publicKey && publicKey != "" && !publicKeyIsLoading) {
       router.push('/dashboard');
     }
-    else if (user != null && client != null && publicKey == "" && !publicKeyIsLoading) {
+    else if (user != null && client != null && (publicKey == "" || !publicKey) && !publicKeyIsLoading) {
       router.push('/signup')
     }
 

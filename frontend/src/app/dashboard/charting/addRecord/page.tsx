@@ -4,8 +4,10 @@ import { useSendUserOperation, useSmartAccountClient, useUser } from "@alchemy/a
 import { useEffect, useState } from "react";
 import { Button, CircularProgress, Container, FormGroup, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 
+import OrgContractCompile from "../../../../../generated/contracts/organizationImpl/AnimalShelter.sol/AnimalShelter.json";
+
 //look into pet.json for needed contract functions
-import PetAmoy from "../../../../../../blockchain/packages/hardhat/deployments/polygonAmoy/Pet.json";
+import PetAmoy from "../../../../../generated/deployments/polygonAmoy/Pet.json";
 
 import EthCrypto, { publicKey } from 'eth-crypto';
 import { useAppSelector } from "@/store/hooks";
@@ -18,16 +20,17 @@ import axios from "axios";
 
 export default function ChartingPage() {
 
-    const pawLedgerPublicKey = "aecf7df15a3a750fb293df93cecb6bc8b5206da52298cf18a9b4be7b7519e97dd99ce7ac05474f68ee44d5bd121f5a375fb71340ca30eb6d546668058025d99e";
+    const pawLedgerPublicKey = "0xaecf7df15a3a750fb293df93cecb6bc8b5206da52298cf18a9b4be7b7519e97dd99ce7ac05474f68ee44d5bd121f5a375fb71340ca30eb6d546668058025d99e";
     const backendConfig = { headers: { 'Access-Control-Allow-Origin': '*', "Content-Type": "application/json" } };
     
     const loggedInUserPublicKey = useAppSelector((state: RootState) => state.orgContract.publicKey);
+    const orgIndex = useAppSelector((state: RootState) => state.orgContract.selectedOrg);
+    const orgs = useAppSelector((state: RootState) => state.orgContract.orgs);
     const user = useUser();
     const [recordDetails, setRecordDetails] = useState<string>("");
     const [recordType, setRecordType] = useState<string>("");
     const [petId, setPetId] = useState<BigInt | undefined>();
-    const orgs = useSelector(memberShipSelector);
-    const orgIndex = useSelector(orgSelectedIndexSelector);
+    
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
         gasManagerConfig: {
@@ -55,29 +58,26 @@ export default function ChartingPage() {
 
         const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
         const petContract = new ethers.Contract(PetAmoy.address, PetAmoy.abi, provider);
+        const orgContract = new ethers.Contract(orgs[orgIndex].address, OrgContractCompile.abi, provider);
         const petOwnerAddress = await petContract.ownerOf(petId);
 
-        const orgAffilliation = {
-            org: orgs[orgIndex].address,
-            claimee: petOwnerAddress,
-        };
-
         const petOwnerAccount = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/account/${petOwnerAddress}`, backendConfig);
-
         const encryptedPayloadList = [];
         encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, petOwnerAccount?.data?.publicKey));
         encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, pawLedgerPublicKey));
-        encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, loggedInUserPublicKey || "heck"));
+        encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, loggedInUserPublicKey!));
+        console.log([petOwnerAddress, JSON.stringify(encryptedPayloadList), petId, ethers.toUtf8Bytes("1")]);
+        const requestId = Math.round((Math.random() * 100));
 
         const callData = encodeFunctionData({
-            abi: PetAmoy.abi,
-            functionName: "receiveMedicalPayload",
-            args: [orgAffilliation, petOwnerAddress, JSON.stringify(encryptedPayloadList)]
+            abi: OrgContractCompile.abi,
+            functionName: "sendMedicalInfo",
+            args: [petOwnerAddress, JSON.stringify(encryptedPayloadList), petId, ethers.encodeBytes32String(requestId.toString())]
         });
 
         await sendUserOperation({
             uo: {
-                target: PetAmoy?.address as Address,
+                target: orgs[orgIndex].address as Address,
                 data: callData
             }
         })
@@ -89,13 +89,14 @@ export default function ChartingPage() {
             JSON.stringify(plainTextData)
         );
 
-        console.log('ciphertext', encrypt)
         return encrypt;
     }
 
     useEffect(() => {
-        console.log("error", isSendUserOperationError);
-    }, [isSendUserOperationError]);
+        if(isSendUserOperationError)
+         console.log("error", isSendUserOperationError);
+
+    }, [isSendUserOperationError, sendUserOperationResult]);
 
     return (
         <Container>
@@ -107,7 +108,6 @@ export default function ChartingPage() {
                             <TextField
                                 required
                                 id="animal-id"
-                                value={petId}
                                 type="number"
                                 placeholder="PET Id"
                                 onChange={(e) => setPetId((e.target.value as unknown) as BigInt)}

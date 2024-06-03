@@ -5,18 +5,33 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { Avatar, Container, Menu, MenuItem, Select, Stack, Tooltip } from '@mui/material';
-import { memberShipSelector, setSelectedOrgIndex } from '@/store/slices/OrgSlice';
+import { Avatar, Container, FormControlLabel, Menu, MenuItem, Select, Stack, Switch, Tooltip } from '@mui/material';
+import { memberShipSelector, setPersonalAccount, setSelectedOrgIndex } from '@/store/slices/OrgSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAccount, useLogout, useSmartAccountClient, useUser } from '@alchemy/aa-alchemy/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { RootState } from '@/store/store';
 
 export default function Header() {
     const orgs = useSelector(memberShipSelector);
+    const isPersonalAccount = useSelector((state: RootState) => state.orgContract.isPersonalAccount);
     const dispatch = useDispatch();
     const router = useRouter();
+    const user = useUser();
+    const { isLoadingAccount, account } = useAccount({
+        type: "MultiOwnerModularAccount", // alternatively pass in "MultiOwnerModularAccount",
+        accountParams: {}, // optional param for overriding any account specific properties
+        skipCreate: true, // optional param to skip creating the account
+        onSuccess: (account) => {
+          // [optional] Do something with the account
+        },
+        onError: (error) => {
+          // [optional] Do something with the error
+          console.log(error);
+        },
+      });
     const { logout, isLoggingOut } = useLogout({
         onSuccess: () => {
             console.log('succesfully logged out')
@@ -28,7 +43,7 @@ export default function Header() {
         },
         // [optional] ...additional mutationArgs
     });
-    const { client, isLoadingClient} = useSmartAccountClient({
+    const { client, isLoadingClient } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
         gasManagerConfig: {
             policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID!,
@@ -37,8 +52,6 @@ export default function Header() {
             txMaxRetries: 20,
         },
     });
-
-    const user = useUser();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,19 +61,20 @@ export default function Header() {
         setAnchorEl(null);
     };
 
-    const handleLogOut = async () => {
-
-    }
-
     useEffect(() => {
-        if (!client && !isLoadingClient) {
+        if (!user || account == null && !isLoadingClient && !isLoadingAccount) {
             router.push('/');
         }
-    }, [isLoadingClient, client])
+    }, [isLoadingAccount, isLoadingClient, client, user])
 
     const handleSelectChange = (event: any) => {
         dispatch(setSelectedOrgIndex(event.target.value as number))
         router.push('/dashboard')
+    }
+
+    const handleAccountSwitch = (event: any) => {
+        dispatch(setPersonalAccount(event.target.checked as boolean));
+        router.push('/dashboard');
     }
 
     return (
@@ -74,8 +88,16 @@ export default function Header() {
                             width={55}
                             alt="pawledger logo"
                         />
-
-                        {orgs.length == 0 &&
+                        {isPersonalAccount &&
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="div"
+                                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>
+                                Welcome {user?.email}
+                            </Typography>
+                        }
+                        {orgs.length == 0 && !isPersonalAccount &&
                             <Typography
                                 variant="h6"
                                 noWrap
@@ -84,7 +106,7 @@ export default function Header() {
                                 Pawledger
                             </Typography>
                         }
-                        {orgs != undefined && orgs?.length == 1 &&
+                        {orgs != undefined && orgs?.length == 1 && !isPersonalAccount &&
                             <Typography
                                 variant="h6"
                                 noWrap
@@ -93,7 +115,7 @@ export default function Header() {
                                 {orgs[0].name}
                             </Typography>
                         }
-                        {orgs != undefined && orgs?.length > 1 &&
+                        {orgs != undefined && orgs?.length > 1 && !isPersonalAccount &&
                             <Select
                                 defaultValue={0}
                                 onChange={(event) => handleSelectChange(event)}
@@ -114,6 +136,16 @@ export default function Header() {
                             open={open}
                             onClose={handleClose}
                         >
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={isPersonalAccount}
+                                        sx={{ m: 1 }}
+                                        onClick={(e) => handleAccountSwitch(e)}
+                                    />}
+
+                                label="Personal Account">
+                            </FormControlLabel>
                             <MenuItem onClick={() => logout()}>Logout</MenuItem>
                         </Menu>
                     </Stack>
