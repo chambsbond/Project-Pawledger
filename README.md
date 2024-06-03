@@ -37,6 +37,10 @@ A demonstration video can be found [here]() TODO: ADD LINK TO DEMO VIDEO
 
 What does a user do when going to the website (also doubles as script for demo)
 
+1. Navigate to the UI launch page 
+2. Input email to create an organization
+3. Use the dashboard !! ( >.< ) 
+
 ## Architechtural Diagrams
 
 ### Medical Payload Event
