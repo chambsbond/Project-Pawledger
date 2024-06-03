@@ -16,6 +16,14 @@ This is the _Project Pawledger_ team's submission to [_Block Magic: A Chainlink 
 
 _Project Pawledger_ is a chainlink application that seeks to tokenize animals for secure, robust tracking of pets and strays. The track features of an animal are it's ownership and medical histories. This gives organizations and owners a resource to reliable maintanence and distribution of animals and pets through calls to Smart Contracts. This git repository contains a web-based user interface for navigating the creation and management of animal tokens.
 
+### About the Team
+
+We are a group of software engineers from both the public and private sectors of industry. We have all had many opportunities to experiment with cutting edge technologies. Blockchain tech has taken the world by storm recently and we found this hackathon as good as any opportunity to dive into getting hands on experience with it.
+
+Our team lead had the idea for Pawledger after volunteering at his local animal shelter. He thought it would be wonderful if there was a decentralized way to manage a pet's medical history as it can be very hard to have good records for a pet that ends up in an animal shelter. Our pet owner teammates that feel like there could be a more sophisticated way to manage their special friends :) A lot of care goes into their pet's safety and wellbeing and we figured if we had the skills to improve that further then we should absolutley go for it.
+
+It's exciting to see how blockchain is still a living tech that is constantly in flux and upgrading. None of us had experience with the tech before starting this Hackathon, so this has been a ground-up learning experience.
+
 ## User Guide
 
 Below are instructions to deploy and use the _Project Pawledger_ application and smart contracts.
