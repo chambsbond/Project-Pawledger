@@ -12,11 +12,15 @@ This is the _Project Pawledger_ team's submission to [_Block Magic: A Chainlink 
 * [Isaac McGonagle](https://github.com/ikemcgon)
 
 
-## About the Project
+## About the Team
 We are a group of software engineers from both the public and private sectors of industry. We have all had many opportunities to experiment with cutting edge technologies, but we have not had any opportunites for blockchain tech. It seems as though blockchain has taken the world by storm recently and we found this hackathon as good as any opportunity to dive into getting hands on experience with it.
 
 ### Inspiration
-Our team lead had the idea for Pawledger after volunteering at his local animal shelter. He thought it would be wonderful if there was a decentralized way to manage a pet's medical history as it can be very hard to have good records for a pet that ends up in an animal shelter. Our pet owner teammates that feel like there could be a more sophisticated way to manage their special friends :) A lot of care goes into their pet's safety and wellbeing and we figured if we had the skills to improve that further then we should absolutley go for it.
+Introducing Pawledger: revolutionizing the way we care for our furry friends. Imagine a world where every pet's medical history is securely stored and easily accessible, regardless of where they are. With Pawledger, powered by Chainlink and Alchemy, we're breaking down the barriers of blockchain complexity to ensure seamless integration for animal shelters, stray animal organizations, and pet owners alike.
+
+Our platform offers a suite of features designed to empower users. From immutable and decentralized end-to-end encryption of medical records to streamlined processes for adoption and pet transfers, Pawledger is at the forefront of innovation in animal welfare. Gone are the days of misplaced paperwork or fragmented records—Pawledger centralizes everything, making pet care more efficient and transparent than ever before.
+
+But we don't stop there. With Pawledger, registering animals via their chip number becomes effortless, ensuring that every pet's information is always up-to-date and easily accessible to those who need it most. Join us in shaping a future where every pet receives the care and attention they deserve. Pawledger: because every pet's story deserves to be heard.
 
 ### What it does
 Project Pawledger is a chainlink application that seeks to tokenize animals for secure, robust tracking of pets and strays. The track features of an animal are it's ownership and medical histories. This gives organizations and owners a resource to reliable maintenance and distribution of animals and pets through calls to Smart Contracts. This git repository contains a web-based user interface for navigating the creation and management of animal tokens.
