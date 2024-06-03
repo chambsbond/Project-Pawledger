@@ -61,7 +61,7 @@ export default function ChartingPage() {
         const orgContract = new ethers.Contract(orgs[orgIndex].address, OrgContractCompile.abi, provider);
         const petOwnerAddress = await petContract.ownerOf(petId);
 
-        const petOwnerAccount = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/account/${petOwnerAddress}`, backendConfig);
+        const petOwnerAccount = await axios.get(`https://eus-pawledger-backend.azurewebsites.net/api/account/${user?.address}`, backendConfig);
         const encryptedPayloadList = [];
         encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, petOwnerAccount?.data?.publicKey));
         encryptedPayloadList.push(await encryptMedicalData(medicalDataPlainText, pawLedgerPublicKey));
@@ -129,7 +129,6 @@ export default function ChartingPage() {
                                 id="outlined-basic"
                                 label="Record Details"
                                 variant="outlined"
-                                value={recordDetails}
                                 onChange={(e) => setRecordDetails(e.target.value)}
                             />
                             <Button

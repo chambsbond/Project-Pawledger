@@ -21,11 +21,9 @@ export interface EncryptedRecord {
 }
 
 export interface DecryptedRecord {
-    medicalHistoryId: number;
     tokenId: number;
-    medicalHistory: string;
+    medicalHistory: any;
     addressedTo: BigInt;
-    requestId: number;
 }
 
 export interface MedicalDataPlainText {
@@ -41,7 +39,7 @@ export default function ChartingPage() {
     const [petId, setPetId] = useState<BigInt | undefined>();
     const TurnkeyExportWalletContainerId = "turnkey-export-wallet-container-id";
     const TurnkeyExportWalletElementId = "turnkey-export-wallet-element-id";
-    
+
     const iframeCss = `
         iframe {
             box-sizing: border-box;
@@ -54,7 +52,7 @@ export default function ChartingPage() {
             padding: 0px;
         }
         `;
-        
+
     const { client } = useSmartAccountClient({
         type: "MultiOwnerModularAccount",
         gasManagerConfig: {
@@ -73,26 +71,28 @@ export default function ChartingPage() {
     } = useSendUserOperation({ client, waitForTxn: true });
 
     // construct call data and send userOperation for creating a new pet medical record entry
-    const viewPetRecord = async () => {        
-        let response = await axios.get<EncryptedRecord[]>(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/${petId}/address/${user?.address}`);  
+    const viewPetRecord = async () => {
+        let response = await axios.get<EncryptedRecord[]>(`https://eus-pawledger-backend.azurewebsites.net/api/medicalHistories/token/${petId}/address/${user?.address}`);
         let decryptedResponse: DecryptedRecord[] = [];
-        
-        for ( const record of response.data) {
+
+        for (const record of response.data) {
             var encryptedMeds = JSON.parse(record.encryptedHistory.replace('\\', '')) as Encrypted;
             const hdNode = ethers.HDNodeWallet.fromPhrase(mnemonic);
-            var decryptedMeds = await EthCrypto.decryptWithPrivateKey(hdNode.privateKey, encryptedMeds);
-            var decryptedRecord: DecryptedRecord = {
-                medicalHistoryId: record.medicalHistoryId,
-                tokenId: record.tokenId,
-                medicalHistory: decryptedMeds,
-                addressedTo: record.addressedTo,
-                requestId: record.requestId,
-            };
+            try {
+                var decryptedMeds = await EthCrypto.decryptWithPrivateKey(hdNode.privateKey, encryptedMeds);
+                var decryptedRecord: DecryptedRecord = {
+                    tokenId: record.tokenId,
+                    medicalHistory: JSON.parse(decryptedMeds).recordDetails,
+                    addressedTo: record.addressedTo,
+                };
+                decryptedResponse.push(decryptedRecord);
+            }
+            catch (e) { 
 
-            decryptedResponse.push(decryptedRecord);
+            }
+            
+            setMedicalRecord(JSON.stringify(decryptedResponse))
         }
-
-        setMedicalRecord(JSON.stringify(decryptedResponse))
     }
 
     useEffect(() => {
@@ -132,7 +132,6 @@ export default function ChartingPage() {
                         <TextField
                             required
                             id="animal-id"
-                            value={petId}
                             placeholder="PET Id"
                             onChange={(e) => setPetId((e.target.value as unknown) as BigInt)}
                             disabled={isSendingUserOperation}>
@@ -140,8 +139,7 @@ export default function ChartingPage() {
                         <TextField
                             required
                             id="submitter-key"
-                            value={mnemonic}
-                            placeholder="Private Key"
+                            placeholder="Seed Phrase"
                             onChange={(e) => setMnemonic(e.target.value)}
                             disabled={isSendingUserOperation}>
                         </TextField>
@@ -158,13 +156,14 @@ export default function ChartingPage() {
                         </Stack>
                     </FormGroup>
                     <hr></hr>
-                    <textarea
+                    <TextField
+                        multiline
                         id="medical-history"
                         value={medicalRecord}
                         placeholder="medical record"
                         rows={20}
-                        disabled={isSendingUserOperation}>
-                    </textarea>
+                        disabled={true}>
+                    </TextField>
                 </Stack>
             </Paper>
         </Container >
