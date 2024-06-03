@@ -13,16 +13,42 @@ This is the _Project Pawledger_ team's submission to [_Block Magic: A Chainlink 
 
 
 ## About the Project
+We are a group of software engineers from both the public and private sectors of industry. We have all had many opportunities to experiment with cutting edge technologies, but we have not had any opportunites for blockchain tech. It seems as though blockchain has taken the world by storm recently and we found this hackathon as good as any opportunity to dive into getting hands on experience with it.
 
-_Project Pawledger_ is a chainlink application that seeks to tokenize animals for secure, robust tracking of pets and strays. The track features of an animal are it's ownership and medical histories. This gives organizations and owners a resource to reliable maintanence and distribution of animals and pets through calls to Smart Contracts. This git repository contains a web-based user interface for navigating the creation and management of animal tokens.
-
-### About the Team
-
-We are a group of software engineers from both the public and private sectors of industry. We have all had many opportunities to experiment with cutting edge technologies. Blockchain tech has taken the world by storm recently and we found this hackathon as good as any opportunity to dive into getting hands on experience with it.
-
+### Inspiration
 Our team lead had the idea for Pawledger after volunteering at his local animal shelter. He thought it would be wonderful if there was a decentralized way to manage a pet's medical history as it can be very hard to have good records for a pet that ends up in an animal shelter. Our pet owner teammates that feel like there could be a more sophisticated way to manage their special friends :) A lot of care goes into their pet's safety and wellbeing and we figured if we had the skills to improve that further then we should absolutley go for it.
 
-It's exciting to see how blockchain is still a living tech that is constantly in flux and upgrading. None of us had experience with the tech before starting this Hackathon, so this has been a ground-up learning experience.
+### What it does
+Project Pawledger is a chainlink application that seeks to tokenize animals for secure, robust tracking of pets and strays. The track features of an animal are it's ownership and medical histories. This gives organizations and owners a resource to reliable maintenance and distribution of animals and pets through calls to Smart Contracts. This git repository contains a web-based user interface for navigating the creation and management of animal tokens.
+
+### How we built it
+From an administrative level, we had a development cycle where we reconviend weekly to discuss progress and our goals for the week ahead. We primarily leveraged a Kanban board where we managed our issues and roadmap. These were sufficient for tracking the state of our application over the course of one month.
+
+From a development level, the requirements section below details the software dependencies we used to build the application. We built a frontend to interact with our deployed smart contracts.
+
+### Challenges we ran into
+It was not immediately apparent the level of overhead required to deploy contracts on chain. This took a substantial amount of our development time before we got it to work and could go forward. We especially found it challenging to work with because our application depends on limiting features based on organization specific permissions. Organization verification was another challenge we wrestled with a lot.
+
+### Accomplishments that we're proud of
+Our biggest accomplishment is simply that we made an application that used chainlink function! Having little knowledge of blockchain ahead of time made us unsure of how deep a dive this hackathon would require, but we met the goal we set out for :)
+
+One fun feature of our project is that we developed and end-to-end encryption schema to allow users to manager their medical history securely.
+
+### What we learned
+It's exciting to see how blockchain is still a living tech that is constantly in flux and upgrading. None of us had experience with the tech before starting this Hackathon, so this has been a ground-up learning experience. Additionally, at a higher level we learned a lot about standing up our own project and scoping out the level of effort required to accomplish each component in our month long timeframe.
+
+### What's next for Pawledger
+- [x] Chainlink interactions
+- [x] Frontend to call contracts
+- [x] Database tracking pet entries
+- [ ] UI User side portal
+    - [x] View Charts
+    - [ ] Onramp/Dashboard
+    - [ ] Transfer pets
+- [ ] Found pet flow
+- [ ] Timer for abandoned strays
+- [ ] Improvements on organization flow
+- [ ] UI for access control for medical data
 
 ## User Guide
 
@@ -74,14 +100,3 @@ What does a user do when going to the website (also doubles as script for demo)
 4. All current data owner members for each org are pulled from history
 5. Notifications are sent and stored
 6. Org members are updated in database
-
-## Roadmap
-
-- [x] Chainlink interactions
-- [x] Frontend to call contracts
-- [x] Database tracking pet entries
-- [ ] UI User side portal
-    - [x] View Charts
-    - [ ] Onramp/Dashboard
-    - [ ] Transfer
-- [ ] Timer for abandoned strays
